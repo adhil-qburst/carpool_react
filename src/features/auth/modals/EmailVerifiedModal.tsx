@@ -4,9 +4,7 @@ type EmailVerifiedModalProps = {
   onClose: () => void;
 };
 
-export default function EmailVerifiedModal({
-  onClose,
-}: EmailVerifiedModalProps) {
+const EmailVerifiedModal = ({ onClose }: EmailVerifiedModalProps) => {
   return (
     <div
       className="fixed inset-0 z-50 grid place-items-center bg-slate-950/55 p-4 backdrop-blur-sm"
@@ -49,4 +47,6 @@ export default function EmailVerifiedModal({
       </div>
     </div>
   );
-}
+};
+
+export default EmailVerifiedModal;

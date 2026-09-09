@@ -1,22 +1,16 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
 import { Link } from "react-router";
-import VerificationModal from "./VerificationModal";
-
-type Role = "Driver" | "Rider";
-type RegisterForm = {
-  name: string;
-  email: string;
-  password: string;
-  roles: Role[];
-};
-type FormErrors = Partial<Record<keyof RegisterForm, string>>;
+import VerificationModal from "../modals/VerificationModal";
+import FieldIcon from "@shared/ui/FieldIcon";
+import type { FormErrors, RegisterForm, Role } from "../types/register.type";
+import BrandMark from "@shared/ui/BrandMark";
+import { emailPattern } from "@core/types/util.types";
 
 const ROLES: { value: Role; description: string; icon: "car" | "pin" }[] = [
   { value: "Driver", description: "Offer seats on your route", icon: "car" },
   { value: "Rider", description: "Find a ride that fits", icon: "pin" },
 ];
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const initialForm: RegisterForm = {
   name: "",
   email: "",
@@ -28,7 +22,7 @@ function validate(form: RegisterForm): FormErrors {
   const errors: FormErrors = {};
   if (!form.name.trim()) errors.name = "Enter your full name.";
   if (!form.email.trim()) errors.email = "Enter your email address.";
-  else if (!EMAIL_PATTERN.test(form.email.trim()))
+  else if (!emailPattern.test(form.email.trim()))
     errors.email = "Enter a valid email address.";
   if (!form.password) errors.password = "Create a password.";
   else if (form.password.length < 8)
@@ -37,68 +31,7 @@ function validate(form: RegisterForm): FormErrors {
   return errors;
 }
 
-function BrandMark() {
-  return (
-    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-600 text-xl font-black text-white shadow-lg shadow-indigo-950/25">
-      C
-    </div>
-  );
-}
-
-function FieldIcon({
-  type,
-}: {
-  type: "person" | "mail" | "lock" | "car" | "pin";
-}) {
-  const paths = {
-    person: (
-      <>
-        <circle cx="12" cy="8" r="3.25" />
-        <path d="M5.5 20c.7-3.2 3.1-5 6.5-5s5.8 1.8 6.5 5" />
-      </>
-    ),
-    mail: (
-      <>
-        <rect x="3.5" y="5.5" width="17" height="13" rx="2" />
-        <path d="m4.5 7 7.5 5.6L19.5 7" />
-      </>
-    ),
-    lock: (
-      <>
-        <rect x="4.5" y="10" width="15" height="10" rx="2" />
-        <path d="M8 10V7.5a4 4 0 0 1 8 0V10" />
-      </>
-    ),
-    car: (
-      <>
-        <path d="m5 16 1.4-5.2A2 2 0 0 1 8.3 9.3h7.4a2 2 0 0 1 1.9 1.5L19 16" />
-        <path d="M4 16h16v3H4zM7 19v2M17 19v2" />
-        <circle cx="7.5" cy="16" r=".7" fill="currentColor" />
-        <circle cx="16.5" cy="16" r=".7" fill="currentColor" />
-      </>
-    ),
-    pin: (
-      <>
-        <path d="M19 10c0 5-7 11-7 11s-7-6-7-11a7 7 0 1 1 14 0Z" />
-        <circle cx="12" cy="10" r="2.4" />
-      </>
-    ),
-  };
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      className="h-5 w-5"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      aria-hidden="true"
-    >
-      {paths[type]}
-    </svg>
-  );
-}
-
-export default function RegisterPage() {
+const RegisterPage = () => {
   const [form, setForm] = useState<RegisterForm>(initialForm);
   const [errors, setErrors] = useState<FormErrors>({});
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -400,4 +333,6 @@ export default function RegisterPage() {
       )}
     </main>
   );
-}
+};
+
+export default RegisterPage;

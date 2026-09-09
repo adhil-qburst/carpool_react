@@ -1,46 +1,16 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
 import { Link, useSearchParams } from "react-router";
-import EmailVerifiedModal from "./EmailVerifiedModal";
+import EmailVerifiedModal from "../modals/EmailVerifiedModal";
+import BrandMark from "@shared/ui/BrandMark";
+import MailIcon from "@shared/ui/MailIcon";
+import LockIcon from "@shared/ui/LockIcon";
+import { emailPattern } from "@core/types/util.types";
 
 type LoginForm = { email: string; password: string };
 type LoginErrors = Partial<Record<keyof LoginForm, string>>;
-const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-function BrandMark() {
-  return (
-    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-600 text-xl font-black text-white shadow-lg shadow-indigo-950/25">
-      C
-    </div>
-  );
-}
-
-function Icon({ type }: { type: "mail" | "lock" }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      className="h-5 w-5"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      aria-hidden="true"
-    >
-      {type === "mail" ? (
-        <>
-          <rect x="3.5" y="5.5" width="17" height="13" rx="2" />
-          <path d="m4.5 7 7.5 5.6L19.5 7" />
-        </>
-      ) : (
-        <>
-          <rect x="4.5" y="10" width="15" height="10" rx="2" />
-          <path d="M8 10V7.5a4 4 0 0 1 8 0V10" />
-        </>
-      )}
-    </svg>
-  );
-}
-
-export default function LoginPage() {
+const LoginPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [form, setForm] = useState<LoginForm>({ email: "", password: "" });
   const [errors, setErrors] = useState<LoginErrors>({});
@@ -156,7 +126,7 @@ export default function LoginPage() {
                 </label>
                 <div className="relative text-slate-400">
                   <span className="pointer-events-none absolute left-3.5 top-3.5">
-                    <Icon type="mail" />
+                    <MailIcon />
                   </span>
                   <input
                     id="email"
@@ -191,7 +161,7 @@ export default function LoginPage() {
                 </div>
                 <div className="relative text-slate-400">
                   <span className="pointer-events-none absolute left-3.5 top-3.5">
-                    <Icon type="lock" />
+                    <LockIcon />
                   </span>
                   <input
                     id="password"
@@ -251,4 +221,6 @@ export default function LoginPage() {
       {isEmailVerified && <EmailVerifiedModal onClose={closeVerifiedModal} />}
     </main>
   );
-}
+};
+
+export default LoginPage;
