@@ -6,3 +6,8 @@ export type RegisterForm = {
   roles: Role[];
 };
 export type FormErrors = Partial<Record<keyof RegisterForm, string>>;
+
+export type LoginForm = {
+  email: string;
+  password: string;
+};

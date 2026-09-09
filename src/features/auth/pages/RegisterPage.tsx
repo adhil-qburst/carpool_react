@@ -1,9 +1,9 @@
 import { useState } from "react";
-import type { FormEvent } from "react";
+import type { SubmitEvent } from "react";
 import { Link } from "react-router";
 import VerificationModal from "../modals/VerificationModal";
 import FieldIcon from "@shared/ui/FieldIcon";
-import type { FormErrors, RegisterForm, Role } from "../types/register.type";
+import type { FormErrors, RegisterForm, Role } from "../types/auth.type";
 import BrandMark from "@shared/ui/BrandMark";
 import { emailPattern } from "@core/types/util.types";
 import { useRegisterMutation } from "../hooks/useRegisterMutation";
@@ -57,7 +57,7 @@ const RegisterPage = () => {
         : [...form.roles, role],
     );
   }
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
     setFormError(null);
     const nextErrors = validate(form);

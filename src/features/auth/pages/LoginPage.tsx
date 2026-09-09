@@ -1,22 +1,34 @@
-import { useState } from "react";
-import type { FormEvent } from "react";
-import { Link, useSearchParams } from "react-router";
+import { useEffect, useState } from "react";
+import type { SubmitEvent } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router";
 import EmailVerifiedModal from "../modals/EmailVerifiedModal";
 import BrandMark from "@shared/ui/BrandMark";
 import MailIcon from "@shared/ui/MailIcon";
 import LockIcon from "@shared/ui/LockIcon";
 import { emailPattern } from "@core/types/util.types";
+import type { LoginForm } from "../types/auth.type";
+import { useLoginMutation } from "../hooks/useLoginMutation";
+import { toApiError } from "@core/api/apiError";
 
-type LoginForm = { email: string; password: string };
 type LoginErrors = Partial<Record<keyof LoginForm, string>>;
 
 const LoginPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
   const [form, setForm] = useState<LoginForm>({ email: "", password: "" });
   const [errors, setErrors] = useState<LoginErrors>({});
   const [showPassword, setShowPassword] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
+  const loginMutation = useLoginMutation();
   const isEmailVerified = searchParams.get("verified") === "true";
+  const isLoginSuccessful = loginMutation.isSuccess;
+
+  useEffect(() => {
+    if (!isLoginSuccessful) return;
+    const timer = setTimeout(() => navigate("/home", { replace: true }), 2000);
+    return () => clearTimeout(timer);
+  }, [isLoginSuccessful, navigate]);
+
   const update = (field: keyof LoginForm, value: string) => {
     setForm((current) => ({ ...current, [field]: value }));
     setErrors((current) => ({ ...current, [field]: undefined }));
@@ -24,15 +36,25 @@ const LoginPage = () => {
   const fieldClass = (error?: boolean) =>
     `w-full rounded-xl border bg-white py-3 pl-11 pr-4 text-[15px] text-slate-900 outline-none transition placeholder:text-slate-400 focus:ring-4 ${error ? "border-rose-400 focus:border-rose-500 focus:ring-rose-100" : "border-slate-200 focus:border-indigo-500 focus:ring-indigo-100"}`;
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
+    setFormError(null);
     const next: LoginErrors = {};
     if (!form.email.trim()) next.email = "Enter your email address.";
     else if (!emailPattern.test(form.email.trim()))
       next.email = "Enter a valid email address.";
     if (!form.password) next.password = "Enter your password.";
     setErrors(next);
-    if (!Object.keys(next).length) setIsSubmitted(true);
+    if (Object.keys(next).length) return;
+
+    loginMutation.mutate(form, {
+      onError: (error) => {
+        const apiError = toApiError(error);
+        const hasFieldErrors = Object.keys(apiError.fieldErrors).length > 0;
+        setErrors((previous) => ({ ...previous, ...apiError.fieldErrors }));
+        setFormError(hasFieldErrors ? null : apiError.message);
+      },
+    });
   }
 
   function closeVerifiedModal() {
@@ -102,7 +124,7 @@ const LoginPage = () => {
                 Enter your details to continue your journey.
               </p>
             </div>
-            {isSubmitted && (
+            {loginMutation.isSuccess && (
               <div
                 className="mt-6 flex items-start gap-3 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800"
                 role="status"
@@ -111,8 +133,8 @@ const LoginPage = () => {
                   ✓
                 </span>
                 <span>
-                  <strong className="font-semibold">Details received.</strong>{" "}
-                  Authentication will connect here when your backend is ready.
+                  <strong className="font-semibold">Signed in.</strong> Welcome
+                  back to Carpool. You'll be redirect to the home...
                 </span>
               </div>
             )}
@@ -196,14 +218,29 @@ const LoginPage = () => {
                 />
                 Remember me for 30 days
               </label>
+              {formError && (
+                <p
+                  role="alert"
+                  className="rounded-lg bg-rose-50 px-3.5 py-2.5 text-sm text-rose-600"
+                >
+                  {formError}
+                </p>
+              )}
               <button
                 type="submit"
-                className="group flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-3.5 text-sm font-semibold text-white shadow-lg shadow-indigo-600/25 transition hover:bg-indigo-700 hover:shadow-xl hover:shadow-indigo-600/30 focus:outline-none focus:ring-4 focus:ring-indigo-200"
+                disabled={loginMutation.isPending}
+                className="group flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-3.5 text-sm font-semibold text-white shadow-lg shadow-indigo-600/25 transition hover:bg-indigo-700 hover:shadow-xl hover:shadow-indigo-600/30 focus:outline-none focus:ring-4 focus:ring-indigo-200 disabled:cursor-not-allowed disabled:opacity-60"
               >
-                Sign in{" "}
-                <span className="transition-transform group-hover:translate-x-0.5">
-                  →
-                </span>
+                {loginMutation.isPending ? (
+                  "Signing in…"
+                ) : (
+                  <>
+                    Sign in{" "}
+                    <span className="transition-transform group-hover:translate-x-0.5">
+                      →
+                    </span>
+                  </>
+                )}
               </button>
             </form>
             <p className="mt-7 text-center text-sm text-slate-500">

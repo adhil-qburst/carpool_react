@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { authApi } from "../api/auth.api";
 import { toApiRole } from "../types/auth.api.types";
-import type { RegisterForm } from "../types/register.type";
+import type { RegisterForm } from "../types/auth.type";
 
 export function useRegisterMutation() {
   return useMutation({
