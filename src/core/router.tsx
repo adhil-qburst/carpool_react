@@ -3,6 +3,7 @@ import { createBrowserRouter, redirect } from "react-router";
 import App from "../App";
 import LoginPage from "@features/auth/pages/LoginPage";
 import RegisterPage from "@features/auth/pages/RegisterPage";
+import HomePage from "@features/home/pages/HomePage";
 
 const router = createBrowserRouter([
   {
@@ -20,6 +21,10 @@ const router = createBrowserRouter([
   {
     path: "/email-verification-success",
     loader: () => redirect("/login?verified=true"),
+  },
+  {
+    path: "/home",
+    element: <HomePage />,
   },
 ]);
 
