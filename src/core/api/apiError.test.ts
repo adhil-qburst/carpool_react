@@ -38,7 +38,11 @@ describe("toApiError", () => {
   });
 
   it("falls back to a generic message when there is no validation detail", () => {
-    const error = axiosError({ status: 500, data: {}, message: "Server error" });
+    const error = axiosError({
+      status: 500,
+      data: {},
+      message: "Server error",
+    });
 
     const result = toApiError(error);
 
