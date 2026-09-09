@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
+import { Link } from "react-router";
 import VerificationModal from "./VerificationModal";
 
 type Role = "Driver" | "Rider";
@@ -186,7 +187,12 @@ export default function RegisterPage() {
                   Carpool
                 </span>
               </div>
-              <span className="text-sm text-slate-500">Already a member?</span>
+              <Link
+                to="/login"
+                className="text-sm font-semibold text-indigo-600 hover:text-indigo-700"
+              >
+                Sign in
+              </Link>
             </div>
             <div className="mt-12 lg:mt-0">
               <p className="text-sm font-semibold text-indigo-600">
@@ -379,12 +385,12 @@ export default function RegisterPage() {
             </form>
             <p className="mt-7 text-center text-sm text-slate-500">
               Already have an account?{" "}
-              <a
-                href="#sign-in"
+              <Link
+                to="/login"
                 className="font-semibold text-indigo-600 hover:text-indigo-700"
               >
                 Sign in
-              </a>
+              </Link>
             </p>
           </div>
         </section>

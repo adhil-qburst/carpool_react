@@ -36,7 +36,6 @@ export default function VerificationModal({
         >
           Go to Login
         </button>
-      
       </div>
     </div>
   );
