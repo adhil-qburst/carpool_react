@@ -19,6 +19,10 @@ export function toApiError(error: unknown): ApiError {
       };
     }
 
+    if (typeof detail === "string" && detail.trim()) {
+      return { status, message: detail, fieldErrors: {} };
+    }
+
     return {
       status,
       message: error.message || "Something went wrong. Please try again.",

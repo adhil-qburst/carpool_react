@@ -6,6 +6,8 @@ import FieldIcon from "@shared/ui/FieldIcon";
 import type { FormErrors, RegisterForm, Role } from "../types/register.type";
 import BrandMark from "@shared/ui/BrandMark";
 import { emailPattern } from "@core/types/util.types";
+import { useRegisterMutation } from "../hooks/useRegisterMutation";
+import { toApiError } from "@core/api/apiError";
 
 const ROLES: { value: Role; description: string; icon: "car" | "pin" }[] = [
   { value: "Driver", description: "Offer seats on your route", icon: "car" },
@@ -36,6 +38,8 @@ const RegisterPage = () => {
   const [errors, setErrors] = useState<FormErrors>({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
+  const registerMutation = useRegisterMutation();
 
   function updateField<K extends keyof RegisterForm>(
     field: K,
@@ -55,9 +59,20 @@ const RegisterPage = () => {
   }
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    setFormError(null);
     const nextErrors = validate(form);
     setErrors(nextErrors);
-    if (!Object.keys(nextErrors).length) setIsModalOpen(true);
+    if (Object.keys(nextErrors).length) return;
+
+    registerMutation.mutate(form, {
+      onSuccess: () => setIsModalOpen(true),
+      onError: (error) => {
+        const apiError = toApiError(error);
+        const hasFieldErrors = Object.keys(apiError.fieldErrors).length > 0;
+        setErrors((previous) => ({ ...previous, ...apiError.fieldErrors }));
+        setFormError(hasFieldErrors ? null : apiError.message);
+      },
+    });
   }
   function handleModalClose() {
     setIsModalOpen(false);
@@ -289,14 +304,29 @@ const RegisterPage = () => {
                   <p className="mt-1.5 text-sm text-rose-600">{errors.roles}</p>
                 )}
               </fieldset>
+              {formError && (
+                <p
+                  role="alert"
+                  className="rounded-lg bg-rose-50 px-3.5 py-2.5 text-sm text-rose-600"
+                >
+                  {formError}
+                </p>
+              )}
               <button
                 type="submit"
-                className="group mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-3.5 text-sm font-semibold text-white shadow-lg shadow-indigo-600/25 transition hover:bg-indigo-700 hover:shadow-xl hover:shadow-indigo-600/30 focus:outline-none focus:ring-4 focus:ring-indigo-200"
+                disabled={registerMutation.isPending}
+                className="group mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-3.5 text-sm font-semibold text-white shadow-lg shadow-indigo-600/25 transition hover:bg-indigo-700 hover:shadow-xl hover:shadow-indigo-600/30 focus:outline-none focus:ring-4 focus:ring-indigo-200 disabled:cursor-not-allowed disabled:opacity-60"
               >
-                Create account{" "}
-                <span className="transition-transform group-hover:translate-x-0.5">
-                  →
-                </span>
+                {registerMutation.isPending ? (
+                  "Creating account…"
+                ) : (
+                  <>
+                    Create account{" "}
+                    <span className="transition-transform group-hover:translate-x-0.5">
+                      →
+                    </span>
+                  </>
+                )}
               </button>
               <p className="px-3 text-center text-xs leading-5 text-slate-500">
                 By creating an account, you agree to our{" "}

@@ -5,7 +5,7 @@ export interface ValidationErrorItem {
 }
 
 export interface HTTPValidationError {
-  detail?: ValidationErrorItem[];
+  detail?: ValidationErrorItem[] | string;
 }
 
 export interface ApiError {

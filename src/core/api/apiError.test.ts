@@ -37,6 +37,23 @@ describe("toApiError", () => {
     });
   });
 
+  it("uses a string detail as the message", () => {
+    const error = axiosError({
+      status: 503,
+      data: {
+        detail: "User is already registered. Please login with your email.",
+      },
+    });
+
+    const result = toApiError(error);
+
+    expect(result.status).toBe(503);
+    expect(result.message).toBe(
+      "User is already registered. Please login with your email.",
+    );
+    expect(result.fieldErrors).toEqual({});
+  });
+
   it("falls back to a generic message when there is no validation detail", () => {
     const error = axiosError({
       status: 500,
