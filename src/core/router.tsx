@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router";
+import { createBrowserRouter, redirect } from "react-router";
 
 import App from "../App";
 import LoginPage from "@features/auth/pages/LoginPage";
@@ -16,6 +16,10 @@ const router = createBrowserRouter([
   {
     path: "/login",
     element: <LoginPage />,
+  },
+  {
+    path: "/email-verification-success",
+    loader: () => redirect("/login?verified=true"),
   },
 ]);
 

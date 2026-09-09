@@ -37,13 +37,6 @@ const EmailVerifiedModal = ({ onClose }: EmailVerifiedModalProps) => {
         >
           Log in to your account
         </Link>
-        <button
-          type="button"
-          onClick={onClose}
-          className="mt-3 text-sm font-medium text-slate-500 hover:text-slate-800"
-        >
-          I&rsquo;ll do this later
-        </button>
       </div>
     </div>
   );
