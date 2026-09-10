@@ -30,3 +30,13 @@ export interface LoginResponse {
   refresh_token: string;
   token_type: string;
 }
+
+export interface RefreshTokenRequest {
+  refresh_token: string;
+}
+
+export interface RefreshTokenResponse {
+  access_token: string;
+  token_type: string;
+  expires_in: number;
+}

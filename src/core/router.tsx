@@ -1,17 +1,23 @@
 import { createBrowserRouter, redirect } from "react-router";
 
-import App from "../App";
 import LoginPage from "@features/auth/pages/LoginPage";
 import RegisterPage from "@features/auth/pages/RegisterPage";
 import HomePage from "@features/home/pages/HomePage";
 import VehiclesPage from "@features/vehicles/pages/VehiclesPage";
 import RegisterVehiclePage from "@features/vehicles/pages/RegisterVehiclePage";
 import EditVehiclePage from "@features/vehicles/pages/EditVehiclePage";
+import { tokenStorage } from "./auth/tokenStorage";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    loader: () => {
+      if (tokenStorage.getAccessToken() !== null){
+        return redirect("/home");
+      }else{
+        return redirect("/login")
+      }
+    }
   },
   {
     path: "/register",

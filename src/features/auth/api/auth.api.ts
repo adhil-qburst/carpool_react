@@ -1,9 +1,11 @@
 import { httpClient } from "@core/api/httpClient";
-import {
-  type LoginResponse,
-  type LoginRequest,
-  type RegisterRequest,
-  type RegisterResponse,
+import type {
+  LoginRequest,
+  LoginResponse,
+  RefreshTokenRequest,
+  RefreshTokenResponse,
+  RegisterRequest,
+  RegisterResponse,
 } from "../types/auth.api.types";
 
 export const authApi = {
@@ -14,5 +16,9 @@ export const authApi = {
   login: (payload: LoginRequest) =>
     httpClient
       .post<LoginResponse>("/api/v1/auth/login", payload)
+      .then((res) => res.data),
+  refresh: (payload: RefreshTokenRequest) =>
+    httpClient
+      .post<RefreshTokenResponse>("/api/v1/auth/refresh", payload)
       .then((res) => res.data),
 };
