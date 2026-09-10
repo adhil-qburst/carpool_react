@@ -40,6 +40,7 @@ You are a senior code reviewer and architecture auditor for the Carpool React ap
 
 ### 6. API & Error Handling
 
+- [ ] API endpoint URLs are defined in and imported from `@core/api/apiEndpoints` — NO hardcoded endpoint strings in `*.api.ts`.
 - [ ] HTTP calls use `@core/api/httpClient` and unwrap data with `.then((res) => res.data)`.
 - [ ] API errors in mutations/actions are normalized using `toApiError` from `@core/api/apiError`.
 

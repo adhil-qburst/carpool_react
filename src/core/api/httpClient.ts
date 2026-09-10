@@ -3,6 +3,7 @@ import type { InternalAxiosRequestConfig } from "axios";
 import { env } from "@core/config/env";
 import { tokenStorage } from "@core/auth/tokenStorage";
 import { redirectToLogin } from "@core/auth/authRedirect";
+import { apiEndpoints } from "./apiEndpoints";
 
 declare module "axios" {
   export interface InternalAxiosRequestConfig {
@@ -41,7 +42,7 @@ export async function requestNewAccessToken(
 ): Promise<string> {
   if (!refreshPromise) {
     refreshPromise = refreshClient
-      .post<RefreshTokenResponseData>("/api/v1/auth/refresh", {
+      .post<RefreshTokenResponseData>(apiEndpoints.auth.refresh, {
         refresh_token: refreshToken,
       })
       .then((res) => {
@@ -62,7 +63,7 @@ export async function requestNewAccessToken(
 }
 
 httpClient.interceptors.request.use((config) => {
-  if (!config.url?.includes("/api/v1/auth/refresh")) {
+  if (!config.url?.includes(apiEndpoints.auth.refresh)) {
     const accessToken = tokenStorage.getAccessToken();
     if (accessToken) {
       if (config.headers?.set) {
@@ -87,7 +88,7 @@ httpClient.interceptors.response.use(
     const requestUrl = originalRequest?.url ?? "";
 
     // Any error on the refresh endpoint triggers clear & redirect to login
-    if (requestUrl.includes("/api/v1/auth/refresh")) {
+    if (requestUrl.includes(apiEndpoints.auth.refresh)) {
       tokenStorage.clear();
       redirectToLogin();
       return Promise.reject(error);
@@ -95,8 +96,8 @@ httpClient.interceptors.response.use(
 
     // Do not attempt refresh on login or register endpoints
     if (
-      requestUrl.includes("/api/v1/auth/login") ||
-      requestUrl.includes("/api/v1/auth/register")
+      requestUrl.includes(apiEndpoints.auth.login) ||
+      requestUrl.includes(apiEndpoints.auth.register)
     ) {
       return Promise.reject(error);
     }

@@ -6,6 +6,7 @@ applyTo: "src/**/*.{ts,tsx}"
 # TypeScript Guidelines
 
 - Use the path aliases `@core/*`, `@features/*`, `@shared/*` instead of long relative imports (`../../../`).
+- Centralize API endpoints in `@core/api/apiEndpoints` — do not hardcode API URL strings in `*.api.ts` or services.
 - `verbatimModuleSyntax` is on: import types with `import type { Foo } from "..."` (or inline `import { type Foo, bar } from "..."`). Never import a type without the `type` qualifier.
 - `noUnusedLocals` / `noUnusedParameters` are enforced — remove dead imports/variables rather than prefixing with `_` unless the parameter is genuinely required by an interface.
 - Prefer explicit request/response types per feature (`types/<feature>.api.types.ts`) over `any`; keep domain/UI-facing types in a separate `types/<feature>.type.ts`.

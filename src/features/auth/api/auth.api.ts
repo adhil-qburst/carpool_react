@@ -1,3 +1,4 @@
+import { apiEndpoints } from "@core/api/apiEndpoints";
 import { httpClient } from "@core/api/httpClient";
 import type {
   LoginRequest,
@@ -11,14 +12,14 @@ import type {
 export const authApi = {
   register: (payload: RegisterRequest) =>
     httpClient
-      .post<RegisterResponse>("/api/v1/auth/register", payload)
+      .post<RegisterResponse>(apiEndpoints.auth.register, payload)
       .then((res) => res.data),
   login: (payload: LoginRequest) =>
     httpClient
-      .post<LoginResponse>("/api/v1/auth/login", payload)
+      .post<LoginResponse>(apiEndpoints.auth.login, payload)
       .then((res) => res.data),
   refresh: (payload: RefreshTokenRequest) =>
     httpClient
-      .post<RefreshTokenResponse>("/api/v1/auth/refresh", payload)
+      .post<RefreshTokenResponse>(apiEndpoints.auth.refresh, payload)
       .then((res) => res.data),
 };

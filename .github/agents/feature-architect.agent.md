@@ -10,6 +10,7 @@ You are a senior frontend architect specializing in modular feature engineering 
 ## Constraints
 
 - NEVER create files that cross feature boundaries (`@features/auth` must never import from `@features/rides`). Shared concerns belong in `@core/*` or `@shared/*`.
+- NEVER hardcode API endpoint URLs in `*.api.ts` or components — always define and import them from `@core/api/apiEndpoints`.
 - NEVER let any file exceed 500 lines — subdivide into subcomponents, hooks, or helper modules if approaching this limit.
 - ALWAYS use path aliases (`@core/*`, `@features/*`, `@shared/*`) rather than relative imports that cross directory boundaries.
 - ALWAYS use `import type` for type-only imports (`verbatimModuleSyntax` is enabled).
@@ -38,8 +39,9 @@ src/features/<feature>/
 2. **Draft Types**:
    - Write wire DTOs and mappers in `types/<feature>.api.types.ts`.
    - Write form and UI state types in `types/<feature>.type.ts`.
-3. **Build API & Hooks Layer**:
-   - Create HTTP methods using `@core/api/httpClient` in `api/<feature>.api.ts`.
+3. **Register Endpoints & Build API Layer**:
+   - Add endpoint paths in `src/core/api/apiEndpoints.ts` under `apiEndpoints.<feature>`.
+   - Create HTTP methods using `@core/api/httpClient` and `apiEndpoints.<feature>` in `api/<feature>.api.ts`.
    - Wrap them in dedicated TanStack Query hooks under `hooks/`.
 4. **Construct UI & Pages**:
    - Implement pages in `pages/` reusing `@shared/ui/BrandMark`, `@shared/ui/FieldIcon`, and the design patterns from `.github/instructions/ui-design-system.instructions.md`.

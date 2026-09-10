@@ -1,3 +1,4 @@
+import { apiEndpoints } from "@core/api/apiEndpoints";
 import { httpClient } from "@core/api/httpClient";
 import type {
   CreateVehicleRequest,
@@ -8,26 +9,26 @@ import type {
 export const vehiclesApi = {
   list: () =>
     httpClient
-      .get<VehicleResponse[]>("/api/v1/vehicles")
+      .get<VehicleResponse[]>(apiEndpoints.vehicles.list)
       .then((res) => res.data),
 
   getById: (vehicleId: string) =>
     httpClient
-      .get<VehicleResponse>(`/api/v1/vehicles/${vehicleId}`)
+      .get<VehicleResponse>(apiEndpoints.vehicles.byId(vehicleId))
       .then((res) => res.data),
 
   register: (payload: CreateVehicleRequest) =>
     httpClient
-      .post<VehicleResponse>("/api/v1/vehicles", payload)
+      .post<VehicleResponse>(apiEndpoints.vehicles.create, payload)
       .then((res) => res.data),
 
   update: (vehicleId: string, payload: UpdateVehicleRequest) =>
     httpClient
-      .patch<VehicleResponse>(`/api/v1/vehicles/${vehicleId}`, payload)
+      .patch<VehicleResponse>(apiEndpoints.vehicles.update(vehicleId), payload)
       .then((res) => res.data),
 
   delete: (vehicleId: string) =>
     httpClient
-      .delete<void>(`/api/v1/vehicles/${vehicleId}`)
+      .delete<void>(apiEndpoints.vehicles.delete(vehicleId))
       .then((res) => res.data),
 };

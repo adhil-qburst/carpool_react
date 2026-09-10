@@ -7,7 +7,7 @@ TanStack Query for server state, Axios for HTTP, Tailwind CSS v4 (via `@tailwind
 
 ## Architecture
 
-- `src/core/` — app-wide infrastructure: router (`core/router.tsx`), API client (`core/api/httpClient.ts`, `apiError.ts`), auth token storage (`core/auth/tokenStorage.ts`), env config (`core/config/env.ts`), shared utility types (`core/types/`).
+- `src/core/` — app-wide infrastructure: router (`core/router.tsx`), API client (`core/api/httpClient.ts`, `apiEndpoints.ts`, `apiError.ts`), auth token storage (`core/auth/tokenStorage.ts`), env config (`core/config/env.ts`), shared utility types (`core/types/`).
 - `src/features/<name>/` — feature modules, each with its own `api/`, `hooks/`, `pages/`, `types/`, and optionally `modals/`. Features do not import from each other.
 - `src/shared/ui/` — small, stateless, reusable presentational components (icons, brand mark) used across features.
 - Path aliases: `@core/*`, `@features/*`, `@shared/*` (defined in [vite.config.ts](../vite.config.ts) and [tsconfig.app.json](../tsconfig.app.json)). Always import via aliases, never deep relative paths across `core`/`features`/`shared` boundaries.
@@ -22,6 +22,7 @@ TanStack Query for server state, Axios for HTTP, Tailwind CSS v4 (via `@tailwind
 ## Conventions
 
 - New feature work follows the existing `features/auth` structure: API calls in `api/<feature>.api.ts`, request/response types in `types/<feature>.api.types.ts`, domain/UI types in `types/<feature>.type.ts`, TanStack Query hooks in `hooks/use<Name>Mutation.ts` / `use<Name>Query.ts`, screens in `pages/`.
+- Centralize all API endpoint URLs in `@core/api/apiEndpoints` (`src/core/api/apiEndpoints.ts`). Never hardcode URL strings directly in `*.api.ts` or services.
 - Normalize API errors through `toApiError` from `@core/api/apiError` instead of handling Axios errors ad hoc.
 - `verbatimModuleSyntax` is enabled — always use `import type { ... }` for type-only imports.
 - Prefer colocated `*.test.tsx` files next to the component/page they test.
