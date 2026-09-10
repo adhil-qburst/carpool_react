@@ -36,7 +36,9 @@ describe("RegisterVehiclePage", () => {
 
     await user.click(screen.getByRole("button", { name: /register vehicle/i }));
 
-    expect(await screen.findByText("Enter the vehicle make.")).toBeInTheDocument();
+    expect(
+      await screen.findByText("Enter the vehicle make."),
+    ).toBeInTheDocument();
     expect(screen.getByText("Enter the vehicle model.")).toBeInTheDocument();
     expect(
       screen.getByText("Enter the registration number."),

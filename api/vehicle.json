@@ -7,9 +7,7 @@
   "paths": {
     "/api/v1/vehicles": {
       "get": {
-        "tags": [
-          "Vehicles"
-        ],
+        "tags": ["Vehicles"],
         "summary": "List Vehicles",
         "operationId": "list_vehicles_api_v1_vehicles_get",
         "responses": {
@@ -35,9 +33,7 @@
         ]
       },
       "post": {
-        "tags": [
-          "Vehicles"
-        ],
+        "tags": ["Vehicles"],
         "summary": "Register Vehicle",
         "operationId": "register_vehicle_api_v1_vehicles_post",
         "requestBody": {
@@ -81,9 +77,7 @@
     },
     "/api/v1/vehicles/{vehicle_id}": {
       "get": {
-        "tags": [
-          "Vehicles"
-        ],
+        "tags": ["Vehicles"],
         "summary": "Get Vehicle By Id",
         "operationId": "get_vehicle_by_id_api_v1_vehicles__vehicle_id__get",
         "security": [
@@ -127,9 +121,7 @@
         }
       },
       "patch": {
-        "tags": [
-          "Vehicles"
-        ],
+        "tags": ["Vehicles"],
         "summary": "Update Vehicle By Id",
         "operationId": "update_vehicle_by_id_api_v1_vehicles__vehicle_id__patch",
         "security": [
@@ -183,9 +175,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "Vehicles"
-        ],
+        "tags": ["Vehicles"],
         "summary": "Delete Vehicle By Id",
         "operationId": "delete_vehicle_by_id_api_v1_vehicles__vehicle_id__delete",
         "security": [
@@ -222,7 +212,6 @@
         }
       }
     }
-   
   },
   "components": {
     "schemas": {
@@ -254,12 +243,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "make",
-          "model",
-          "registration_number",
-          "total_seats"
-        ],
+        "required": ["make", "model", "registration_number", "total_seats"],
         "title": "CreateVehicleRequest"
       },
       "HTTPValidationError": {
@@ -275,7 +259,7 @@
         "type": "object",
         "title": "HTTPValidationError"
       },
-    "UpdateVehicleRequest": {
+      "UpdateVehicleRequest": {
         "properties": {
           "make": {
             "anyOf": [
@@ -366,11 +350,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "loc",
-          "msg",
-          "type"
-        ],
+        "required": ["loc", "msg", "type"],
         "title": "ValidationError"
       },
       "VehicleResponse": {

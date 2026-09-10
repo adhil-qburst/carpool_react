@@ -77,7 +77,9 @@ describe("VehiclesPage", () => {
       screen.getByText(/Are you sure you want to delete your/i),
     ).toBeInTheDocument();
 
-    const confirmBtn = screen.getByRole("button", { name: /^delete vehicle$/i });
+    const confirmBtn = screen.getByRole("button", {
+      name: /^delete vehicle$/i,
+    });
     await user.click(confirmBtn);
 
     expect(vehiclesApi.delete).toHaveBeenCalledWith("v-1");

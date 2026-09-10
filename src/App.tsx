@@ -11,12 +11,14 @@ setRedirectHandler((to) => {
 
 const queryClient = new QueryClient();
 
-const  App = ()=> {
-  return <StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
-    </QueryClientProvider>
-  </StrictMode>;
-}
+const App = () => {
+  return (
+    <StrictMode>
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+      </QueryClientProvider>
+    </StrictMode>
+  );
+};
 
 export default App;

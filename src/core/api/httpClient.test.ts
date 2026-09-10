@@ -1,8 +1,15 @@
-import { AxiosError, type AxiosResponse, type InternalAxiosRequestConfig } from "axios";
+import {
+  AxiosError,
+  type AxiosResponse,
+  type InternalAxiosRequestConfig,
+} from "axios";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { _resetRefreshState, httpClient, refreshClient } from "./httpClient";
 import { tokenStorage } from "@core/auth/tokenStorage";
-import { resetRedirectHandler, setRedirectHandler } from "@core/auth/authRedirect";
+import {
+  resetRedirectHandler,
+  setRedirectHandler,
+} from "@core/auth/authRedirect";
 
 describe("httpClient refresh token mechanism", () => {
   const redirectMock = vi.fn();
@@ -41,7 +48,9 @@ describe("httpClient refresh token mechanism", () => {
     const res = await httpClient.get("/api/v1/vehicles");
 
     expect(res.data).toEqual({ ok: true });
-    expect(capturedConfig?.headers?.Authorization).toBe("Bearer valid-access-token");
+    expect(capturedConfig?.headers?.Authorization).toBe(
+      "Bearer valid-access-token",
+    );
   });
 
   it("does not attach Authorization header to refresh requests", async () => {
@@ -54,7 +63,11 @@ describe("httpClient refresh token mechanism", () => {
     httpClient.defaults.adapter = async (config) => {
       capturedConfig = config;
       return {
-        data: { access_token: "new-token", token_type: "bearer", expires_in: 900 },
+        data: {
+          access_token: "new-token",
+          token_type: "bearer",
+          expires_in: 900,
+        },
         status: 200,
         statusText: "OK",
         headers: {},
@@ -62,7 +75,9 @@ describe("httpClient refresh token mechanism", () => {
       } as AxiosResponse;
     };
 
-    await httpClient.post("/api/v1/auth/refresh", { refresh_token: "valid-refresh-token" });
+    await httpClient.post("/api/v1/auth/refresh", {
+      refresh_token: "valid-refresh-token",
+    });
 
     expect(capturedConfig?.headers?.Authorization).toBeUndefined();
   });
@@ -196,21 +211,27 @@ describe("httpClient refresh token mechanism", () => {
     };
 
     vi.spyOn(refreshClient, "post").mockRejectedValueOnce(
-      new AxiosError("Unprocessable Entity", "ERR_BAD_REQUEST", undefined, null, {
-        status: 422,
-        statusText: "Unprocessable Entity",
-        headers: {},
-        config: {} as InternalAxiosRequestConfig,
-        data: {
-          detail: [
-            {
-              loc: ["body", "refresh_token"],
-              msg: "Field required",
-              type: "value_error.missing",
-            },
-          ],
-        },
-      } as AxiosResponse),
+      new AxiosError(
+        "Unprocessable Entity",
+        "ERR_BAD_REQUEST",
+        undefined,
+        null,
+        {
+          status: 422,
+          statusText: "Unprocessable Entity",
+          headers: {},
+          config: {} as InternalAxiosRequestConfig,
+          data: {
+            detail: [
+              {
+                loc: ["body", "refresh_token"],
+                msg: "Field required",
+                type: "value_error.missing",
+              },
+            ],
+          },
+        } as AxiosResponse,
+      ),
     );
 
     await expect(httpClient.get("/api/v1/vehicles")).rejects.toThrow();
@@ -283,21 +304,27 @@ describe("httpClient refresh token mechanism", () => {
     });
 
     httpClient.defaults.adapter = async (config) => {
-      throw new AxiosError("Unprocessable Entity", "ERR_BAD_REQUEST", config, null, {
-        status: 422,
-        statusText: "Unprocessable Entity",
-        headers: {},
+      throw new AxiosError(
+        "Unprocessable Entity",
+        "ERR_BAD_REQUEST",
         config,
-        data: {
-          detail: [
-            {
-              loc: ["body", "refresh_token"],
-              msg: "string",
-              type: "string",
-            },
-          ],
-        },
-      } as AxiosResponse);
+        null,
+        {
+          status: 422,
+          statusText: "Unprocessable Entity",
+          headers: {},
+          config,
+          data: {
+            detail: [
+              {
+                loc: ["body", "refresh_token"],
+                msg: "string",
+                type: "string",
+              },
+            ],
+          },
+        } as AxiosResponse,
+      );
     };
 
     await expect(
@@ -323,7 +350,10 @@ describe("httpClient refresh token mechanism", () => {
     const refreshSpy = vi.spyOn(refreshClient, "post");
 
     await expect(
-      httpClient.post("/api/v1/auth/login", { email: "a@b.com", password: "wrong" }),
+      httpClient.post("/api/v1/auth/login", {
+        email: "a@b.com",
+        password: "wrong",
+      }),
     ).rejects.toThrow();
 
     expect(refreshSpy).not.toHaveBeenCalled();

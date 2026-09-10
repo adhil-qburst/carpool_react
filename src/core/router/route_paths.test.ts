@@ -1,13 +1,14 @@
 import { describe, expect, it } from "vitest";
 import route_paths, { ROUTE_PATHS, routePaths } from "./route_paths";
 
-
 describe("route_paths", () => {
   it("defines expected application route paths", () => {
     expect(route_paths.root).toBe("/");
     expect(route_paths.register).toBe("/register");
     expect(route_paths.login).toBe("/login");
-    expect(route_paths.emailVerificationSuccess).toBe("/email-verification-success");
+    expect(route_paths.emailVerificationSuccess).toBe(
+      "/email-verification-success",
+    );
     expect(route_paths.home).toBe("/home");
     expect(route_paths.vehicles).toBe("/vehicles");
     expect(route_paths.vehiclesNew).toBe("/vehicles/new");

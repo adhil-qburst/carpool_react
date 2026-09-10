@@ -20,7 +20,9 @@ function renderEditVehiclePage(vehicleId = "v-1") {
   });
   return render(
     <QueryClientProvider client={queryClient}>
-      <MemoryRouter initialEntries={[route_paths.getVehicleEditPath(vehicleId)]}>
+      <MemoryRouter
+        initialEntries={[route_paths.getVehicleEditPath(vehicleId)]}
+      >
         <Routes>
           <Route
             path={route_paths.vehiclesEdit}

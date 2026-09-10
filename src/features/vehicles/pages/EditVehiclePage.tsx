@@ -31,7 +31,8 @@ function validate(form: CreateVehicleForm): VehicleFormErrors {
   if (!form.registrationNumber.trim()) {
     errors.registrationNumber = "Enter the registration number.";
   } else if (form.registrationNumber.trim().length > 50) {
-    errors.registrationNumber = "Registration number cannot exceed 50 characters.";
+    errors.registrationNumber =
+      "Registration number cannot exceed 50 characters.";
   }
 
   const seats = Number(form.totalSeats);

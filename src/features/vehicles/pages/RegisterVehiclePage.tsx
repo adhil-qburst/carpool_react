@@ -37,7 +37,8 @@ function validate(form: CreateVehicleForm): VehicleFormErrors {
   if (!form.registrationNumber.trim()) {
     errors.registrationNumber = "Enter the registration number.";
   } else if (form.registrationNumber.trim().length > 50) {
-    errors.registrationNumber = "Registration number cannot exceed 50 characters.";
+    errors.registrationNumber =
+      "Registration number cannot exceed 50 characters.";
   }
 
   const seats = Number(form.totalSeats);
@@ -237,7 +238,10 @@ export default function RegisterVehiclePage() {
                     />
                   </div>
                   {errors.make && (
-                    <p id="vehicle-make-error" className="mt-1.5 text-sm text-rose-600">
+                    <p
+                      id="vehicle-make-error"
+                      className="mt-1.5 text-sm text-rose-600"
+                    >
                       {errors.make}
                     </p>
                   )}
@@ -333,7 +337,9 @@ export default function RegisterVehiclePage() {
                       max="50"
                       placeholder="e.g. 4"
                       value={form.totalSeats}
-                      onChange={(e) => updateField("totalSeats", e.target.value)}
+                      onChange={(e) =>
+                        updateField("totalSeats", e.target.value)
+                      }
                       aria-invalid={Boolean(errors.totalSeats)}
                       aria-describedby={
                         errors.totalSeats ? "vehicle-seats-error" : undefined

@@ -54,7 +54,9 @@ const HomePage = () => {
             <div className="grid h-12 w-12 place-items-center rounded-2xl bg-emerald-50 text-emerald-600">
               <FieldIcon type="pin" className="h-6 w-6" />
             </div>
-            <h2 className="mt-5 text-xl font-bold text-slate-950">Find a Ride</h2>
+            <h2 className="mt-5 text-xl font-bold text-slate-950">
+              Find a Ride
+            </h2>
             <p className="mt-2 text-sm leading-6 text-slate-500">
               Discover convenient carpool routes on your commute and share costs
               with coworkers and fellow commuters.

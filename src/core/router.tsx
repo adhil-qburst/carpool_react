@@ -20,9 +20,9 @@ const router = createBrowserRouter([
       if (tokenStorage.getAccessToken() !== null) {
         return redirect(route_paths.home);
       } else {
-        return redirect(route_paths.login)
+        return redirect(route_paths.login);
       }
-    }
+    },
   },
   {
     path: route_paths.register,
@@ -35,7 +35,6 @@ const router = createBrowserRouter([
   {
     path: route_paths.emailVerificationSuccess,
     loader: () => redirect(`${route_paths.login}?verified=true`),
-
   },
   {
     middleware: [authMiddleware],
@@ -56,9 +55,8 @@ const router = createBrowserRouter([
         path: route_paths.vehiclesEdit,
         element: <EditVehiclePage />,
       },
-    ]
+    ],
   },
-
 ]);
 
 export default router;

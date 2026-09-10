@@ -1,11 +1,5 @@
 export type FieldIconType =
-  | "person"
-  | "mail"
-  | "lock"
-  | "car"
-  | "pin"
-  | "tag"
-  | "users";
+  "person" | "mail" | "lock" | "car" | "pin" | "tag" | "users";
 
 const PATHS: Record<FieldIconType, string> = {
   person:

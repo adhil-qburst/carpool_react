@@ -36,7 +36,9 @@ export function _resetRefreshState(): void {
   refreshPromise = null;
 }
 
-export async function requestNewAccessToken(refreshToken: string): Promise<string> {
+export async function requestNewAccessToken(
+  refreshToken: string,
+): Promise<string> {
   if (!refreshPromise) {
     refreshPromise = refreshClient
       .post<RefreshTokenResponseData>("/api/v1/auth/refresh", {
@@ -80,7 +82,8 @@ httpClient.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    const originalRequest = error.config as InternalAxiosRequestConfig | undefined;
+    const originalRequest = error.config as
+      InternalAxiosRequestConfig | undefined;
     const requestUrl = originalRequest?.url ?? "";
 
     // Any error on the refresh endpoint triggers clear & redirect to login
@@ -117,7 +120,10 @@ httpClient.interceptors.response.use(
       try {
         const newAccessToken = await requestNewAccessToken(refreshToken);
         if (originalRequest.headers?.set) {
-          originalRequest.headers.set("Authorization", `Bearer ${newAccessToken}`);
+          originalRequest.headers.set(
+            "Authorization",
+            `Bearer ${newAccessToken}`,
+          );
         } else if (originalRequest.headers) {
           originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
         }

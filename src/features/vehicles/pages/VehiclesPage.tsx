@@ -13,8 +13,15 @@ import type { VehicleResponse } from "../types/vehicles.api.types";
 import { route_paths } from "@core/router/route_paths";
 
 export default function VehiclesPage() {
-  const { data: vehicles, isLoading, isError, error, refetch } = useVehiclesQuery();
-  const [vehicleToDelete, setVehicleToDelete] = useState<VehicleResponse | null>(null);
+  const {
+    data: vehicles,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useVehiclesQuery();
+  const [vehicleToDelete, setVehicleToDelete] =
+    useState<VehicleResponse | null>(null);
   const [feedback, setFeedback] = useState<string | null>(null);
   const [deleteError, setDeleteError] = useState<string | null>(null);
 
@@ -67,7 +74,7 @@ export default function VehiclesPage() {
           <div className="relative grid grid-cols-2 gap-3">
             <div className="rounded-2xl border border-white/10 bg-white/[.07] p-4">
               <p className="text-2xl font-semibold">
-                {isLoading ? "–" : vehicles?.length ?? 0}
+                {isLoading ? "–" : (vehicles?.length ?? 0)}
               </p>
               <p className="mt-1 text-xs text-slate-400">Registered vehicles</p>
             </div>
@@ -162,7 +169,9 @@ export default function VehiclesPage() {
                   Could not load your vehicles
                 </p>
                 <p className="mt-1 text-sm text-rose-600">
-                  {error instanceof Error ? error.message : "An error occurred."}
+                  {error instanceof Error
+                    ? error.message
+                    : "An error occurred."}
                 </p>
                 <button
                   type="button"
@@ -183,8 +192,8 @@ export default function VehiclesPage() {
                   No vehicles registered yet
                 </h2>
                 <p className="mt-2 max-w-sm text-sm leading-6 text-slate-500">
-                  You haven&rsquo;t added any vehicles. Add a car to your garage to start
-                  offering rides on your commute.
+                  You haven&rsquo;t added any vehicles. Add a car to your garage
+                  to start offering rides on your commute.
                 </p>
                 <Link
                   to={route_paths.vehiclesNew}
@@ -219,12 +228,16 @@ export default function VehiclesPage() {
                       </div>
 
                       <div className="mt-4 flex items-center gap-2 text-sm text-slate-600">
-                        <FieldIcon type="users" className="h-4 w-4 text-slate-400" />
+                        <FieldIcon
+                          type="users"
+                          className="h-4 w-4 text-slate-400"
+                        />
                         <span>
                           <strong className="font-semibold text-slate-900">
                             {vehicle.total_seats}
                           </strong>{" "}
-                          available {vehicle.total_seats === 1 ? "seat" : "seats"}
+                          available{" "}
+                          {vehicle.total_seats === 1 ? "seat" : "seats"}
                         </span>
                       </div>
                     </div>

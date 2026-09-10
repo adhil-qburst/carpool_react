@@ -34,6 +34,7 @@ Never import across `src/features/*` boundaries — shared code goes in `@core` 
 7. **Style**: use Tailwind utility classes directly; keep the existing slate/indigo/rose color language.
 
 ## Checklist before finishing
+
 - [ ] All type-only imports use `import type { ... }`
 - [ ] No relative imports cross `core`/`features`/`shared` boundaries — use `@core/*`, `@features/*`, `@shared/*`
 - [ ] Route added to `src/core/router.tsx`

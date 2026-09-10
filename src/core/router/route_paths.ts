@@ -28,7 +28,8 @@ export const route_paths = {
   VEHICLES_EDIT: "/vehicles/:vehicleId/edit",
 
   // Helper for parameterized routes
-  getVehicleEditPath: (vehicleId: string | number) => `/vehicles/${vehicleId}/edit`,
+  getVehicleEditPath: (vehicleId: string | number) =>
+    `/vehicles/${vehicleId}/edit`,
 } as const;
 
 export type RoutePath = (typeof route_paths)[keyof typeof route_paths];

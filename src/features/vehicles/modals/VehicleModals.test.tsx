@@ -69,7 +69,9 @@ describe("Vehicle Modals", () => {
     expect(screen.getByText("Vehicle registered!")).toBeInTheDocument();
     expect(screen.getByText("Your vehicle is ready.")).toBeInTheDocument();
 
-    await user.click(screen.getByRole("button", { name: /view all vehicles/i }));
+    await user.click(
+      screen.getByRole("button", { name: /view all vehicles/i }),
+    );
     expect(handleClose).toHaveBeenCalledTimes(1);
   });
 });
