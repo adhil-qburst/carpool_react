@@ -1,6 +1,7 @@
 import { Link } from "react-router";
 import BrandMark from "@shared/ui/BrandMark";
 import FieldIcon from "@shared/ui/FieldIcon";
+import { route_paths } from "@core/router/route_paths";
 
 const HomePage = () => {
   return (
@@ -15,13 +16,13 @@ const HomePage = () => {
           </div>
           <nav className="flex items-center gap-4">
             <Link
-              to="/vehicles"
+              to={route_paths.vehicles}
               className="text-sm font-semibold text-slate-700 hover:text-indigo-600 transition"
             >
               My Vehicles
             </Link>
             <Link
-              to="/login"
+              to={route_paths.login}
               className="rounded-xl bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-200 transition"
             >
               Sign out
@@ -42,7 +43,7 @@ const HomePage = () => {
               new cars for upcoming carpool trips.
             </p>
             <Link
-              to="/vehicles"
+              to={route_paths.vehicles}
               className="mt-6 inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-600/25 transition hover:bg-indigo-700"
             >
               Manage vehicles →

@@ -10,6 +10,7 @@ import { useVehiclesQuery } from "../hooks/useVehiclesQuery";
 import { useDeleteVehicleMutation } from "../hooks/useDeleteVehicleMutation";
 import DeleteVehicleModal from "../modals/DeleteVehicleModal";
 import type { VehicleResponse } from "../types/vehicles.api.types";
+import { route_paths } from "@core/router/route_paths";
 
 export default function VehiclesPage() {
   const { data: vehicles, isLoading, isError, error, refetch } = useVehiclesQuery();
@@ -88,7 +89,7 @@ export default function VehiclesPage() {
               </span>
             </div>
             <Link
-              to="/home"
+              to={route_paths.home}
               className="text-sm font-semibold text-indigo-600 hover:text-indigo-700"
             >
               Dashboard
@@ -109,7 +110,7 @@ export default function VehiclesPage() {
             </div>
 
             <Link
-              to="/vehicles/new"
+              to={route_paths.vehiclesNew}
               className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-600/25 transition hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-200"
             >
               <PlusIcon className="h-4 w-4" />
@@ -186,7 +187,7 @@ export default function VehiclesPage() {
                   offering rides on your commute.
                 </p>
                 <Link
-                  to="/vehicles/new"
+                  to={route_paths.vehiclesNew}
                   className="mt-6 inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-600/25 transition hover:bg-indigo-700"
                 >
                   <PlusIcon className="h-4 w-4" />
@@ -230,7 +231,7 @@ export default function VehiclesPage() {
 
                     <div className="mt-6 flex items-center justify-end gap-2 border-t border-slate-100 pt-4">
                       <Link
-                        to={`/vehicles/${vehicle.id}/edit`}
+                        to={route_paths.getVehicleEditPath(vehicle.id)}
                         aria-label={`Edit ${vehicle.make} ${vehicle.model}`}
                         className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-200"
                       >

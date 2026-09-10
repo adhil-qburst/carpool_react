@@ -8,6 +8,7 @@ import BrandMark from "@shared/ui/BrandMark";
 import { emailPattern } from "@core/types/util.types";
 import { useRegisterMutation } from "../hooks/useRegisterMutation";
 import { toApiError } from "@core/api/apiError";
+import { route_paths } from "@core/router/route_paths";
 
 const ROLES: { value: Role; description: string; icon: "car" | "pin" }[] = [
   { value: "Driver", description: "Offer seats on your route", icon: "car" },
@@ -136,7 +137,7 @@ const RegisterPage = () => {
                 </span>
               </div>
               <Link
-                to="/login"
+                to={route_paths.login}
                 className="text-sm font-semibold text-indigo-600 hover:text-indigo-700"
               >
                 Sign in
@@ -349,7 +350,7 @@ const RegisterPage = () => {
             <p className="mt-7 text-center text-sm text-slate-500">
               Already have an account?{" "}
               <Link
-                to="/login"
+                to={route_paths.login}
                 className="font-semibold text-indigo-600 hover:text-indigo-700"
               >
                 Sign in

@@ -12,6 +12,7 @@ import type {
   VehicleFormErrors,
 } from "../types/vehicles.type";
 import type { VehicleResponse } from "../types/vehicles.api.types";
+import { route_paths } from "@core/router/route_paths";
 
 function validate(form: CreateVehicleForm): VehicleFormErrors {
   const errors: VehicleFormErrors = {};
@@ -153,7 +154,7 @@ export default function EditVehiclePage() {
 
   function handleSuccessModalClose() {
     setUpdatedVehicle(null);
-    navigate("/vehicles");
+    navigate(route_paths.vehicles);
   }
 
   const fieldClass = (hasError?: boolean) =>
@@ -208,7 +209,7 @@ export default function EditVehiclePage() {
                 </span>
               </div>
               <Link
-                to="/vehicles"
+                to={route_paths.vehicles}
                 className="text-sm font-semibold text-indigo-600 hover:text-indigo-700"
               >
                 Back to vehicles
@@ -218,7 +219,7 @@ export default function EditVehiclePage() {
             <div className="mt-8 lg:mt-0">
               <div className="hidden lg:block">
                 <Link
-                  to="/vehicles"
+                  to={route_paths.vehicles}
                   className="inline-flex items-center text-sm font-semibold text-indigo-600 transition hover:text-indigo-700"
                 >
                   ← Back to vehicles
@@ -252,7 +253,7 @@ export default function EditVehiclePage() {
                       : "Vehicle could not be retrieved."}
                   </p>
                   <Link
-                    to="/vehicles"
+                    to={route_paths.vehicles}
                     className="mt-4 inline-block rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow hover:bg-indigo-700"
                   >
                     Return to vehicles

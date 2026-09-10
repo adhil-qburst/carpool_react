@@ -7,46 +7,58 @@ import VehiclesPage from "@features/vehicles/pages/VehiclesPage";
 import RegisterVehiclePage from "@features/vehicles/pages/RegisterVehiclePage";
 import EditVehiclePage from "@features/vehicles/pages/EditVehiclePage";
 import { tokenStorage } from "./auth/tokenStorage";
+import { route_paths } from "./router/route_paths";
+import { authMiddleware } from "./router/middlewares/auth.middleware";
+
+export { route_paths, routePaths, ROUTE_PATHS } from "./router/route_paths";
+export type { RoutePath } from "./router/route_paths";
 
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: route_paths.root,
     loader: () => {
-      if (tokenStorage.getAccessToken() !== null){
-        return redirect("/home");
-      }else{
-        return redirect("/login")
+      if (tokenStorage.getAccessToken() !== null) {
+        return redirect(route_paths.home);
+      } else {
+        return redirect(route_paths.login)
       }
     }
   },
   {
-    path: "/register",
+    path: route_paths.register,
     element: <RegisterPage />,
   },
   {
-    path: "/login",
+    path: route_paths.login,
     element: <LoginPage />,
   },
   {
-    path: "/email-verification-success",
-    loader: () => redirect("/login?verified=true"),
+    path: route_paths.emailVerificationSuccess,
+    loader: () => redirect(`${route_paths.login}?verified=true`),
+
   },
   {
-    path: "/home",
-    element: <HomePage />,
+    middleware: [authMiddleware],
+    children: [
+      {
+        path: route_paths.home,
+        element: <HomePage />,
+      },
+      {
+        path: route_paths.vehicles,
+        element: <VehiclesPage />,
+      },
+      {
+        path: route_paths.vehiclesNew,
+        element: <RegisterVehiclePage />,
+      },
+      {
+        path: route_paths.vehiclesEdit,
+        element: <EditVehiclePage />,
+      },
+    ]
   },
-  {
-    path: "/vehicles",
-    element: <VehiclesPage />,
-  },
-  {
-    path: "/vehicles/new",
-    element: <RegisterVehiclePage />,
-  },
-  {
-    path: "/vehicles/:vehicleId/edit",
-    element: <EditVehiclePage />,
-  },
+
 ]);
 
 export default router;

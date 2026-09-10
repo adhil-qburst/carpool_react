@@ -9,6 +9,7 @@ import { emailPattern } from "@core/types/util.types";
 import type { LoginForm } from "../types/auth.type";
 import { useLoginMutation } from "../hooks/useLoginMutation";
 import { toApiError } from "@core/api/apiError";
+import { route_paths } from "@core/router/route_paths";
 
 type LoginErrors = Partial<Record<keyof LoginForm, string>>;
 
@@ -25,7 +26,10 @@ const LoginPage = () => {
 
   useEffect(() => {
     if (!isLoginSuccessful) return;
-    const timer = setTimeout(() => navigate("/home", { replace: true }), 2000);
+    const timer = setTimeout(
+      () => navigate(route_paths.home, { replace: true }),
+      2000,
+    );
     return () => clearTimeout(timer);
   }, [isLoginSuccessful, navigate]);
 
@@ -107,7 +111,7 @@ const LoginPage = () => {
                 </span>
               </div>
               <Link
-                to="/register"
+                to={route_paths.register}
                 className="text-sm font-semibold text-indigo-600 hover:text-indigo-700"
               >
                 Create account
@@ -246,7 +250,7 @@ const LoginPage = () => {
             <p className="mt-7 text-center text-sm text-slate-500">
               New to Carpool?{" "}
               <Link
-                to="/register"
+                to={route_paths.register}
                 className="font-semibold text-indigo-600 hover:text-indigo-700"
               >
                 Create an account

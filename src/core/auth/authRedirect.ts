@@ -1,3 +1,5 @@
+import { route_paths } from "@core/router/route_paths";
+
 type RedirectHandler = (to: string) => void;
 
 const defaultHandler: RedirectHandler = (to: string) => {
@@ -23,5 +25,5 @@ export function resetRedirectHandler(): void {
 }
 
 export function redirectToLogin(): void {
-  redirectHandler("/login");
+  redirectHandler(route_paths.login);
 }

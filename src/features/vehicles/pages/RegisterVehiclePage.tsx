@@ -11,6 +11,7 @@ import type {
   VehicleFormErrors,
 } from "../types/vehicles.type";
 import type { VehicleResponse } from "../types/vehicles.api.types";
+import { route_paths } from "@core/router/route_paths";
 
 const initialForm: CreateVehicleForm = {
   make: "",
@@ -119,7 +120,7 @@ export default function RegisterVehiclePage() {
 
   function handleSuccessModalClose() {
     setRegisteredVehicle(null);
-    navigate("/vehicles");
+    navigate(route_paths.vehicles);
   }
 
   const fieldClass = (hasError?: boolean) =>
@@ -174,7 +175,7 @@ export default function RegisterVehiclePage() {
                 </span>
               </div>
               <Link
-                to="/vehicles"
+                to={route_paths.vehicles}
                 className="text-sm font-semibold text-indigo-600 hover:text-indigo-700"
               >
                 Back to vehicles
@@ -184,7 +185,7 @@ export default function RegisterVehiclePage() {
             <div className="mt-8 lg:mt-0">
               <div className="hidden lg:block">
                 <Link
-                  to="/vehicles"
+                  to={route_paths.vehicles}
                   className="inline-flex items-center text-sm font-semibold text-indigo-600 transition hover:text-indigo-700"
                 >
                   ← Back to vehicles

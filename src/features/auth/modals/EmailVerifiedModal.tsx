@@ -1,4 +1,5 @@
 import { Link } from "react-router";
+import { route_paths } from "@core/router/route_paths";
 
 type EmailVerifiedModalProps = {
   onClose: () => void;
@@ -31,7 +32,7 @@ const EmailVerifiedModal = ({ onClose }: EmailVerifiedModalProps) => {
           carpooling.
         </p>
         <Link
-          to="/login"
+          to={route_paths.login}
           onClick={onClose}
           className="mt-7 block w-full rounded-xl bg-indigo-600 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-600/25 transition hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-200"
         >

@@ -5,6 +5,7 @@ import { MemoryRouter, Route, Routes } from "react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import EditVehiclePage from "./EditVehiclePage";
 import { vehiclesApi } from "../api/vehicles.api";
+import { route_paths } from "@core/router/route_paths";
 
 vi.mock("../api/vehicles.api", () => ({
   vehiclesApi: {
@@ -19,10 +20,10 @@ function renderEditVehiclePage(vehicleId = "v-1") {
   });
   return render(
     <QueryClientProvider client={queryClient}>
-      <MemoryRouter initialEntries={[`/vehicles/${vehicleId}/edit`]}>
+      <MemoryRouter initialEntries={[route_paths.getVehicleEditPath(vehicleId)]}>
         <Routes>
           <Route
-            path="/vehicles/:vehicleId/edit"
+            path={route_paths.vehiclesEdit}
             element={<EditVehiclePage />}
           />
         </Routes>
