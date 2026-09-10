@@ -16,8 +16,12 @@ describe("apiEndpoints", () => {
     expect(apiEndpoints.vehicles.list).toBe("/api/v1/vehicles");
     expect(apiEndpoints.vehicles.create).toBe("/api/v1/vehicles");
     expect(apiEndpoints.vehicles.byId("v-123")).toBe("/api/v1/vehicles/v-123");
-    expect(apiEndpoints.vehicles.update("v-123")).toBe("/api/v1/vehicles/v-123");
-    expect(apiEndpoints.vehicles.delete("v-123")).toBe("/api/v1/vehicles/v-123");
+    expect(apiEndpoints.vehicles.update("v-123")).toBe(
+      "/api/v1/vehicles/v-123",
+    );
+    expect(apiEndpoints.vehicles.delete("v-123")).toBe(
+      "/api/v1/vehicles/v-123",
+    );
   });
 
   it("exports matching aliases", () => {
