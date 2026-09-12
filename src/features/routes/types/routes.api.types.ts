@@ -1,0 +1,72 @@
+import type {
+  CreateRouteForm,
+  CreateRouteStopForm,
+  Route,
+  RouteStop,
+} from "./routes.type";
+
+export interface CreateRouteStopRequest {
+  stop_id: string;
+  sequence: number;
+}
+
+export interface CreateRouteRequest {
+  name: string;
+  source_id: string;
+  dest_id: string;
+  stops?: CreateRouteStopRequest[] | null;
+}
+
+export interface RouteStopResponse {
+  id: string;
+  route_id: string;
+  location_id: string;
+  sequence: number;
+}
+
+export interface RouteResponse {
+  id: string;
+  name: string;
+  driver_id: string;
+  route_stops: RouteStopResponse[];
+}
+
+export function toCreateRouteRequest(
+  form: CreateRouteForm | CreateRouteRequest,
+): CreateRouteRequest {
+  if ("source_id" in form) {
+    return form;
+  }
+
+  const stops = form.stops
+    ? form.stops.map((stop: CreateRouteStopForm) => ({
+        stop_id: stop.stopId.trim(),
+        sequence: Number(stop.sequence),
+      }))
+    : null;
+
+  return {
+    name: form.name.trim(),
+    source_id: form.sourceId.trim(),
+    dest_id: form.destId.trim(),
+    stops,
+  };
+}
+
+export function toRouteStop(dto: RouteStopResponse): RouteStop {
+  return {
+    id: dto.id,
+    routeId: dto.route_id,
+    locationId: dto.location_id,
+    sequence: dto.sequence,
+  };
+}
+
+export function toRoute(dto: RouteResponse): Route {
+  return {
+    id: dto.id,
+    name: dto.name,
+    driverId: dto.driver_id,
+    routeStops: (dto.route_stops ?? []).map(toRouteStop),
+  };
+}

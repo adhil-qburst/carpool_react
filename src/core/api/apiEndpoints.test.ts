@@ -29,6 +29,10 @@ describe("apiEndpoints", () => {
     expect(apiEndpoints.locations.create).toBe("/api/v1/locations");
   });
 
+  it("defines routes endpoints correctly", () => {
+    expect(apiEndpoints.routes.create).toBe("/api/v1/routes");
+  });
+
   it("exports matching aliases", () => {
     expect(API_ENDPOINTS).toBe(apiEndpoints);
     expect(api_endpoints).toBe(apiEndpoints);

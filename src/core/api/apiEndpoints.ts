@@ -18,6 +18,9 @@ export const apiEndpoints = {
     list: "/api/v1/locations",
     create: "/api/v1/locations",
   },
+  routes: {
+    create: "/api/v1/routes",
+  },
 } as const;
 
 export type ApiEndpoints = typeof apiEndpoints;
