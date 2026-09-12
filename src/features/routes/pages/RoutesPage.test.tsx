@@ -9,6 +9,7 @@ import { routesApi } from "../api/routes.api";
 vi.mock("../api/routes.api", () => ({
   routesApi: {
     list: vi.fn(),
+    delete: vi.fn(),
   },
 }));
 
@@ -28,6 +29,7 @@ function renderRoutesPage() {
 describe("RoutesPage", () => {
   beforeEach(() => {
     vi.mocked(routesApi.list).mockReset();
+    vi.mocked(routesApi.delete).mockReset();
   });
 
   it("shows empty state when no routes are configured", async () => {
@@ -108,7 +110,7 @@ describe("RoutesPage", () => {
     expect(editLink).toHaveAttribute("href", "/routes/route-1/edit");
   });
 
-  it("triggers TODO notice when clicking Delete button", async () => {
+  it("opens confirmation modal when clicking Delete button and allows cancelling", async () => {
     vi.mocked(routesApi.list).mockResolvedValueOnce({
       items: [
         {
@@ -132,7 +134,97 @@ describe("RoutesPage", () => {
     await user.click(deleteBtn);
 
     expect(
-      await screen.findByText(/Deleting "Airport Run" is coming soon/i),
+      screen.getByRole("heading", { name: "Delete route?" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/Are you sure you want to delete your route/i),
+    ).toBeInTheDocument();
+
+    const cancelBtn = screen.getByRole("button", { name: /cancel/i });
+    await user.click(cancelBtn);
+
+    expect(
+      screen.queryByRole("heading", { name: "Delete route?" }),
+    ).not.toBeInTheDocument();
+    expect(routesApi.delete).not.toHaveBeenCalled();
+  });
+
+  it("successfully deletes a route and displays feedback banner", async () => {
+    vi.mocked(routesApi.list).mockResolvedValueOnce({
+      items: [
+        {
+          id: "route-1",
+          driver_id: "driver-1",
+          name: "Airport Run",
+          route_stops: [],
+        },
+      ],
+      page: 1,
+      limit: 10,
+      total: 1,
+    });
+    vi.mocked(routesApi.delete).mockResolvedValueOnce(undefined);
+
+    const user = userEvent.setup();
+    renderRoutesPage();
+
+    const deleteBtn = await screen.findByRole("button", {
+      name: /delete airport run/i,
+    });
+    await user.click(deleteBtn);
+
+    const confirmBtn = screen.getByRole("button", { name: /^delete route$/i });
+    await user.click(confirmBtn);
+
+    expect(routesApi.delete).toHaveBeenCalledWith("route-1");
+    expect(
+      await screen.findByText(/"Airport Run" has been successfully deleted\./i),
+    ).toBeInTheDocument();
+
+    const dismissBtn = screen.getByRole("button", { name: /dismiss/i });
+    await user.click(dismissBtn);
+
+    expect(
+      screen.queryByText(/"Airport Run" has been successfully deleted\./i),
+    ).not.toBeInTheDocument();
+  });
+
+  it("handles delete errors by displaying an alert banner", async () => {
+    vi.mocked(routesApi.list).mockResolvedValueOnce({
+      items: [
+        {
+          id: "route-1",
+          driver_id: "driver-1",
+          name: "Airport Run",
+          route_stops: [],
+        },
+      ],
+      page: 1,
+      limit: 10,
+      total: 1,
+    });
+    vi.mocked(routesApi.delete).mockRejectedValueOnce({
+      isAxiosError: true,
+      response: {
+        status: 400,
+        data: { detail: "Cannot delete route with active rides" },
+      },
+    });
+
+    const user = userEvent.setup();
+    renderRoutesPage();
+
+    const deleteBtn = await screen.findByRole("button", {
+      name: /delete airport run/i,
+    });
+    await user.click(deleteBtn);
+
+    const confirmBtn = screen.getByRole("button", { name: /^delete route$/i });
+    await user.click(confirmBtn);
+
+    expect(routesApi.delete).toHaveBeenCalledWith("route-1");
+    expect(
+      await screen.findByText("Cannot delete route with active rides"),
     ).toBeInTheDocument();
   });
 

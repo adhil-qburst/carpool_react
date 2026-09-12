@@ -5,15 +5,20 @@ import FieldIcon from "@shared/ui/FieldIcon";
 import PlusIcon from "@shared/ui/PlusIcon";
 import PencilIcon from "@shared/ui/PencilIcon";
 import TrashIcon from "@shared/ui/TrashIcon";
+import { toApiError } from "@core/api/apiError";
 import { route_paths } from "@core/router/route_paths";
 import { useRoutesQuery } from "../hooks/useRoutesQuery";
+import { useDeleteRouteMutation } from "../hooks/useDeleteRouteMutation";
+import DeleteRouteModal from "../modals/DeleteRouteModal";
 import type { RouteResponse } from "../types/routes.api.types";
 
 const PAGE_LIMIT = 10;
 
 export default function RoutesPage() {
   const [page, setPage] = useState(1);
-  const [notice, setNotice] = useState<string | null>(null);
+  const [routeToDelete, setRouteToDelete] = useState<RouteResponse | null>(null);
+  const [feedback, setFeedback] = useState<string | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   const {
     data: routesData,
@@ -22,6 +27,8 @@ export default function RoutesPage() {
     error,
     refetch,
   } = useRoutesQuery({ page, limit: PAGE_LIMIT });
+
+  const deleteMutation = useDeleteRouteMutation();
 
   const routes = routesData?.items ?? [];
   const totalRoutes = routesData?.total ?? 0;
@@ -32,12 +39,22 @@ export default function RoutesPage() {
     0,
   );
 
+  function handleDeleteConfirm() {
+    if (!routeToDelete) return;
 
-  // TODO: Connect to delete route API when delete route endpoint is ready
-  function handleDeleteClick(route: RouteResponse) {
-    setNotice(
-      `Deleting "${route.name}" is coming soon. The route delete API is currently in progress.`,
-    );
+    setDeleteError(null);
+    deleteMutation.mutate(routeToDelete.id, {
+      onSuccess: () => {
+        const deletedName = routeToDelete.name;
+        setRouteToDelete(null);
+        setFeedback(`"${deletedName}" has been successfully deleted.`);
+      },
+      onError: (err) => {
+        const apiError = toApiError(err);
+        setRouteToDelete(null);
+        setDeleteError(apiError.message);
+      },
+    });
   }
 
   return (
@@ -120,19 +137,28 @@ export default function RoutesPage() {
             </Link>
           </div>
 
-          {notice && (
+          {feedback && (
             <div
               role="status"
-              className="mt-6 flex items-center justify-between rounded-xl bg-indigo-50 px-4 py-3 text-sm text-indigo-900 border border-indigo-100"
+              className="mt-6 flex items-center justify-between rounded-xl bg-emerald-50 px-4 py-3 text-sm text-emerald-800 border border-emerald-100"
             >
-              <span>{notice}</span>
+              <span>{feedback}</span>
               <button
                 type="button"
-                onClick={() => setNotice(null)}
-                className="ml-3 font-semibold text-indigo-700 hover:underline"
+                onClick={() => setFeedback(null)}
+                className="ml-3 font-semibold text-emerald-700 hover:underline cursor-pointer"
               >
                 Dismiss
               </button>
+            </div>
+          )}
+
+          {deleteError && (
+            <div
+              role="alert"
+              className="mt-6 rounded-xl bg-rose-50 px-4 py-3 text-sm text-rose-600 border border-rose-100"
+            >
+              {deleteError}
             </div>
           )}
 
@@ -264,10 +290,9 @@ export default function RoutesPage() {
                             Edit
                           </Link>
 
-                          {/* TODO: Connect to delete route API when backend route deletion endpoint is ready */}
                           <button
                             type="button"
-                            onClick={() => handleDeleteClick(route)}
+                            onClick={() => setRouteToDelete(route)}
                             aria-label={`Delete ${route.name}`}
                             className="inline-flex items-center gap-1.5 rounded-lg border border-rose-200 px-3 py-1.5 text-xs font-semibold text-rose-600 transition hover:bg-rose-50 focus:outline-none focus:ring-2 focus:ring-rose-200 cursor-pointer"
                           >
@@ -314,6 +339,15 @@ export default function RoutesPage() {
           </div>
         </section>
       </div>
+
+      {routeToDelete && (
+        <DeleteRouteModal
+          route={routeToDelete}
+          isDeleting={deleteMutation.isPending}
+          onConfirm={handleDeleteConfirm}
+          onClose={() => setRouteToDelete(null)}
+        />
+      )}
     </main>
   );
 }

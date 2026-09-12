@@ -34,4 +34,9 @@ export const routesApi = {
     httpClient
       .patch<RouteResponse>(apiEndpoints.routes.patch(routeId), payload)
       .then((res) => res.data),
+
+  delete: (routeId: string): Promise<void> =>
+    httpClient
+      .delete<void>(apiEndpoints.routes.delete(routeId))
+      .then((res) => res.data),
 };

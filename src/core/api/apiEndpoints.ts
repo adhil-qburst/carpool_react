@@ -24,6 +24,7 @@ export const apiEndpoints = {
     byId: (routeId: string | number) => `/api/v1/routes/${routeId}`,
     update: (routeId: string | number) => `/api/v1/routes/${routeId}`,
     patch: (routeId: string | number) => `/api/v1/routes/${routeId}`,
+    delete: (routeId: string | number) => `/api/v1/routes/${routeId}`,
   },
 } as const;
 

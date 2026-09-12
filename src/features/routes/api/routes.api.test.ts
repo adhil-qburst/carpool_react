@@ -12,6 +12,7 @@ vi.mock("@core/api/httpClient", () => ({
     post: vi.fn(),
     put: vi.fn(),
     patch: vi.fn(),
+    delete: vi.fn(),
   },
 }));
 
@@ -131,6 +132,17 @@ describe("routesApi", () => {
       payload,
     );
     expect(result).toEqual(mockRouteResponse);
+  });
+
+  it("deletes a route by deleting /api/v1/routes/:route_id", async () => {
+    vi.mocked(httpClient.delete).mockResolvedValueOnce({
+      data: undefined,
+    });
+
+    const result = await routesApi.delete("route-123");
+
+    expect(httpClient.delete).toHaveBeenCalledWith("/api/v1/routes/route-123");
+    expect(result).toBeUndefined();
   });
 });
 
