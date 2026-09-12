@@ -42,11 +42,23 @@ export interface UpdateRouteRequest {
   stops?: CreateRouteStopRequest[] | null;
 }
 
+export interface LocationResponse {
+  id: string;
+  name: string;
+  city: string;
+  lat?: string | number | null;
+  lng?: string | number | null;
+  status?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
 export interface RouteStopResponse {
   id: string;
   route_id: string;
   location_id: string;
   sequence: number;
+  location?: LocationResponse | null;
 }
 
 export interface RouteResponse {
@@ -111,6 +123,16 @@ export function toRouteStop(dto: RouteStopResponse): RouteStop {
     routeId: dto.route_id,
     locationId: dto.location_id,
     sequence: dto.sequence,
+    location: dto.location
+      ? {
+          id: dto.location.id,
+          name: dto.location.name,
+          city: dto.location.city,
+          lat: dto.location.lat,
+          lng: dto.location.lng,
+          status: dto.location.status,
+        }
+      : null,
   };
 }
 

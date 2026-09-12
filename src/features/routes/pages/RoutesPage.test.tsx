@@ -50,7 +50,7 @@ describe("RoutesPage", () => {
     ).toBeInTheDocument();
   });
 
-  it("renders list of routes with stop sequences", async () => {
+  it("renders list of routes with stop sequences and location name and city", async () => {
     vi.mocked(routesApi.list).mockResolvedValueOnce({
       items: [
         {
@@ -63,12 +63,22 @@ describe("RoutesPage", () => {
               route_id: "route-1",
               location_id: "loc-1",
               sequence: 0,
+              location: {
+                id: "loc-1",
+                name: "Downtown Station",
+                city: "Seattle",
+              },
             },
             {
               id: "stop-2",
               route_id: "route-1",
               location_id: "loc-2",
               sequence: 1,
+              location: {
+                id: "loc-2",
+                name: "Airport Terminal",
+                city: "Seattle",
+              },
             },
           ],
         },
@@ -83,7 +93,37 @@ describe("RoutesPage", () => {
     expect(await screen.findByText("Morning Commute")).toBeInTheDocument();
     expect(screen.getByText("2 stops")).toBeInTheDocument();
     expect(screen.getByText("Start")).toBeInTheDocument();
+    expect(screen.getByText("(Downtown Station, Seattle)")).toBeInTheDocument();
     expect(screen.getByText("End")).toBeInTheDocument();
+    expect(screen.getByText("(Airport Terminal, Seattle)")).toBeInTheDocument();
+  });
+
+  it("renders fallback location id when location details are not provided", async () => {
+    vi.mocked(routesApi.list).mockResolvedValueOnce({
+      items: [
+        {
+          id: "route-1",
+          driver_id: "driver-1",
+          name: "Raw Route",
+          route_stops: [
+            {
+              id: "stop-1",
+              route_id: "route-1",
+              location_id: "loc-raw-1",
+              sequence: 0,
+            },
+          ],
+        },
+      ],
+      page: 1,
+      limit: 10,
+      total: 1,
+    });
+
+    renderRoutesPage();
+
+    expect(await screen.findByText("Raw Route")).toBeInTheDocument();
+    expect(screen.getByText("(loc-raw-1)")).toBeInTheDocument();
   });
 
   it("renders Edit link pointing to the route edit page", async () => {

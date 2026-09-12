@@ -13,7 +13,7 @@ import type { RouteStopDraft } from "../components/RouteStopsEditor";
 import RouteSuccessModal from "../modals/RouteSuccessModal";
 import { useRoutesQuery } from "../hooks/useRoutesQuery";
 import { useUpdateRouteMutation } from "../hooks/useUpdateRouteMutation";
-import type { RouteResponse } from "../types/routes.api.types";
+import type { RouteResponse, RouteStopResponse } from "../types/routes.api.types";
 
 interface FormErrors {
   name?: string;
@@ -71,11 +71,18 @@ export default function EditRoutePage() {
     );
 
     const locationsList = locationsData?.items ?? [];
-    const findLoc = (locId: string): SelectedLocation => {
-      const found = locationsList.find((l) => l.id === locId);
+    const resolveLoc = (stop: RouteStopResponse): SelectedLocation => {
+      if (stop.location) {
+        return {
+          id: stop.location.id || stop.location_id,
+          name: stop.location.name,
+          city: stop.location.city,
+        };
+      }
+      const found = locationsList.find((l) => l.id === stop.location_id);
       return {
-        id: locId,
-        name: found ? found.name : locId,
+        id: stop.location_id,
+        name: found ? found.name : stop.location_id,
         city: found ? found.city : "",
       };
     };
@@ -83,15 +90,15 @@ export default function EditRoutePage() {
     if (sortedStops.length >= 2) {
       const srcStop = sortedStops[0];
       const dstStop = sortedStops[sortedStops.length - 1];
-      setSource((prev) => (prev && prev.name !== prev.id ? prev : findLoc(srcStop.location_id)));
-      setDestination((prev) => (prev && prev.name !== prev.id ? prev : findLoc(dstStop.location_id)));
+      setSource((prev) => (prev && prev.name !== prev.id ? prev : resolveLoc(srcStop)));
+      setDestination((prev) => (prev && prev.name !== prev.id ? prev : resolveLoc(dstStop)));
 
       const intermediate = sortedStops.slice(1, -1);
       setStops((prev) =>
         prev.length > 0 && prev.some((s) => s.name !== s.locationId)
           ? prev
           : intermediate.map((stop) => {
-              const loc = findLoc(stop.location_id);
+              const loc = resolveLoc(stop);
               return {
                 clientId: stop.id,
                 locationId: stop.location_id,
@@ -101,7 +108,7 @@ export default function EditRoutePage() {
             }),
       );
     } else if (sortedStops.length === 1) {
-      setSource((prev) => (prev && prev.name !== prev.id ? prev : findLoc(sortedStops[0].location_id)));
+      setSource((prev) => (prev && prev.name !== prev.id ? prev : resolveLoc(sortedStops[0])));
     }
   }, [route, locationsData, isInitialized]);
 
@@ -365,7 +372,7 @@ export default function EditRoutePage() {
               </label>
               <div className="relative mt-2">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
-                  <FieldIcon type="text" className="h-5 w-5" />
+                  <FieldIcon type="tag" className="h-5 w-5" />
                 </div>
                 <input
                   id="route-name"

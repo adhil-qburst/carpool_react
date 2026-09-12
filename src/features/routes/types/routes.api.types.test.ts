@@ -85,7 +85,7 @@ describe("routes.api.types mappers", () => {
   });
 
   describe("toRouteStop", () => {
-    it("maps RouteStopResponse to camelCase RouteStop", () => {
+    it("maps RouteStopResponse to camelCase RouteStop with null location when not provided", () => {
       const dto: RouteStopResponse = {
         id: "stop-1",
         route_id: "route-1",
@@ -100,12 +100,47 @@ describe("routes.api.types mappers", () => {
         routeId: "route-1",
         locationId: "loc-1",
         sequence: 0,
+        location: null,
+      });
+    });
+
+    it("maps RouteStopResponse to camelCase RouteStop with nested location details", () => {
+      const dto: RouteStopResponse = {
+        id: "stop-1",
+        route_id: "route-1",
+        location_id: "loc-1",
+        sequence: 0,
+        location: {
+          id: "loc-1",
+          name: "Downtown Station",
+          city: "Metro City",
+          lat: "12.9716",
+          lng: "77.5946",
+          status: "active",
+        },
+      };
+
+      const result = toRouteStop(dto);
+
+      expect(result).toEqual({
+        id: "stop-1",
+        routeId: "route-1",
+        locationId: "loc-1",
+        sequence: 0,
+        location: {
+          id: "loc-1",
+          name: "Downtown Station",
+          city: "Metro City",
+          lat: "12.9716",
+          lng: "77.5946",
+          status: "active",
+        },
       });
     });
   });
 
   describe("toRoute", () => {
-    it("maps RouteResponse to camelCase Route including route stops", () => {
+    it("maps RouteResponse to camelCase Route including route stops with location", () => {
       const dto: RouteResponse = {
         id: "route-100",
         name: "North Corridor",
@@ -116,12 +151,22 @@ describe("routes.api.types mappers", () => {
             route_id: "route-100",
             location_id: "loc-src",
             sequence: 0,
+            location: {
+              id: "loc-src",
+              name: "Central Terminal",
+              city: "Metro City",
+            },
           },
           {
             id: "stop-2",
             route_id: "route-100",
             location_id: "loc-dest",
             sequence: 1,
+            location: {
+              id: "loc-dest",
+              name: "Tech Park",
+              city: "Metro City",
+            },
           },
         ],
       };
@@ -138,12 +183,28 @@ describe("routes.api.types mappers", () => {
             routeId: "route-100",
             locationId: "loc-src",
             sequence: 0,
+            location: {
+              id: "loc-src",
+              name: "Central Terminal",
+              city: "Metro City",
+              lat: undefined,
+              lng: undefined,
+              status: undefined,
+            },
           },
           {
             id: "stop-2",
             routeId: "route-100",
             locationId: "loc-dest",
             sequence: 1,
+            location: {
+              id: "loc-dest",
+              name: "Tech Park",
+              city: "Metro City",
+              lat: undefined,
+              lng: undefined,
+              status: undefined,
+            },
           },
         ],
       });
@@ -255,6 +316,7 @@ describe("routes.api.types mappers", () => {
                 routeId: "route-1",
                 locationId: "loc-1",
                 sequence: 0,
+                location: null,
               },
             ],
           },
@@ -262,6 +324,65 @@ describe("routes.api.types mappers", () => {
         page: 2,
         limit: 10,
         total: 25,
+      });
+    });
+
+    it("transforms PaginatedRoutesResponse with populated stop locations", () => {
+      const dto: PaginatedRoutesResponse = {
+        items: [
+          {
+            id: "route-1",
+            name: "Route A",
+            driver_id: "driver-1",
+            route_stops: [
+              {
+                id: "stop-1",
+                route_id: "route-1",
+                location_id: "loc-1",
+                sequence: 0,
+                location: {
+                  id: "loc-1",
+                  name: "Central Hub",
+                  city: "Metro City",
+                },
+              },
+            ],
+          },
+        ],
+        page: 1,
+        limit: 10,
+        total: 1,
+      };
+
+      const result = toPaginatedRoutes(dto);
+
+      expect(result).toEqual({
+        items: [
+          {
+            id: "route-1",
+            name: "Route A",
+            driverId: "driver-1",
+            routeStops: [
+              {
+                id: "stop-1",
+                routeId: "route-1",
+                locationId: "loc-1",
+                sequence: 0,
+                location: {
+                  id: "loc-1",
+                  name: "Central Hub",
+                  city: "Metro City",
+                  lat: undefined,
+                  lng: undefined,
+                  status: undefined,
+                },
+              },
+            ],
+          },
+        ],
+        page: 1,
+        limit: 10,
+        total: 1,
       });
     });
 

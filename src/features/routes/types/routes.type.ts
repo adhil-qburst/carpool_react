@@ -1,8 +1,18 @@
+export interface RouteLocation {
+  id: string;
+  name: string;
+  city: string;
+  lat?: string | number | null;
+  lng?: string | number | null;
+  status?: string;
+}
+
 export interface RouteStop {
   id: string;
   routeId: string;
   locationId: string;
   sequence: number;
+  location?: RouteLocation | null;
 }
 
 export interface Route {

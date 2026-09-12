@@ -67,18 +67,33 @@ const mockRoute: RouteResponse = {
       route_id: "route-1",
       location_id: "loc-src",
       sequence: 0,
+      location: {
+        id: "loc-src",
+        name: "Downtown Terminal",
+        city: "Metro City",
+      },
     },
     {
       id: "stop-mid",
       route_id: "route-1",
       location_id: "loc-mid",
       sequence: 1,
+      location: {
+        id: "loc-mid",
+        name: "Central Mall Stop",
+        city: "Metro City",
+      },
     },
     {
       id: "stop-dest",
       route_id: "route-1",
       location_id: "loc-dest",
       sequence: 2,
+      location: {
+        id: "loc-dest",
+        name: "Tech Innovation Hub",
+        city: "Metro City",
+      },
     },
   ],
 };
