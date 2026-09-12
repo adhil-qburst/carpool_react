@@ -9,6 +9,8 @@ import type {
 vi.mock("@core/api/httpClient", () => ({
   httpClient: {
     post: vi.fn(),
+    put: vi.fn(),
+    patch: vi.fn(),
   },
 }));
 
@@ -54,4 +56,47 @@ describe("routesApi", () => {
     expect(httpClient.post).toHaveBeenCalledWith("/api/v1/routes", payload);
     expect(result).toEqual(mockRouteResponse);
   });
+
+  it("updates a route by putting to /api/v1/routes/:route_id", async () => {
+    const payload = {
+      name: "Updated Commute",
+      source_id: "loc-src",
+      dest_id: "loc-dest",
+      stops: null,
+    };
+
+    vi.mocked(httpClient.put).mockResolvedValueOnce({
+      data: mockRouteResponse,
+    });
+
+    const result = await routesApi.update("route-123", payload);
+
+    expect(httpClient.put).toHaveBeenCalledWith(
+      "/api/v1/routes/route-123",
+      payload,
+    );
+    expect(result).toEqual(mockRouteResponse);
+  });
+
+  it("patches a route by patching to /api/v1/routes/:route_id", async () => {
+    const payload = {
+      name: "Patched Commute",
+      source_id: "loc-src",
+      dest_id: "loc-dest",
+      stops: null,
+    };
+
+    vi.mocked(httpClient.patch).mockResolvedValueOnce({
+      data: mockRouteResponse,
+    });
+
+    const result = await routesApi.patch("route-123", payload);
+
+    expect(httpClient.patch).toHaveBeenCalledWith(
+      "/api/v1/routes/route-123",
+      payload,
+    );
+    expect(result).toEqual(mockRouteResponse);
+  });
 });
+

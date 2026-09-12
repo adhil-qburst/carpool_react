@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { createBrowserRouter, redirect } from "react-router";
 
 import LoginPage from "@features/auth/pages/LoginPage";

@@ -27,3 +27,20 @@ export interface CreateRouteForm {
 export type RouteFormErrors = Partial<
   Record<keyof CreateRouteForm, string>
 >;
+
+export interface UpdateRouteStopForm {
+  stopId?: string | null;
+  locationId?: string | null;
+  sequence: number | string;
+}
+
+export interface UpdateRouteForm {
+  name: string;
+  sourceId: string;
+  destId: string;
+  stops?: UpdateRouteStopForm[] | null;
+}
+
+export type UpdateRouteFormErrors = Partial<
+  Record<keyof UpdateRouteForm, string>
+>;

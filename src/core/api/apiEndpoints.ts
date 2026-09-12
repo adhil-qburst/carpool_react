@@ -20,6 +20,8 @@ export const apiEndpoints = {
   },
   routes: {
     create: "/api/v1/routes",
+    byId: (routeId: string | number) => `/api/v1/routes/${routeId}`,
+    update: (routeId: string | number) => `/api/v1/routes/${routeId}`,
   },
 } as const;
 

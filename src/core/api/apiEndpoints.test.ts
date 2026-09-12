@@ -31,6 +31,8 @@ describe("apiEndpoints", () => {
 
   it("defines routes endpoints correctly", () => {
     expect(apiEndpoints.routes.create).toBe("/api/v1/routes");
+    expect(apiEndpoints.routes.byId("r-123")).toBe("/api/v1/routes/r-123");
+    expect(apiEndpoints.routes.update("r-123")).toBe("/api/v1/routes/r-123");
   });
 
   it("exports matching aliases", () => {

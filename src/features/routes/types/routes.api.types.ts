@@ -3,14 +3,26 @@ import type {
   CreateRouteStopForm,
   Route,
   RouteStop,
+  UpdateRouteForm,
+  UpdateRouteStopForm,
 } from "./routes.type";
 
 export interface CreateRouteStopRequest {
-  stop_id: string;
+  stop_id?: string | null;
+  location_id?: string | null;
   sequence: number;
 }
 
+export type UpdateRouteStopRequest = CreateRouteStopRequest;
+
 export interface CreateRouteRequest {
+  name: string;
+  source_id: string;
+  dest_id: string;
+  stops?: CreateRouteStopRequest[] | null;
+}
+
+export interface UpdateRouteRequest {
   name: string;
   source_id: string;
   dest_id: string;
@@ -43,6 +55,33 @@ export function toCreateRouteRequest(
         stop_id: stop.stopId.trim(),
         sequence: Number(stop.sequence),
       }))
+    : null;
+
+  return {
+    name: form.name.trim(),
+    source_id: form.sourceId.trim(),
+    dest_id: form.destId.trim(),
+    stops,
+  };
+}
+
+export function toUpdateRouteRequest(
+  form: UpdateRouteForm | UpdateRouteRequest,
+): UpdateRouteRequest {
+  if ("source_id" in form) {
+    return form;
+  }
+
+  const stops = form.stops
+    ? form.stops.map((stop: UpdateRouteStopForm) => {
+        const stopId = stop.stopId ? stop.stopId.trim() : null;
+        const locationId = stop.locationId ? stop.locationId.trim() : null;
+        return {
+          ...(stopId ? { stop_id: stopId } : {}),
+          ...(locationId ? { location_id: locationId } : {}),
+          sequence: Number(stop.sequence),
+        };
+      })
     : null;
 
   return {

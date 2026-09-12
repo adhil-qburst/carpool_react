@@ -3,13 +3,15 @@ import {
   toCreateRouteRequest,
   toRoute,
   toRouteStop,
+  toUpdateRouteRequest,
 } from "./routes.api.types";
 import type {
   CreateRouteRequest,
   RouteResponse,
   RouteStopResponse,
+  UpdateRouteRequest,
 } from "./routes.api.types";
-import type { CreateRouteForm } from "./routes.type";
+import type { CreateRouteForm, UpdateRouteForm } from "./routes.type";
 
 describe("routes.api.types mappers", () => {
   describe("toCreateRouteRequest", () => {
@@ -145,4 +147,73 @@ describe("routes.api.types mappers", () => {
       });
     });
   });
+
+  describe("toUpdateRouteRequest", () => {
+    it("transforms UpdateRouteForm to UpdateRouteRequest with trimmed strings and formatted stops", () => {
+      const form: UpdateRouteForm = {
+        name: "  Updated Commute  ",
+        sourceId: "  loc-src-1  ",
+        destId: "  loc-dst-2  ",
+        stops: [
+          {
+            stopId: "  loc-stop-1  ",
+            sequence: "1",
+          },
+          {
+            locationId: "  loc-stop-2  ",
+            sequence: 2,
+          },
+        ],
+      };
+
+      const result = toUpdateRouteRequest(form);
+
+      expect(result).toEqual({
+        name: "Updated Commute",
+        source_id: "loc-src-1",
+        dest_id: "loc-dst-2",
+        stops: [
+          {
+            stop_id: "loc-stop-1",
+            sequence: 1,
+          },
+          {
+            location_id: "loc-stop-2",
+            sequence: 2,
+          },
+        ],
+      });
+    });
+
+    it("handles null or undefined stops in UpdateRouteForm", () => {
+      const form: UpdateRouteForm = {
+        name: "Direct Route",
+        sourceId: "loc-src",
+        destId: "loc-dst",
+      };
+
+      const result = toUpdateRouteRequest(form);
+
+      expect(result).toEqual({
+        name: "Direct Route",
+        source_id: "loc-src",
+        dest_id: "loc-dst",
+        stops: null,
+      });
+    });
+
+    it("returns the object directly when passed a raw UpdateRouteRequest", () => {
+      const rawRequest: UpdateRouteRequest = {
+        name: "Express Route",
+        source_id: "loc-1",
+        dest_id: "loc-2",
+        stops: [{ stop_id: "loc-3", sequence: 1 }],
+      };
+
+      const result = toUpdateRouteRequest(rawRequest);
+
+      expect(result).toBe(rawRequest);
+    });
+  });
 });
+
