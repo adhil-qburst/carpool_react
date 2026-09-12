@@ -1,30 +1,32 @@
+export const API_PREFIX = "/api/v1";
+
 export const apiEndpoints = {
   auth: {
-    register: "/api/v1/auth/register",
-    login: "/api/v1/auth/login",
-    refresh: "/api/v1/auth/refresh",
+    register: `${API_PREFIX}/auth/register`,
+    login: `${API_PREFIX}/auth/login`,
+    refresh: `${API_PREFIX}/auth/refresh`,
   },
   users: {
-    currentUser: "/api/v1/current_user",
+    currentUser: `${API_PREFIX}/current_user`,
   },
   vehicles: {
-    list: "/api/v1/vehicles",
-    create: "/api/v1/vehicles",
-    byId: (vehicleId: string | number) => `/api/v1/vehicles/${vehicleId}`,
-    update: (vehicleId: string | number) => `/api/v1/vehicles/${vehicleId}`,
-    delete: (vehicleId: string | number) => `/api/v1/vehicles/${vehicleId}`,
+    list: `${API_PREFIX}/vehicles`,
+    create: `${API_PREFIX}/vehicles`,
+    byId: (vehicleId: string | number) => `${API_PREFIX}/vehicles/${vehicleId}`,
+    update: (vehicleId: string | number) => `${API_PREFIX}/vehicles/${vehicleId}`,
+    delete: (vehicleId: string | number) => `${API_PREFIX}/vehicles/${vehicleId}`,
   },
   locations: {
-    list: "/api/v1/locations",
-    create: "/api/v1/locations",
+    list: `${API_PREFIX}/locations`,
+    create: `${API_PREFIX}/locations`,
   },
   routes: {
-    list: "/api/v1/routes",
-    create: "/api/v1/routes",
-    byId: (routeId: string | number) => `/api/v1/routes/${routeId}`,
-    update: (routeId: string | number) => `/api/v1/routes/${routeId}`,
-    patch: (routeId: string | number) => `/api/v1/routes/${routeId}`,
-    delete: (routeId: string | number) => `/api/v1/routes/${routeId}`,
+    list: `${API_PREFIX}/routes`,
+    create: `${API_PREFIX}/routes`,
+    byId: (routeId: string | number) => `${API_PREFIX}/routes/${routeId}`,
+    update: (routeId: string | number) => `${API_PREFIX}/routes/${routeId}`,
+    patch: (routeId: string | number) => `${API_PREFIX}/routes/${routeId}`,
+    delete: (routeId: string | number) => `${API_PREFIX}/routes/${routeId}`,
   },
 } as const;
 
@@ -33,3 +35,4 @@ export type ApiEndpoints = typeof apiEndpoints;
 export const API_ENDPOINTS = apiEndpoints;
 export const api_endpoints = apiEndpoints;
 export default apiEndpoints;
+

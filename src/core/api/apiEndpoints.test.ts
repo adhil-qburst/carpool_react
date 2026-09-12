@@ -1,7 +1,16 @@
 import { describe, expect, it } from "vitest";
-import { apiEndpoints, API_ENDPOINTS, api_endpoints } from "./apiEndpoints";
+import {
+  apiEndpoints,
+  API_ENDPOINTS,
+  api_endpoints,
+  API_PREFIX,
+} from "./apiEndpoints";
 
 describe("apiEndpoints", () => {
+  it("defines API_PREFIX as /api/v1", () => {
+    expect(API_PREFIX).toBe("/api/v1");
+  });
+
   it("defines auth endpoints correctly", () => {
     expect(apiEndpoints.auth.register).toBe("/api/v1/auth/register");
     expect(apiEndpoints.auth.login).toBe("/api/v1/auth/login");
