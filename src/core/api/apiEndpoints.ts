@@ -14,6 +14,10 @@ export const apiEndpoints = {
     update: (vehicleId: string | number) => `/api/v1/vehicles/${vehicleId}`,
     delete: (vehicleId: string | number) => `/api/v1/vehicles/${vehicleId}`,
   },
+  locations: {
+    list: "/api/v1/locations",
+    create: "/api/v1/locations",
+  },
 } as const;
 
 export type ApiEndpoints = typeof apiEndpoints;
