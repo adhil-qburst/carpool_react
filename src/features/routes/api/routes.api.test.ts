@@ -8,6 +8,7 @@ import type {
 
 vi.mock("@core/api/httpClient", () => ({
   httpClient: {
+    get: vi.fn(),
     post: vi.fn(),
     put: vi.fn(),
     patch: vi.fn(),
@@ -34,9 +35,42 @@ const mockRouteResponse: RouteResponse = {
   ],
 };
 
+const mockPaginatedRoutes = {
+  items: [mockRouteResponse],
+  page: 1,
+  limit: 20,
+  total: 1,
+};
+
 describe("routesApi", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+  });
+
+  it("lists routes by getting /api/v1/routes with params", async () => {
+    vi.mocked(httpClient.get).mockResolvedValueOnce({
+      data: mockPaginatedRoutes,
+    });
+
+    const result = await routesApi.list({ page: 2, limit: 10 });
+
+    expect(httpClient.get).toHaveBeenCalledWith("/api/v1/routes", {
+      params: { page: 2, limit: 10 },
+    });
+    expect(result).toEqual(mockPaginatedRoutes);
+  });
+
+  it("lists routes with default undefined params", async () => {
+    vi.mocked(httpClient.get).mockResolvedValueOnce({
+      data: mockPaginatedRoutes,
+    });
+
+    const result = await routesApi.list();
+
+    expect(httpClient.get).toHaveBeenCalledWith("/api/v1/routes", {
+      params: undefined,
+    });
+    expect(result).toEqual(mockPaginatedRoutes);
   });
 
   it("creates a new route by posting to /api/v1/routes", async () => {

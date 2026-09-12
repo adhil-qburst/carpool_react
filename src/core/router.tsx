@@ -8,6 +8,8 @@ import VehiclesPage from "@features/vehicles/pages/VehiclesPage";
 import RegisterVehiclePage from "@features/vehicles/pages/RegisterVehiclePage";
 import EditVehiclePage from "@features/vehicles/pages/EditVehiclePage";
 import CreateRoutePage from "@features/routes/pages/CreateRoutePage";
+import EditRoutePage from "@features/routes/pages/EditRoutePage";
+import RoutesPage from "@features/routes/pages/RoutesPage";
 import { tokenStorage } from "./auth/tokenStorage";
 import { route_paths } from "./router/route_paths";
 import { authMiddleware } from "./router/middlewares/auth.middleware";
@@ -58,8 +60,16 @@ const router = createBrowserRouter([
         element: <EditVehiclePage />,
       },
       {
+        path: route_paths.routes,
+        element: <RoutesPage />,
+      },
+      {
         path: route_paths.routesNew,
         element: <CreateRoutePage />,
+      },
+      {
+        path: route_paths.routesEdit,
+        element: <EditRoutePage />,
       },
     ],
   },

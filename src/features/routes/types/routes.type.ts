@@ -44,3 +44,10 @@ export interface UpdateRouteForm {
 export type UpdateRouteFormErrors = Partial<
   Record<keyof UpdateRouteForm, string>
 >;
+
+export interface PaginatedRoutes {
+  items: Route[];
+  page: number;
+  limit: number;
+  total: number;
+}

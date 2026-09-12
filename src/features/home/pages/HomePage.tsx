@@ -16,10 +16,10 @@ const HomePage = () => {
           </div>
           <nav className="flex items-center gap-4">
             <Link
-              to={route_paths.routesNew}
+              to={route_paths.routes}
               className="text-sm font-semibold text-slate-700 hover:text-indigo-600 transition"
             >
-              Create Route
+              My Routes
             </Link>
             <Link
               to={route_paths.vehicles}
@@ -49,10 +49,10 @@ const HomePage = () => {
               pickup stops.
             </p>
             <Link
-              to={route_paths.routesNew}
+              to={route_paths.routes}
               className="mt-6 inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-600/25 transition hover:bg-indigo-700"
             >
-              Create route →
+              View routes →
             </Link>
           </div>
 

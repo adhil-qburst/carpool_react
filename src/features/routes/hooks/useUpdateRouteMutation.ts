@@ -8,18 +8,23 @@ import type {
 import type { UpdateRouteForm } from "../types/routes.type";
 import { routeKeys } from "./routeKeys";
 
+export type RouteUpdateMethod = "patch" | "put";
+
 export interface UpdateRouteVariables {
   routeId: string;
   payload: UpdateRouteForm | UpdateRouteRequest;
+  method?: RouteUpdateMethod;
 }
 
 export function useUpdateRouteMutation() {
   const queryClient = useQueryClient();
 
   return useMutation<RouteResponse, Error, UpdateRouteVariables>({
-    mutationFn: ({ routeId, payload }) => {
+    mutationFn: ({ routeId, payload, method = "patch" }) => {
       const requestPayload = toUpdateRouteRequest(payload);
-      return routesApi.update(routeId, requestPayload);
+      return method === "put"
+        ? routesApi.update(routeId, requestPayload)
+        : routesApi.patch(routeId, requestPayload);
     },
     onSuccess: (updatedRoute) => {
       queryClient.invalidateQueries({ queryKey: routeKeys.lists() });
@@ -29,3 +34,5 @@ export function useUpdateRouteMutation() {
     },
   });
 }
+
+export const usePatchRouteMutation = useUpdateRouteMutation;

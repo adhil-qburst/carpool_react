@@ -1,12 +1,14 @@
 import { describe, expect, it } from "vitest";
 import {
   toCreateRouteRequest,
+  toPaginatedRoutes,
   toRoute,
   toRouteStop,
   toUpdateRouteRequest,
 } from "./routes.api.types";
 import type {
   CreateRouteRequest,
+  PaginatedRoutesResponse,
   RouteResponse,
   RouteStopResponse,
   UpdateRouteRequest,
@@ -213,6 +215,72 @@ describe("routes.api.types mappers", () => {
       const result = toUpdateRouteRequest(rawRequest);
 
       expect(result).toBe(rawRequest);
+    });
+  });
+
+  describe("toPaginatedRoutes", () => {
+    it("transforms PaginatedRoutesResponse to PaginatedRoutes domain object", () => {
+      const dto: PaginatedRoutesResponse = {
+        items: [
+          {
+            id: "route-1",
+            name: "Route A",
+            driver_id: "driver-1",
+            route_stops: [
+              {
+                id: "stop-1",
+                route_id: "route-1",
+                location_id: "loc-1",
+                sequence: 0,
+              },
+            ],
+          },
+        ],
+        page: 2,
+        limit: 10,
+        total: 25,
+      };
+
+      const result = toPaginatedRoutes(dto);
+
+      expect(result).toEqual({
+        items: [
+          {
+            id: "route-1",
+            name: "Route A",
+            driverId: "driver-1",
+            routeStops: [
+              {
+                id: "stop-1",
+                routeId: "route-1",
+                locationId: "loc-1",
+                sequence: 0,
+              },
+            ],
+          },
+        ],
+        page: 2,
+        limit: 10,
+        total: 25,
+      });
+    });
+
+    it("handles empty items array gracefully", () => {
+      const dto: PaginatedRoutesResponse = {
+        items: [],
+        page: 1,
+        limit: 20,
+        total: 0,
+      };
+
+      const result = toPaginatedRoutes(dto);
+
+      expect(result).toEqual({
+        items: [],
+        page: 1,
+        limit: 20,
+        total: 0,
+      });
     });
   });
 });

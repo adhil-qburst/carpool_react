@@ -1,11 +1,24 @@
 import type {
   CreateRouteForm,
   CreateRouteStopForm,
+  PaginatedRoutes,
   Route,
   RouteStop,
   UpdateRouteForm,
   UpdateRouteStopForm,
 } from "./routes.type";
+
+export interface PaginatedRoutesResponse {
+  items: RouteResponse[];
+  page: number;
+  limit: number;
+  total: number;
+}
+
+export interface ListRoutesQueryParams {
+  page?: number;
+  limit?: number;
+}
 
 export interface CreateRouteStopRequest {
   stop_id?: string | null;
@@ -107,5 +120,14 @@ export function toRoute(dto: RouteResponse): Route {
     name: dto.name,
     driverId: dto.driver_id,
     routeStops: (dto.route_stops ?? []).map(toRouteStop),
+  };
+}
+
+export function toPaginatedRoutes(dto: PaginatedRoutesResponse): PaginatedRoutes {
+  return {
+    items: (dto.items ?? []).map(toRoute),
+    page: dto.page,
+    limit: dto.limit,
+    total: dto.total,
   };
 }

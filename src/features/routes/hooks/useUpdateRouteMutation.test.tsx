@@ -14,6 +14,7 @@ import type { UpdateRouteForm } from "../types/routes.type";
 vi.mock("../api/routes.api", () => ({
   routesApi: {
     update: vi.fn(),
+    patch: vi.fn(),
   },
 }));
 
@@ -59,10 +60,11 @@ function createWrapper() {
 describe("useUpdateRouteMutation", () => {
   beforeEach(() => {
     vi.mocked(routesApi.update).mockReset();
+    vi.mocked(routesApi.patch).mockReset();
   });
 
-  it("submits an UpdateRouteForm, transforms fields and invalidates routes list and detail queries", async () => {
-    vi.mocked(routesApi.update).mockResolvedValueOnce(mockRouteResponse);
+  it("submits an UpdateRouteForm via default patch method, transforms fields and invalidates queries", async () => {
+    vi.mocked(routesApi.patch).mockResolvedValueOnce(mockRouteResponse);
     const { queryClient, wrapper } = createWrapper();
     const invalidateSpy = vi.spyOn(queryClient, "invalidateQueries");
 
@@ -89,7 +91,7 @@ describe("useUpdateRouteMutation", () => {
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-    expect(routesApi.update).toHaveBeenCalledWith("route-1", {
+    expect(routesApi.patch).toHaveBeenCalledWith("route-1", {
       name: "Updated Commute",
       source_id: "loc-src",
       dest_id: "loc-dest",
@@ -100,6 +102,7 @@ describe("useUpdateRouteMutation", () => {
         },
       ],
     });
+    expect(routesApi.update).not.toHaveBeenCalled();
     expect(invalidateSpy).toHaveBeenCalledWith({
       queryKey: routeKeys.lists(),
     });
@@ -108,8 +111,40 @@ describe("useUpdateRouteMutation", () => {
     });
   });
 
-  it("submits a raw UpdateRouteRequest directly", async () => {
+  it("submits an UpdateRouteForm via explicit put method", async () => {
     vi.mocked(routesApi.update).mockResolvedValueOnce(mockRouteResponse);
+    const { wrapper } = createWrapper();
+
+    const { result } = renderHook(() => useUpdateRouteMutation(), {
+      wrapper,
+    });
+
+    const form: UpdateRouteForm = {
+      name: "Put Commute",
+      sourceId: "loc-src",
+      destId: "loc-dest",
+      stops: null,
+    };
+
+    result.current.mutate({
+      routeId: "route-1",
+      payload: form,
+      method: "put",
+    });
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+    expect(routesApi.update).toHaveBeenCalledWith("route-1", {
+      name: "Put Commute",
+      source_id: "loc-src",
+      dest_id: "loc-dest",
+      stops: null,
+    });
+    expect(routesApi.patch).not.toHaveBeenCalled();
+  });
+
+  it("submits a raw UpdateRouteRequest directly", async () => {
+    vi.mocked(routesApi.patch).mockResolvedValueOnce(mockRouteResponse);
     const { wrapper } = createWrapper();
 
     const { result } = renderHook(() => useUpdateRouteMutation(), {
@@ -130,7 +165,7 @@ describe("useUpdateRouteMutation", () => {
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-    expect(routesApi.update).toHaveBeenCalledWith("route-1", {
+    expect(routesApi.patch).toHaveBeenCalledWith("route-1", {
       name: "Direct Route",
       source_id: "loc-src",
       dest_id: "loc-dest",
@@ -140,7 +175,7 @@ describe("useUpdateRouteMutation", () => {
 
   it("handles route update errors", async () => {
     const error = new Error("Route update failed");
-    vi.mocked(routesApi.update).mockRejectedValueOnce(error);
+    vi.mocked(routesApi.patch).mockRejectedValueOnce(error);
     const { wrapper } = createWrapper();
 
     const { result } = renderHook(() => useUpdateRouteMutation(), {

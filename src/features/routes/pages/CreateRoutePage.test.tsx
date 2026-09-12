@@ -123,7 +123,7 @@ describe("CreateRoutePage", () => {
     // Pick source location
     const sourceInput = screen.getByPlaceholderText(/search start location/i);
     await user.click(sourceInput);
-    const sourceOption = await screen.findByRole("button", {
+    const sourceOption = await screen.findByRole("option", {
       name: /downtown terminal/i,
     });
     await user.click(sourceOption);
@@ -131,7 +131,7 @@ describe("CreateRoutePage", () => {
     // Pick destination location
     const destInput = screen.getByPlaceholderText(/search destination location/i);
     await user.click(destInput);
-    const destOption = await screen.findByRole("button", {
+    const destOption = await screen.findByRole("option", {
       name: /tech innovation hub/i,
     });
     await user.click(destOption);
@@ -170,19 +170,19 @@ describe("CreateRoutePage", () => {
 
     // Select Source
     await user.click(screen.getByPlaceholderText(/search start location/i));
-    await user.click(await screen.findByRole("button", { name: /downtown terminal/i }));
+    await user.click(await screen.findByRole("option", { name: /downtown terminal/i }));
 
     // Add Stop
     await user.click(screen.getByRole("button", { name: /add stop/i }));
-    expect(screen.getByText(/stop 1/i)).toBeInTheDocument();
+    expect(screen.getByText(/^stop 1$/i)).toBeInTheDocument();
 
     // Pick Stop 1 location
     await user.click(screen.getByPlaceholderText(/search stop location/i));
-    await user.click(await screen.findByRole("button", { name: /central mall stop/i }));
+    await user.click(await screen.findByRole("option", { name: /central mall stop/i }));
 
     // Select Destination
     await user.click(screen.getByPlaceholderText(/search destination location/i));
-    await user.click(await screen.findByRole("button", { name: /tech innovation hub/i }));
+    await user.click(await screen.findByRole("option", { name: /tech innovation hub/i }));
 
     // Submit
     await user.click(screen.getByRole("button", { name: /create route/i }));
@@ -210,11 +210,11 @@ describe("CreateRoutePage", () => {
 
     // Select same location for source and destination
     await user.click(screen.getByPlaceholderText(/search start location/i));
-    await user.click(await screen.findByRole("button", { name: /downtown terminal/i }));
+    await user.click(await screen.findByRole("option", { name: /downtown terminal/i }));
 
     // Notice in destination dropdown that "Downtown Terminal" is disabled
     await user.click(screen.getByPlaceholderText(/search destination location/i));
-    const disabledOption = await screen.findByRole("button", {
+    const disabledOption = await screen.findByRole("option", {
       name: /downtown terminal/i,
     });
     expect(disabledOption).toBeDisabled();
@@ -230,8 +230,8 @@ describe("CreateRoutePage", () => {
     // Add Stop 2
     await user.click(screen.getByRole("button", { name: /add stop/i }));
 
-    expect(screen.getByText(/stop 1/i)).toBeInTheDocument();
-    expect(screen.getByText(/stop 2/i)).toBeInTheDocument();
+    expect(screen.getByText(/^stop 1$/i)).toBeInTheDocument();
+    expect(screen.getByText(/^stop 2$/i)).toBeInTheDocument();
 
     // Move Stop 1 down
     const moveDownBtn = screen.getByRole("button", { name: /move stop 1 down/i });

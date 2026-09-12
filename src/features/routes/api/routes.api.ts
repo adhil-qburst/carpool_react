@@ -2,11 +2,18 @@ import { apiEndpoints } from "@core/api/apiEndpoints";
 import { httpClient } from "@core/api/httpClient";
 import type {
   CreateRouteRequest,
+  ListRoutesQueryParams,
+  PaginatedRoutesResponse,
   RouteResponse,
   UpdateRouteRequest,
 } from "../types/routes.api.types";
 
 export const routesApi = {
+  list: (params?: ListRoutesQueryParams): Promise<PaginatedRoutesResponse> =>
+    httpClient
+      .get<PaginatedRoutesResponse>(apiEndpoints.routes.list, { params })
+      .then((res) => res.data),
+
   create: (payload: CreateRouteRequest): Promise<RouteResponse> =>
     httpClient
       .post<RouteResponse>(apiEndpoints.routes.create, payload)
@@ -25,6 +32,6 @@ export const routesApi = {
     payload: UpdateRouteRequest,
   ): Promise<RouteResponse> =>
     httpClient
-      .patch<RouteResponse>(apiEndpoints.routes.update(routeId), payload)
+      .patch<RouteResponse>(apiEndpoints.routes.patch(routeId), payload)
       .then((res) => res.data),
 };

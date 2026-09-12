@@ -19,9 +19,11 @@ export const apiEndpoints = {
     create: "/api/v1/locations",
   },
   routes: {
+    list: "/api/v1/routes",
     create: "/api/v1/routes",
     byId: (routeId: string | number) => `/api/v1/routes/${routeId}`,
     update: (routeId: string | number) => `/api/v1/routes/${routeId}`,
+    patch: (routeId: string | number) => `/api/v1/routes/${routeId}`,
   },
 } as const;
 
