@@ -7,6 +7,7 @@ import HomePage from "@features/home/pages/HomePage";
 import VehiclesPage from "@features/vehicles/pages/VehiclesPage";
 import RegisterVehiclePage from "@features/vehicles/pages/RegisterVehiclePage";
 import EditVehiclePage from "@features/vehicles/pages/EditVehiclePage";
+import CreateRoutePage from "@features/routes/pages/CreateRoutePage";
 import { tokenStorage } from "./auth/tokenStorage";
 import { route_paths } from "./router/route_paths";
 import { authMiddleware } from "./router/middlewares/auth.middleware";
@@ -55,6 +56,10 @@ const router = createBrowserRouter([
       {
         path: route_paths.vehiclesEdit,
         element: <EditVehiclePage />,
+      },
+      {
+        path: route_paths.routesNew,
+        element: <CreateRoutePage />,
       },
     ],
   },

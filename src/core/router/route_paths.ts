@@ -7,15 +7,20 @@ export const route_paths = {
   vehicles: "/vehicles",
   vehiclesNew: "/vehicles/new",
   vehiclesEdit: "/vehicles/:vehicleId/edit",
+  routes: "/routes",
+  routesNew: "/routes/new",
 
   // Aliases for convenience and common conventions
   vehicleNew: "/vehicles/new",
   vehicleEdit: "/vehicles/:vehicleId/edit",
   newVehicle: "/vehicles/new",
   editVehicle: "/vehicles/:vehicleId/edit",
+  newRoute: "/routes/new",
+  routeNew: "/routes/new",
   email_verification_success: "/email-verification-success",
   vehicles_new: "/vehicles/new",
   vehicles_edit: "/vehicles/:vehicleId/edit",
+  routes_new: "/routes/new",
 
   // Uppercase constants
   ROOT: "/",
@@ -26,6 +31,8 @@ export const route_paths = {
   VEHICLES: "/vehicles",
   VEHICLES_NEW: "/vehicles/new",
   VEHICLES_EDIT: "/vehicles/:vehicleId/edit",
+  ROUTES: "/routes",
+  ROUTES_NEW: "/routes/new",
 
   // Helper for parameterized routes
   getVehicleEditPath: (vehicleId: string | number) =>

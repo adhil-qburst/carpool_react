@@ -16,6 +16,12 @@ const HomePage = () => {
           </div>
           <nav className="flex items-center gap-4">
             <Link
+              to={route_paths.routesNew}
+              className="text-sm font-semibold text-slate-700 hover:text-indigo-600 transition"
+            >
+              Create Route
+            </Link>
+            <Link
               to={route_paths.vehicles}
               className="text-sm font-semibold text-slate-700 hover:text-indigo-600 transition"
             >
@@ -30,7 +36,26 @@ const HomePage = () => {
           </nav>
         </header>
 
-        <section className="mt-8 grid gap-6 sm:grid-cols-2">
+        <section className="mt-8 grid gap-6 sm:grid-cols-3">
+          <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+            <div className="grid h-12 w-12 place-items-center rounded-2xl bg-indigo-50 text-indigo-600">
+              <FieldIcon type="pin" className="h-6 w-6" />
+            </div>
+            <h2 className="mt-5 text-xl font-bold text-slate-950">
+              Route Builder
+            </h2>
+            <p className="mt-2 text-sm leading-6 text-slate-500">
+              Set up your commute with origin, destination, and intermediate
+              pickup stops.
+            </p>
+            <Link
+              to={route_paths.routesNew}
+              className="mt-6 inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-600/25 transition hover:bg-indigo-700"
+            >
+              Create route →
+            </Link>
+          </div>
+
           <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
             <div className="grid h-12 w-12 place-items-center rounded-2xl bg-indigo-50 text-indigo-600">
               <FieldIcon type="car" className="h-6 w-6" />
@@ -44,7 +69,7 @@ const HomePage = () => {
             </p>
             <Link
               to={route_paths.vehicles}
-              className="mt-6 inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-600/25 transition hover:bg-indigo-700"
+              className="mt-6 inline-flex items-center gap-2 rounded-xl bg-slate-100 px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-200"
             >
               Manage vehicles →
             </Link>
@@ -52,7 +77,7 @@ const HomePage = () => {
 
           <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
             <div className="grid h-12 w-12 place-items-center rounded-2xl bg-emerald-50 text-emerald-600">
-              <FieldIcon type="pin" className="h-6 w-6" />
+              <FieldIcon type="users" className="h-6 w-6" />
             </div>
             <h2 className="mt-5 text-xl font-bold text-slate-950">
               Find a Ride
