@@ -154,4 +154,16 @@ describe("EditTripPage", () => {
 
     expect(await screen.findByText("Trip not found")).toBeInTheDocument();
   });
+
+  it("shows cannot be edited state when trip status is not scheduled", async () => {
+    vi.mocked(tripsApi.getById).mockResolvedValueOnce({
+      ...mockTrip,
+      status: "completed",
+    });
+
+    renderEditTripPage("trip-123");
+
+    expect(await screen.findByText("Trip cannot be edited")).toBeInTheDocument();
+    expect(screen.getByText(/only scheduled trips can be modified/i)).toBeInTheDocument();
+  });
 });

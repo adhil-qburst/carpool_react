@@ -106,7 +106,7 @@ export default function EditTripPage() {
       });
       setSuccessMessage("Trip updated successfully!");
       setTimeout(() => {
-        navigate(route_paths.home);
+        navigate(route_paths.trips);
       }, 1500);
     } catch (err) {
       const apiErr = toApiError(err);
@@ -134,10 +134,29 @@ export default function EditTripPage() {
             The requested trip could not be found or you may not have permission to view it.
           </p>
           <Link
-            to={route_paths.home}
+            to={route_paths.trips}
             className="mt-6 inline-block rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700"
           >
-            Back to home
+            Back to trips
+          </Link>
+        </div>
+      </main>
+    );
+  }
+
+  if (trip.status !== "scheduled") {
+    return (
+      <main className="min-h-screen bg-slate-50 flex items-center justify-center p-6">
+        <div className="max-w-md rounded-2xl bg-white p-8 text-center shadow-sm border border-slate-200">
+          <p className="text-base font-semibold text-amber-600">Trip cannot be edited</p>
+          <p className="mt-2 text-sm text-slate-500">
+            This trip is currently <span className="font-semibold">{trip.status}</span>. Only scheduled trips can be modified.
+          </p>
+          <Link
+            to={route_paths.trips}
+            className="mt-6 inline-block rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700"
+          >
+            Back to trips
           </Link>
         </div>
       </main>
@@ -160,10 +179,10 @@ export default function EditTripPage() {
         <section className="flex flex-col justify-center bg-white p-6 sm:p-10 lg:p-12">
           <div className="mx-auto w-full max-w-lg">
             <Link
-              to={route_paths.home}
+              to={route_paths.trips}
               className="inline-flex items-center text-sm font-semibold text-indigo-600 transition hover:text-indigo-700"
             >
-              ← Back to home
+              ← Back to trips
             </Link>
 
             <p className="mt-4 text-sm font-semibold text-indigo-600 uppercase">

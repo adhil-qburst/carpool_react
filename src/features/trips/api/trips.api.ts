@@ -2,6 +2,7 @@ import { apiEndpoints } from "@core/api/apiEndpoints";
 import { httpClient } from "@core/api/httpClient";
 import type {
   CreateTripRequest,
+  ListTripsQueryParams,
   PaginatedTripsResponse,
   TripResponse,
   TripRouteOption,
@@ -15,10 +16,7 @@ export const tripsApi = {
       .post<TripResponse>(apiEndpoints.trips.create, payload)
       .then((res) => res.data),
 
-  list: (params?: {
-    page?: number;
-    limit?: number;
-  }): Promise<PaginatedTripsResponse> =>
+  list: (params?: ListTripsQueryParams): Promise<PaginatedTripsResponse> =>
     httpClient
       .get<PaginatedTripsResponse>(apiEndpoints.trips.list, { params })
       .then((res) => res.data),
@@ -44,5 +42,10 @@ export const tripsApi = {
   ): Promise<TripResponse> =>
     httpClient
       .patch<TripResponse>(apiEndpoints.trips.update(tripId), payload)
+      .then((res) => res.data),
+
+  delete: (tripId: string): Promise<void> =>
+    httpClient
+      .delete<void>(apiEndpoints.trips.delete(tripId))
       .then((res) => res.data),
 };

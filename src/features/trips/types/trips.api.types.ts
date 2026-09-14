@@ -29,6 +29,11 @@ export interface PaginatedTripsResponse {
   total: number;
 }
 
+export interface ListTripsQueryParams {
+  page?: number;
+  limit?: number;
+}
+
 export interface TripRouteStopLocation {
   id: string;
   name: string;
