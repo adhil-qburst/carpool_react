@@ -28,6 +28,13 @@ export const apiEndpoints = {
     patch: (routeId: string | number) => `${API_PREFIX}/routes/${routeId}`,
     delete: (routeId: string | number) => `${API_PREFIX}/routes/${routeId}`,
   },
+  trips: {
+    list: `${API_PREFIX}/trips`,
+    create: `${API_PREFIX}/trips`,
+    byId: (tripId: string | number) => `${API_PREFIX}/trips/${tripId}`,
+    update: (tripId: string | number) => `${API_PREFIX}/trips/${tripId}`,
+    delete: (tripId: string | number) => `${API_PREFIX}/trips/${tripId}`,
+  },
 } as const;
 
 export type ApiEndpoints = typeof apiEndpoints;

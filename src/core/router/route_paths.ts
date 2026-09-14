@@ -10,6 +10,9 @@ export const route_paths = {
   routes: "/routes",
   routesNew: "/routes/new",
   routesEdit: "/routes/:routeId/edit",
+  trips: "/trips",
+  tripsNew: "/trips/new",
+  tripsEdit: "/trips/:tripId/edit",
 
   // Aliases for convenience and common conventions
   vehicleNew: "/vehicles/new",
@@ -20,11 +23,15 @@ export const route_paths = {
   routeNew: "/routes/new",
   routeEdit: "/routes/:routeId/edit",
   editRoute: "/routes/:routeId/edit",
+  newTrip: "/trips/new",
+  tripNew: "/trips/new",
   email_verification_success: "/email-verification-success",
   vehicles_new: "/vehicles/new",
   vehicles_edit: "/vehicles/:vehicleId/edit",
   routes_new: "/routes/new",
   routes_edit: "/routes/:routeId/edit",
+  trips_new: "/trips/new",
+  trips_edit: "/trips/:tripId/edit",
 
   // Uppercase constants
   ROOT: "/",
@@ -38,12 +45,17 @@ export const route_paths = {
   ROUTES: "/routes",
   ROUTES_NEW: "/routes/new",
   ROUTES_EDIT: "/routes/:routeId/edit",
+  TRIPS: "/trips",
+  TRIPS_NEW: "/trips/new",
+  TRIPS_EDIT: "/trips/:tripId/edit",
 
   // Helper for parameterized routes
   getVehicleEditPath: (vehicleId: string | number) =>
     `/vehicles/${vehicleId}/edit`,
   getRouteEditPath: (routeId: string | number) =>
     `/routes/${routeId}/edit`,
+  getTripEditPath: (tripId: string | number) =>
+    `/trips/${tripId}/edit`,
 } as const;
 
 export type RoutePath = (typeof route_paths)[keyof typeof route_paths];
