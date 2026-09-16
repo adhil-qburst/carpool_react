@@ -6,6 +6,12 @@ describe("tripKeys", () => {
     expect(tripKeys.all).toEqual(["trips"]);
     expect(tripKeys.lists()).toEqual(["trips", "list"]);
     expect(tripKeys.list({ page: 1 })).toEqual(["trips", "list", { page: 1 }]);
+    expect(tripKeys.searches()).toEqual(["trips", "search"]);
+    expect(tripKeys.search({ source_location_id: "1" })).toEqual([
+      "trips",
+      "search",
+      { source_location_id: "1" },
+    ]);
     expect(tripKeys.details()).toEqual(["trips", "detail"]);
     expect(tripKeys.detail("123")).toEqual(["trips", "detail", "123"]);
     expect(tripKeys.driverRoutes()).toEqual(["trips", "driverRoutes"]);

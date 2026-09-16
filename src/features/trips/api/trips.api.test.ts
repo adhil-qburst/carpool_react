@@ -66,6 +66,31 @@ describe("tripsApi", () => {
     expect(result).toEqual(mockResponse);
   });
 
+  it("search calls GET on trips/search endpoint with query parameters and unwraps res.data", async () => {
+    const mockParams = {
+      source_location_id: "loc-src-1",
+      destination_location_id: "loc-dst-2",
+      departure_date: "2026-09-20",
+      seats_needed: 2,
+      page: 1,
+      limit: 10,
+    };
+    const mockResponse = {
+      items: [],
+      page: 1,
+      limit: 10,
+      total: 0,
+    };
+    vi.mocked(httpClient.get).mockResolvedValueOnce({ data: mockResponse });
+
+    const result = await tripsApi.search(mockParams);
+
+    expect(httpClient.get).toHaveBeenCalledWith(apiEndpoints.trips.search, {
+      params: mockParams,
+    });
+    expect(result).toEqual(mockResponse);
+  });
+
   it("getById calls GET on parameterized trip endpoint", async () => {
     const mockTrip: TripResponse = {
       id: "trip-99",

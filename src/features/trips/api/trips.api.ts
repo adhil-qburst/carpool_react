@@ -4,6 +4,8 @@ import type {
   CreateTripRequest,
   ListTripsQueryParams,
   PaginatedTripsResponse,
+  SearchTripsQueryParams,
+  SearchTripsResponse,
   TripResponse,
   TripRouteOption,
   TripVehicleOption,
@@ -19,6 +21,11 @@ export const tripsApi = {
   list: (params?: ListTripsQueryParams): Promise<PaginatedTripsResponse> =>
     httpClient
       .get<PaginatedTripsResponse>(apiEndpoints.trips.list, { params })
+      .then((res) => res.data),
+
+  search: (params: SearchTripsQueryParams): Promise<SearchTripsResponse> =>
+    httpClient
+      .get<SearchTripsResponse>(apiEndpoints.trips.search, { params })
       .then((res) => res.data),
 
   getById: (tripId: string): Promise<TripResponse> =>

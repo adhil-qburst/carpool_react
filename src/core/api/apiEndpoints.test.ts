@@ -46,6 +46,15 @@ describe("apiEndpoints", () => {
     expect(apiEndpoints.routes.delete("r-123")).toBe("/api/v1/routes/r-123");
   });
 
+  it("defines trips endpoints correctly", () => {
+    expect(apiEndpoints.trips.list).toBe("/api/v1/trips");
+    expect(apiEndpoints.trips.search).toBe("/api/v1/trips/search");
+    expect(apiEndpoints.trips.create).toBe("/api/v1/trips");
+    expect(apiEndpoints.trips.byId("t-123")).toBe("/api/v1/trips/t-123");
+    expect(apiEndpoints.trips.update("t-123")).toBe("/api/v1/trips/t-123");
+    expect(apiEndpoints.trips.delete("t-123")).toBe("/api/v1/trips/t-123");
+  });
+
   it("exports matching aliases", () => {
     expect(API_ENDPOINTS).toBe(apiEndpoints);
     expect(api_endpoints).toBe(apiEndpoints);

@@ -34,6 +34,12 @@ const HomePage = () => {
               My Trips
             </Link>
             <Link
+              to={route_paths.tripsBook}
+              className="text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition"
+            >
+              Book Ride
+            </Link>
+            <Link
               to={route_paths.tripsNew}
               className="text-sm font-semibold text-indigo-600 hover:text-indigo-700 transition"
             >
@@ -119,7 +125,7 @@ const HomePage = () => {
             </div>
           </div>
 
-          <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm flex flex-col justify-between">
+          <div className="rounded-3xl border border-emerald-200 bg-white p-8 shadow-sm flex flex-col justify-between ring-1 ring-emerald-500/10">
             <div>
               <div className="grid h-12 w-12 place-items-center rounded-2xl bg-emerald-50 text-emerald-600">
                 <FieldIcon type="users" className="h-6 w-6" />
@@ -132,9 +138,12 @@ const HomePage = () => {
                 with coworkers and fellow commuters.
               </p>
             </div>
-            <span className="mt-6 inline-block rounded-xl bg-slate-100 px-4 py-2.5 text-sm font-semibold text-slate-400">
-              Coming soon
-            </span>
+            <Link
+              to={route_paths.tripsBook}
+              className="mt-6 inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-emerald-600/20 transition hover:bg-emerald-700"
+            >
+              Search rides →
+            </Link>
           </div>
         </section>
       </div>

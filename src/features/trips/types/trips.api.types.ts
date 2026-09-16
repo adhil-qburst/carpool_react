@@ -18,6 +18,7 @@ export interface TripResponse {
   departure_time: string;
   available_seats: number;
   status: TripStatus;
+  route?: TripRouteOption | null;
   created_at: string;
   updated_at: string;
 }
@@ -27,6 +28,22 @@ export interface PaginatedTripsResponse {
   page: number;
   limit: number;
   total: number;
+}
+
+export interface SearchTripsQueryParams {
+  source_location_id: string;
+  destination_location_id: string;
+  departure_date?: string | null;
+  seats_needed?: number | null;
+  page?: number;
+  limit?: number;
+}
+
+export interface SearchTripsResponse {
+  items: TripResponse[];
+  page?: number;
+  limit?: number;
+  total?: number;
 }
 
 export interface ListTripsQueryParams {

@@ -13,6 +13,8 @@ export const route_paths = {
   trips: "/trips",
   tripsNew: "/trips/new",
   tripsEdit: "/trips/:tripId/edit",
+  tripsBook: "/trips/book",
+  tripsSearch: "/trips/search",
 
   // Aliases for convenience and common conventions
   vehicleNew: "/vehicles/new",
@@ -25,6 +27,7 @@ export const route_paths = {
   editRoute: "/routes/:routeId/edit",
   newTrip: "/trips/new",
   tripNew: "/trips/new",
+  bookRide: "/trips/book",
   email_verification_success: "/email-verification-success",
   vehicles_new: "/vehicles/new",
   vehicles_edit: "/vehicles/:vehicleId/edit",
@@ -32,6 +35,8 @@ export const route_paths = {
   routes_edit: "/routes/:routeId/edit",
   trips_new: "/trips/new",
   trips_edit: "/trips/:tripId/edit",
+  trips_book: "/trips/book",
+  trips_search: "/trips/search",
 
   // Uppercase constants
   ROOT: "/",
@@ -48,6 +53,9 @@ export const route_paths = {
   TRIPS: "/trips",
   TRIPS_NEW: "/trips/new",
   TRIPS_EDIT: "/trips/:tripId/edit",
+  TRIPS_BOOK: "/trips/book",
+  TRIPS_SEARCH: "/trips/search",
+  BOOK_RIDE: "/trips/book",
 
   // Helper for parameterized routes
   getVehicleEditPath: (vehicleId: string | number) =>

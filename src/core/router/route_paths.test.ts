@@ -13,6 +13,8 @@ describe("route_paths", () => {
     expect(route_paths.vehicles).toBe("/vehicles");
     expect(route_paths.vehiclesNew).toBe("/vehicles/new");
     expect(route_paths.vehiclesEdit).toBe("/vehicles/:vehicleId/edit");
+    expect(route_paths.tripsBook).toBe("/trips/book");
+    expect(route_paths.tripsSearch).toBe("/trips/search");
   });
 
   it("exports uppercase and camelCase aliases consistently", () => {

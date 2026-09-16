@@ -1,7 +1,7 @@
 ---
 description: "UI development specialist for the Carpool React app. Use when building or editing pages, components, forms, or modals under src/**/*.tsx — anything visual/frontend. Enforces the existing Tailwind design system, React Router v7 patterns, and TypeScript conventions instead of inventing new styles."
 tools: [read, edit, search, execute, todo]
-model: "Gemini 3.8 Flash"
+model: "Gemini 3.7 Flash"
 user-invocable: true
 ---
 

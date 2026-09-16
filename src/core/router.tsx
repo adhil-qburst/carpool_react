@@ -13,6 +13,7 @@ import RoutesPage from "@features/routes/pages/RoutesPage";
 import CreateTripPage from "@features/trips/pages/CreateTripPage";
 import EditTripPage from "@features/trips/pages/EditTripPage";
 import TripsPage from "@features/trips/pages/TripsPage";
+import BookRidePage from "@features/trips/pages/BookRidePage";
 import { tokenStorage } from "./auth/tokenStorage";
 import { route_paths } from "./router/route_paths";
 import { authMiddleware } from "./router/middlewares/auth.middleware";
@@ -85,6 +86,14 @@ const router = createBrowserRouter([
       {
         path: route_paths.tripsEdit,
         element: <EditTripPage />,
+      },
+      {
+        path: route_paths.tripsBook,
+        element: <BookRidePage />,
+      },
+      {
+        path: route_paths.tripsSearch,
+        element: <BookRidePage />,
       },
     ],
   },
