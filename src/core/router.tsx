@@ -26,7 +26,7 @@ async function resolveHomeDestination(): Promise<string> {
   try {
     const user = await usersApi.getCurrentUser();
     if (user?.roles?.some((role) => role.toLowerCase() === "driver")) {
-      return route_paths.driverDashboard;
+      return route_paths.home;
     }
   } catch {
     // If request fails, fall back to home
