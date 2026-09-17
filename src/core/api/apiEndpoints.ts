@@ -7,7 +7,7 @@ export const apiEndpoints = {
     refresh: `${API_PREFIX}/auth/refresh`,
   },
   users: {
-    currentUser: `${API_PREFIX}/current_user`,
+    currentUser: `${API_PREFIX}/users/current_user`,
   },
   vehicles: {
     list: `${API_PREFIX}/vehicles`,

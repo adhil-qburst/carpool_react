@@ -13,6 +13,8 @@ import RoutesPage from "@features/routes/pages/RoutesPage";
 import CreateTripPage from "@features/trips/pages/CreateTripPage";
 import EditTripPage from "@features/trips/pages/EditTripPage";
 import TripsPage from "@features/trips/pages/TripsPage";
+import DriverDashboardPage from "@features/home/pages/DriverDashboardPage";
+import { usersApi } from "@features/users/api/users.api";
 import { tokenStorage } from "./auth/tokenStorage";
 import { route_paths } from "./router/route_paths";
 import { authMiddleware } from "./router/middlewares/auth.middleware";
@@ -20,12 +22,25 @@ import { authMiddleware } from "./router/middlewares/auth.middleware";
 export { route_paths, routePaths, ROUTE_PATHS } from "./router/route_paths";
 export type { RoutePath } from "./router/route_paths";
 
+async function resolveHomeDestination(): Promise<string> {
+  try {
+    const user = await usersApi.getCurrentUser();
+    if (user?.roles?.some((role) => role.toLowerCase() === "driver")) {
+      return route_paths.driverDashboard;
+    }
+  } catch {
+    // If request fails, fall back to home
+  }
+  return route_paths.home;
+}
+
 const router = createBrowserRouter([
   {
     path: route_paths.root,
-    loader: () => {
+    loader: async () => {
       if (tokenStorage.getAccessToken() !== null) {
-        return redirect(route_paths.home);
+        const destination = await resolveHomeDestination();
+        return redirect(destination);
       } else {
         return redirect(route_paths.login);
       }
@@ -48,6 +63,13 @@ const router = createBrowserRouter([
     children: [
       {
         path: route_paths.home,
+        loader: async () => {
+          const destination = await resolveHomeDestination();
+          if (destination !== route_paths.home) {
+            return redirect(destination);
+          }
+          return null;
+        },
         element: <HomePage />,
       },
       {
@@ -85,6 +107,10 @@ const router = createBrowserRouter([
       {
         path: route_paths.tripsEdit,
         element: <EditTripPage />,
+      },
+      {
+        path: route_paths.driverDashboard,
+        element: <DriverDashboardPage />,
       },
     ],
   },

@@ -10,6 +10,7 @@ describe("route_paths", () => {
       "/email-verification-success",
     );
     expect(route_paths.home).toBe("/home");
+    expect(route_paths.driverDashboard).toBe("/driver-dashboard");
     expect(route_paths.vehicles).toBe("/vehicles");
     expect(route_paths.vehiclesNew).toBe("/vehicles/new");
     expect(route_paths.vehiclesEdit).toBe("/vehicles/:vehicleId/edit");
@@ -21,6 +22,7 @@ describe("route_paths", () => {
     expect(route_paths.LOGIN).toBe(route_paths.login);
     expect(route_paths.REGISTER).toBe(route_paths.register);
     expect(route_paths.VEHICLES).toBe(route_paths.vehicles);
+    expect(route_paths.DRIVER_DASHBOARD).toBe(route_paths.driverDashboard);
   });
 
   it("generates dynamic vehicle edit path with getVehicleEditPath", () => {

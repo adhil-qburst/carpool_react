@@ -18,7 +18,7 @@ describe("apiEndpoints", () => {
   });
 
   it("defines users endpoints correctly", () => {
-    expect(apiEndpoints.users.currentUser).toBe("/api/v1/current_user");
+    expect(apiEndpoints.users.currentUser).toBe("/api/v1/users/current_user");
   });
 
   it("defines vehicles endpoints and path helpers correctly", () => {

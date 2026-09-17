@@ -13,6 +13,7 @@ export const route_paths = {
   trips: "/trips",
   tripsNew: "/trips/new",
   tripsEdit: "/trips/:tripId/edit",
+  driverDashboard: "/driver-dashboard",
 
   // Aliases for convenience and common conventions
   vehicleNew: "/vehicles/new",
@@ -48,6 +49,7 @@ export const route_paths = {
   TRIPS: "/trips",
   TRIPS_NEW: "/trips/new",
   TRIPS_EDIT: "/trips/:tripId/edit",
+  DRIVER_DASHBOARD: "/driver-dashboard",
 
   // Helper for parameterized routes
   getVehicleEditPath: (vehicleId: string | number) =>
