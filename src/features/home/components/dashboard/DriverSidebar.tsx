@@ -23,6 +23,7 @@ const DriverSidebar = ({
   const isDashboard =
     location.pathname === route_paths.driverDashboard ||
     location.pathname === route_paths.home;
+  const isTrips = location.pathname.startsWith(route_paths.trips);
 
   const handleLinkClick = () => {
     onClose?.();
@@ -118,7 +119,11 @@ const DriverSidebar = ({
               <Link
                 to={route_paths.trips}
                 onClick={handleLinkClick}
-                className="flex items-center gap-3 rounded-lg px-3.5 py-2.5 text-sm font-medium text-text-muted transition-colors hover:bg-surface-container-low hover:text-on-surface"
+                className={`flex items-center gap-3 rounded-lg px-3.5 py-2.5 text-sm font-semibold transition-colors ${
+                  isTrips
+                    ? "border border-surface-mint-border bg-surface-mint text-primary"
+                    : "text-text-muted hover:bg-surface-container-low hover:text-on-surface"
+                }`}
               >
                 <FieldIcon type="calendar" className="h-4 w-4" />
                 <span>My Trips</span>

@@ -1,28 +1,47 @@
 import { useState, useMemo } from "react";
-import { Link } from "react-router";
-import BrandMark from "@shared/ui/BrandMark";
-import PlusIcon from "@shared/ui/PlusIcon";
-import FieldIcon from "@shared/ui/FieldIcon";
 import { toApiError } from "@core/api/apiError";
-import { route_paths } from "@core/router/route_paths";
+import { useCurrentUserQuery } from "@features/users/hooks/useCurrentUserQuery";
+import DriverSidebar from "@features/home/components/dashboard/DriverSidebar";
+import DriverTopBar from "@features/home/components/dashboard/DriverTopBar";
 import { useTripsQuery } from "../hooks/useTripsQuery";
 import {
   useDriverRoutesQuery,
   useDriverVehiclesQuery,
 } from "../hooks/useTripOptionsQuery";
 import { useDeleteTripMutation } from "../hooks/useDeleteTripMutation";
-import TripStatsSidebar from "../components/TripStatsSidebar";
+import MyTripsHeader from "../components/MyTripsHeader";
+import MyTripsFilterBar, {
+  type TripStatusFilter,
+} from "../components/MyTripsFilterBar";
+import FeaturedNextTripCard from "../components/FeaturedNextTripCard";
 import TripCard from "../components/TripCard";
+import TripsQuickInsights from "../components/TripsQuickInsights";
+import TripsEmptyState from "../components/TripsEmptyState";
+import TripsPagination from "../components/TripsPagination";
 import DeleteTripModal from "../modals/DeleteTripModal";
 import type { TripResponse } from "../types/trips.api.types";
 
 const PAGE_LIMIT = 8;
 
-export default function TripsPage() {
+const TripsPage = () => {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [page, setPage] = useState(1);
+  const [activeStatus, setActiveStatus] = useState<TripStatusFilter>("all");
+  const [selectedVehicleId, setSelectedVehicleId] = useState<string>("");
+  const [searchQuery, setSearchQuery] = useState<string>("");
   const [tripToDelete, setTripToDelete] = useState<TripResponse | null>(null);
   const [feedback, setFeedback] = useState<string | null>(null);
   const [deleteError, setDeleteError] = useState<string | null>(null);
+
+  const { data: currentUser } = useCurrentUserQuery();
+  const driverName = currentUser?.name || "Arun Kumar";
+  const driverInitials =
+    driverName
+      .split(" ")
+      .map((part) => part[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2) || "AK";
 
   const {
     data: tripsData,
@@ -44,20 +63,51 @@ export default function TripsPage() {
     [vehicles],
   );
 
-  const trips = tripsData?.items ?? [];
+  const trips = useMemo(() => tripsData?.items ?? [], [tripsData?.items]);
   const totalTrips = tripsData?.total ?? 0;
   const totalPages = Math.max(1, Math.ceil(totalTrips / PAGE_LIMIT));
 
-  const scheduledTripsCount = trips.filter(
-    (t) => t.status === "scheduled",
-  ).length;
+  const statusCounts = useMemo(() => {
+    return {
+      scheduled: trips.filter((t) => t.status === "scheduled").length,
+      completed: trips.filter((t) => t.status === "completed").length,
+      cancelled: trips.filter((t) => t.status === "cancelled").length,
+      total: trips.length,
+    };
+  }, [trips]);
 
-  const totalSeatsOnPage = trips.reduce(
-    (sum, t) => sum + (t.available_seats || 0),
-    0,
-  );
+  const filteredTrips = useMemo(() => {
+    return trips.filter((trip) => {
+      if (activeStatus !== "all" && trip.status !== activeStatus) {
+        return false;
+      }
+      if (selectedVehicleId && trip.vehicle_id !== selectedVehicleId) {
+        return false;
+      }
+      if (searchQuery.trim()) {
+        const q = searchQuery.toLowerCase();
+        const route = routesMap.get(trip.route_id);
+        const vehicle = vehiclesMap.get(trip.vehicle_id);
+        const matchRoute = route?.name.toLowerCase().includes(q);
+        const matchVehicle =
+          vehicle &&
+          `${vehicle.make} ${vehicle.model} ${vehicle.license_plate}`
+            .toLowerCase()
+            .includes(q);
+        const matchDate = trip.departure_date.includes(q);
+        if (!matchRoute && !matchVehicle && !matchDate) {
+          return false;
+        }
+      }
+      return true;
+    });
+  }, [trips, activeStatus, selectedVehicleId, searchQuery, routesMap, vehiclesMap]);
 
-  function handleDeleteConfirm() {
+  const nextUpcomingTrip = useMemo(() => {
+    return trips.find((t) => t.status === "scheduled") ?? null;
+  }, [trips]);
+
+  const handleDeleteConfirm = () => {
     if (!tripToDelete || tripToDelete.status !== "scheduled") return;
 
     setDeleteError(null);
@@ -66,7 +116,9 @@ export default function TripsPage() {
         const route = routesMap.get(tripToDelete.route_id);
         const routeLabel = route ? route.name : `Trip #${tripToDelete.id.slice(0, 8)}`;
         setTripToDelete(null);
-        setFeedback(`Trip for "${routeLabel}" on ${tripToDelete.departure_date} has been deleted.`);
+        setFeedback(
+          `Trip for "${routeLabel}" on ${tripToDelete.departure_date} has been deleted.`,
+        );
       },
       onError: (err) => {
         const apiError = toApiError(err);
@@ -74,68 +126,57 @@ export default function TripsPage() {
         setDeleteError(apiError.message);
       },
     });
-  }
+  };
 
-  function handleSelectTripToDelete(trip: TripResponse) {
+  const handleSelectTripToDelete = (trip: TripResponse) => {
     if (trip.status !== "scheduled") return;
     setTripToDelete(trip);
-  }
+  };
 
   return (
-    <main className="min-h-screen bg-slate-50 p-4 sm:p-6 lg:p-8">
-      <div className="mx-auto grid min-h-[calc(100vh-2rem)] max-w-6xl overflow-hidden rounded-4xl bg-white shadow-2xl shadow-slate-900/10 lg:min-h-[calc(100vh-4rem)] lg:grid-cols-[.85fr_1.15fr]">
-        <TripStatsSidebar
-          totalTrips={totalTrips}
-          scheduledTrips={scheduledTripsCount}
-          availableSeatsCount={totalSeatsOnPage}
-          isLoading={isLoadingTrips}
+    <div className="flex min-h-screen bg-surface-canvas font-sans text-on-surface antialiased">
+      {/* Sidebar Navigation */}
+      <DriverSidebar
+        driverName={driverName}
+        driverInitials={driverInitials}
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+      />
+
+      {/* Main Workspace Container */}
+      <div className="flex min-w-0 flex-1 flex-col lg:pl-64">
+        {/* Top App Bar */}
+        <DriverTopBar
+          driverName={driverName}
+          driverInitials={driverInitials}
+          onSearch={(q) => setSearchQuery(q)}
+          onMenuClick={() => setSidebarOpen(true)}
         />
 
-        <section className="flex flex-col p-6 sm:p-10 lg:p-12">
-          {/* Mobile Header */}
-          <div className="flex items-center justify-between lg:hidden">
-            <div className="flex items-center gap-3">
-              <BrandMark />
-              <span className="text-lg font-bold tracking-tight text-slate-950">
-                Carpool
-              </span>
-            </div>
-            <Link
-              to={route_paths.home}
-              className="text-sm font-semibold text-indigo-600 hover:text-indigo-700"
-            >
-              Dashboard
-            </Link>
-          </div>
+        {/* Scrollable Content Canvas */}
+        <main className="mx-auto flex w-full max-w-[1360px] flex-1 flex-col gap-6 p-4 sm:p-6 lg:p-8">
+          {/* Breadcrumb & Page Header */}
+          <MyTripsHeader />
 
-          {/* Desktop / Tablet Header */}
-          <div className="mt-6 flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 pb-6 lg:mt-0">
-            <div>
-              <h2 className="text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">
-                My Trips
-              </h2>
-              <p className="mt-1 text-sm text-slate-500">
-                Manage your scheduled rides and departure times.
-              </p>
-            </div>
-            <Link
-              to={route_paths.tripsNew}
-              className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-600/25 transition hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-100"
-            >
-              <PlusIcon className="h-4 w-4" />
-              <span>Schedule Trip</span>
-            </Link>
-          </div>
+          {/* Filter Controls & Segmented Tabs Bar */}
+          <MyTripsFilterBar
+            activeStatus={activeStatus}
+            onStatusChange={setActiveStatus}
+            statusCounts={statusCounts}
+            selectedVehicleId={selectedVehicleId}
+            onVehicleChange={setSelectedVehicleId}
+            vehicles={vehicles}
+          />
 
           {/* Feedback & Error Alerts */}
           {feedback && (
-            <div className="mt-4 flex items-center justify-between rounded-2xl bg-emerald-50 p-4 text-sm font-medium text-emerald-800 border border-emerald-200">
+            <div className="flex items-center justify-between rounded-2xl border border-surface-mint-border bg-surface-mint p-4 text-sm font-medium text-emerald-800">
               <p>{feedback}</p>
               <button
                 type="button"
                 aria-label="Dismiss feedback"
                 onClick={() => setFeedback(null)}
-                className="text-emerald-600 hover:text-emerald-900 cursor-pointer"
+                className="cursor-pointer font-bold text-emerald-700 hover:text-emerald-950"
               >
                 ✕
               </button>
@@ -143,13 +184,13 @@ export default function TripsPage() {
           )}
 
           {deleteError && (
-            <div className="mt-4 flex items-center justify-between rounded-2xl bg-rose-50 p-4 text-sm font-medium text-rose-800 border border-rose-200">
+            <div className="flex items-center justify-between rounded-2xl border border-rose-200 bg-rose-50 p-4 text-sm font-medium text-rose-800">
               <p>{deleteError}</p>
               <button
                 type="button"
                 aria-label="Dismiss error"
                 onClick={() => setDeleteError(null)}
-                className="text-rose-600 hover:text-rose-900 cursor-pointer"
+                className="cursor-pointer font-bold text-rose-700 hover:text-rose-950"
               >
                 ✕
               </button>
@@ -157,88 +198,99 @@ export default function TripsPage() {
           )}
 
           {isTripsError && (
-            <div className="mt-4 rounded-2xl bg-rose-50 p-4 text-sm font-medium text-rose-800 border border-rose-200">
+            <div className="rounded-2xl border border-rose-200 bg-rose-50 p-4 text-sm font-medium text-rose-800">
               {toApiError(tripsError).message || "Failed to load trips."}
             </div>
           )}
 
-          {/* Content Area */}
-          <div className="mt-6 flex-1">
-            {isLoadingTrips ? (
-              <div className="grid gap-4 sm:grid-cols-2">
-                {[1, 2, 3, 4].map((i) => (
-                  <div
-                    key={i}
-                    className="h-48 animate-pulse rounded-3xl border border-slate-100 bg-slate-50"
-                  />
-                ))}
-              </div>
-            ) : trips.length === 0 ? (
-              <div className="grid h-full place-items-center py-16 text-center">
-                <div className="max-w-xs">
-                  <div className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-indigo-50 text-indigo-600">
-                    <FieldIcon type="calendar" className="h-8 w-8" />
-                  </div>
-                  <h3 className="mt-4 text-lg font-bold text-slate-950">
-                    No trips scheduled yet
-                  </h3>
-                  <p className="mt-1 text-sm text-slate-500">
-                    Create your first trip to offer shared rides to your passengers.
-                  </p>
-                  <Link
-                    to={route_paths.tripsNew}
-                    className="mt-6 inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-600/25 transition hover:bg-indigo-700"
-                  >
-                    <PlusIcon className="h-4 w-4" />
-                    <span>Schedule your first trip</span>
-                  </Link>
-                </div>
-              </div>
-            ) : (
-              <div className="grid gap-4 sm:grid-cols-2">
-                {trips.map((trip) => (
-                  <TripCard
-                    key={trip.id}
-                    trip={trip}
-                    route={routesMap.get(trip.route_id)}
-                    vehicle={vehiclesMap.get(trip.vehicle_id)}
-                    onDelete={handleSelectTripToDelete}
-                  />
-                ))}
-              </div>
-            )}
-          </div>
+          {/* Featured Next Upcoming Trip Hero Section */}
+          {nextUpcomingTrip && (activeStatus === "scheduled" || activeStatus === "all") && (
+            <FeaturedNextTripCard
+              trip={nextUpcomingTrip}
+              route={routesMap.get(nextUpcomingTrip.route_id)}
+              vehicle={vehiclesMap.get(nextUpcomingTrip.vehicle_id)}
+              onDelete={handleSelectTripToDelete}
+            />
+          )}
 
-          {/* Pagination Controls */}
-          {totalPages > 1 && (
-            <div className="mt-8 flex items-center justify-between border-t border-slate-100 pt-4">
-              <p className="text-xs text-slate-500">
-                Page <span className="font-semibold text-slate-900">{page}</span> of{" "}
-                <span className="font-semibold text-slate-900">{totalPages}</span>
-              </p>
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  disabled={page <= 1}
-                  onClick={() => setPage((p) => Math.max(1, p - 1))}
-                  className="rounded-xl border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40 cursor-pointer"
-                >
-                  Previous
-                </button>
-                <button
-                  type="button"
-                  disabled={page >= totalPages}
-                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                  className="rounded-xl border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40 cursor-pointer"
-                >
-                  Next
-                </button>
+          {/* All Upcoming Trips Section Header */}
+          <section className="space-y-4">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <h2 className="text-lg font-bold text-on-surface sm:text-xl">
+                  {activeStatus === "scheduled"
+                    ? "All Upcoming Trips"
+                    : activeStatus === "completed"
+                      ? "Completed Trips"
+                      : activeStatus === "cancelled"
+                        ? "Cancelled Trips"
+                        : "All Trips"}
+                </h2>
+                <span className="rounded-full border border-border-subtle bg-surface-card px-2.5 py-0.5 text-xs font-semibold text-text-muted">
+                  {filteredTrips.length} total
+                </span>
+              </div>
+
+              <div className="flex items-center gap-1.5 text-xs text-text-muted">
+                <span>Sorted by Departure Date</span>
               </div>
             </div>
-          )}
-        </section>
+
+            {/* Content Area */}
+            <div>
+              {isLoadingTrips ? (
+                <div className="grid gap-4">
+                  {[1, 2, 3].map((i) => (
+                    <div
+                      key={i}
+                      className="h-32 animate-pulse rounded-2xl border border-border-subtle bg-surface-card"
+                    />
+                  ))}
+                </div>
+              ) : trips.length === 0 ? (
+                <TripsEmptyState />
+              ) : filteredTrips.length === 0 ? (
+                <TripsEmptyState
+                  isFiltered
+                  onResetFilters={() => {
+                    setActiveStatus("all");
+                    setSelectedVehicleId("");
+                    setSearchQuery("");
+                  }}
+                />
+              ) : (
+                <div className="grid grid-cols-1 gap-4">
+                  {filteredTrips.map((trip) => (
+                    <TripCard
+                      key={trip.id}
+                      trip={trip}
+                      route={routesMap.get(trip.route_id)}
+                      vehicle={vehiclesMap.get(trip.vehicle_id)}
+                      onDelete={handleSelectTripToDelete}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Pagination Controls */}
+            <TripsPagination
+              page={page}
+              totalPages={totalPages}
+              onPageChange={setPage}
+            />
+          </section>
+
+          {/* Quick Operational Insights Footer Section */}
+          <TripsQuickInsights
+            trips={trips}
+            routesMap={routesMap}
+            vehiclesMap={vehiclesMap}
+          />
+        </main>
       </div>
 
+      {/* Delete Confirmation Modal */}
       {tripToDelete && (
         <DeleteTripModal
           trip={tripToDelete}
@@ -248,6 +300,8 @@ export default function TripsPage() {
           onClose={() => setTripToDelete(null)}
         />
       )}
-    </main>
+    </div>
   );
-}
+};
+
+export default TripsPage;
