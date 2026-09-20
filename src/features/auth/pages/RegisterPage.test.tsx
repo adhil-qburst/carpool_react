@@ -35,6 +35,53 @@ describe("RegisterPage", () => {
     vi.mocked(authApi.register).mockReset();
   });
 
+  it("renders the Stitch Serene Transit elements, hero panel, and trust badges", () => {
+    renderRegisterPage();
+
+    expect(
+      screen.getByText(/Shared journeys for smoother, greener daily commutes/i),
+    ).toBeInTheDocument();
+    expect(screen.getByText(/142 kg CO₂/i)).toBeInTheDocument();
+    expect(screen.getByText(/Verified Community/i)).toBeInTheDocument();
+    expect(screen.getByText(/Govt. KYC Verified/i)).toBeInTheDocument();
+    expect(screen.getByText(/0% Platform Fee/i)).toBeInTheDocument();
+    expect(screen.getByText(/24\/7 Ride SOS/i)).toBeInTheDocument();
+    expect(screen.getByText(/256-bit SSL Encrypted Workspace/i)).toBeInTheDocument();
+    expect(screen.getByText(/Join CarPool Network/i)).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Sign In/i })).toBeInTheDocument();
+  });
+
+  it("dynamically displays role guidance when toggling roles", async () => {
+    const user = userEvent.setup();
+    renderRegisterPage();
+
+    // Initially neither guidance is shown
+    expect(screen.queryByText(/Driver Onboarding Step 1/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Quick Passenger Setup/i)).not.toBeInTheDocument();
+
+    // Select Driver
+    await user.click(screen.getByRole("checkbox", { name: /driver/i }));
+    expect(screen.getByText(/Driver Onboarding Step 1/i)).toBeInTheDocument();
+
+    // Select Passenger / Rider
+    await user.click(screen.getByRole("checkbox", { name: /rider/i }));
+    expect(screen.getByText(/Quick Passenger Setup/i)).toBeInTheDocument();
+  });
+
+  it("toggles password visibility with show/hide button", async () => {
+    const user = userEvent.setup();
+    renderRegisterPage();
+
+    const passwordInput = screen.getByLabelText(/^password$/i);
+    expect(passwordInput).toHaveAttribute("type", "password");
+
+    const toggleButton = screen.getByRole("button", { name: /show password/i });
+    await user.click(toggleButton);
+
+    expect(passwordInput).toHaveAttribute("type", "text");
+    expect(screen.getByRole("button", { name: /hide password/i })).toBeInTheDocument();
+  });
+
   it("shows validation errors and does not call the API when the form is empty", async () => {
     const user = userEvent.setup();
     renderRegisterPage();
