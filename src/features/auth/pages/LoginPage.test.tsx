@@ -31,20 +31,26 @@ describe("LoginPage", () => {
   it("renders the Stitch Serene Transit elements, in-card branding, and trust badges", () => {
     renderLoginPage();
 
+    // In-card brand identity inside the left hero panel (same like sign up page)
     expect(screen.getByRole("link", { name: /CarPool Home/i })).toBeInTheDocument();
-    expect(screen.getAllByText(/Shared Mobility/i).length).toBeGreaterThanOrEqual(1);
-    expect(screen.getByText(/Verified Hub/i)).toBeInTheDocument();
+    expect(screen.getByText(/Sustainable Commute Network/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/Verified Community/i).length).toBeGreaterThanOrEqual(1);
 
-    expect(screen.getByText(/256-bit SSL Encryption/i)).toBeInTheDocument();
-    expect(screen.getByText(/Government Guidelines Compliant/i)).toBeInTheDocument();
-    expect(screen.getByText(/24\/7 Transit Support/i)).toBeInTheDocument();
+    // Left hero panel highlights
+    expect(screen.getByText(/Over 12,000 verified trips/i)).toBeInTheDocument();
+    expect(screen.getByText(/Smart Corridor Routes/i)).toBeInTheDocument();
+
+    // Bottom trust footer
+    expect(screen.getByText(/256-bit SSL/i)).toBeInTheDocument();
+    expect(screen.getByText(/Govt\. Compliant/i)).toBeInTheDocument();
+    expect(screen.getByText(/24\/7 Support/i)).toBeInTheDocument();
   });
 
-  it("renders unified welcome headline and create account link", () => {
+  it("renders welcome headline and create account link", () => {
     renderLoginPage();
 
-    expect(screen.getByRole("heading", { name: /Welcome back to CarPool/i })).toBeInTheDocument();
-    expect(screen.getByPlaceholderText("you@example.com")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /Welcome back/i })).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("rider@example.com")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /Sign In to CarPool/i })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /Create an account/i })).toBeInTheDocument();
   });
@@ -84,12 +90,12 @@ describe("LoginPage", () => {
     const user = userEvent.setup();
     renderLoginPage();
 
-    await user.type(screen.getByLabelText(/Email Address/i), "passenger@example.com");
+    await user.type(screen.getByLabelText(/Email Address/i), "rider@example.com");
     await user.type(screen.getByLabelText(/^Password$/i), "securepassword");
     await user.click(screen.getByRole("button", { name: /Sign In to CarPool/i }));
 
     expect(authApi.login).toHaveBeenCalledWith({
-      email: "passenger@example.com",
+      email: "rider@example.com",
       password: "securepassword",
     });
     expect(await screen.findByRole("status")).toHaveTextContent(/Signed in/i);
@@ -108,7 +114,7 @@ describe("LoginPage", () => {
     const user = userEvent.setup();
     renderLoginPage();
 
-    await user.type(screen.getByLabelText(/Email Address/i), "passenger@example.com");
+    await user.type(screen.getByLabelText(/Email Address/i), "rider@example.com");
     await user.type(screen.getByLabelText(/^Password$/i), "wrongpassword");
     await user.click(screen.getByRole("button", { name: /Sign In to CarPool/i }));
 

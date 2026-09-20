@@ -7,8 +7,6 @@ import LockIcon from "@shared/ui/LockIcon";
 import EyeIcon from "@shared/ui/EyeIcon";
 import EyeSlashIcon from "@shared/ui/EyeSlashIcon";
 import ArrowRightIcon from "@shared/ui/ArrowRightIcon";
-import FieldIcon from "@shared/ui/FieldIcon";
-import ShieldCheckIcon from "@shared/ui/ShieldCheckIcon";
 import LoginHeroPanel from "../components/LoginHeroPanel";
 import LoginTrustFooter from "../components/LoginTrustFooter";
 import { emailPattern } from "@core/types/util.types";
@@ -79,47 +77,22 @@ const LoginPage = () => {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-surface-canvas p-4 font-sans text-on-surface antialiased selection:bg-surface-mint selection:text-primary sm:p-6 lg:p-8">
-      {/* Main Container */}
-      <main className="mx-auto w-full max-w-7xl">
-        <div className="grid w-full grid-cols-1 items-stretch gap-8 lg:grid-cols-12">
+      {/* Main Container: Split Two-Pane Card */}
+      <main className="mx-auto flex w-full max-w-7xl flex-1 items-center justify-center">
+        <div className="grid w-full grid-cols-1 items-stretch overflow-hidden rounded-3xl border border-border-subtle bg-surface-card shadow-xl lg:grid-cols-12">
           {/* Left Hero Showcase Panel */}
           <LoginHeroPanel />
 
           {/* Right Form Panel */}
-          <div className="flex flex-col justify-center lg:col-span-6 xl:col-span-5">
-            <div className="w-full rounded-3xl border border-border-subtle bg-surface-card p-6 shadow-sm transition-all sm:p-8">
-              {/* In-Card Branding Header */}
-              <div className="mb-6 flex items-center justify-between border-b border-divider-line pb-5">
-                <Link
-                  to={route_paths.home}
-                  className="group inline-flex items-center gap-2.5 transition-opacity hover:opacity-90"
-                  aria-label="CarPool Home"
-                >
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-white shadow-sm shadow-primary/20 transition-transform group-hover:scale-105">
-                    <FieldIcon type="car" className="h-5 w-5 text-white" />
-                  </div>
-                  <div>
-                    <span className="text-xl font-bold tracking-tight text-on-surface">
-                      Car<span className="text-primary">Pool</span>
-                    </span>
-                    <span className="block text-[11px] font-semibold text-text-muted">
-                      Shared Mobility Platform
-                    </span>
-                  </div>
-                </Link>
-                <div className="hidden sm:inline-flex items-center gap-1.5 rounded-full border border-surface-mint-border bg-surface-mint px-2.5 py-1 text-xs font-semibold text-primary">
-                  <ShieldCheckIcon className="h-3.5 w-3.5 text-primary" />
-                  <span>Verified Hub</span>
-                </div>
-              </div>
-
+          <div className="flex flex-col justify-between bg-surface-card p-6 sm:p-8 lg:col-span-6 lg:p-10 xl:col-span-6">
+            <div className="w-full">
               {/* Welcome Headline */}
-              <div className="mb-6">
-                <h2 className="text-2xl font-bold tracking-tight text-on-surface">
-                  Welcome back to CarPool
-                </h2>
-                <p className="mt-1 text-sm text-text-muted">
-                  Enter your details to search daily commutes, reserve seats, or manage trips.
+              <div className="mb-5">
+                <h1 className="text-2xl font-bold tracking-tight text-on-surface">
+                  Welcome back
+                </h1>
+                <p className="mt-0.5 text-sm text-text-muted">
+                  Enter your credentials to access your CarPool workspace and journeys.
                 </p>
               </div>
 
@@ -172,7 +145,7 @@ const LoginPage = () => {
                       name="email"
                       type="email"
                       autoComplete="email"
-                      placeholder="you@example.com"
+                      placeholder="rider@example.com"
                       className={fieldClass(Boolean(errors.email))}
                       value={form.email}
                       onChange={(event) => update("email", event.target.value)}
@@ -243,7 +216,7 @@ const LoginPage = () => {
                     <input
                       type="checkbox"
                       name="remember"
-                      className="h-4 w-4 rounded border-border-subtle text-primary accent-primary focus:ring-primary"
+                      className="h-4 w-4 rounded border-outline-variant text-primary accent-primary focus:ring-primary"
                     />
                     <span>Keep me signed in on this device</span>
                   </label>
@@ -267,15 +240,15 @@ const LoginPage = () => {
               </form>
 
               {/* Email Verification Resend Box */}
-              <div className="mt-5 flex items-start gap-2.5 rounded-xl border border-border-subtle bg-surface-container-low p-3.5">
-                <span className="mt-0.5 shrink-0 text-text-muted">
+              <div className="mt-5 flex items-center justify-center gap-2.5 rounded-xl border border-border-subtle bg-surface-container-low p-3.5 text-center sm:text-left">
+                <span className="shrink-0 text-text-muted">
                   <MailIcon />
                 </span>
-                <div className="text-xs leading-relaxed text-text-muted">
+                <div className="flex flex-wrap items-center justify-center gap-1 text-xs leading-relaxed text-text-muted">
                   <span>Didn't receive or need a new verification link?</span>
                   <Link
                     to={route_paths.register}
-                    className="ml-1 inline-flex items-center gap-0.5 font-semibold text-primary hover:underline"
+                    className="inline-flex items-center gap-0.5 font-semibold text-primary hover:underline"
                   >
                     <span>Resend Verification Email</span>
                     <ArrowRightIcon className="h-3 w-3" />
@@ -284,12 +257,12 @@ const LoginPage = () => {
               </div>
 
               {/* Bottom Register Switch */}
-              <div className="mt-6 border-t border-border-subtle pt-5 text-center">
+              <div className="mt-5 border-t border-border-subtle pt-4 text-center">
                 <p className="text-xs text-text-muted">
                   New to CarPool?
                   <Link
                     to={route_paths.register}
-                    className="ml-1 font-bold text-primary transition-colors hover:underline"
+                    className="ml-1 font-bold text-primary transition-colors hover:text-primary-hover hover:underline"
                   >
                     Create an account →
                   </Link>
