@@ -1,24 +1,43 @@
-import { useState } from "react";
-import { Link } from "react-router";
-import BrandMark from "@shared/ui/BrandMark";
-import FieldIcon from "@shared/ui/FieldIcon";
-import PlusIcon from "@shared/ui/PlusIcon";
-import PencilIcon from "@shared/ui/PencilIcon";
-import TrashIcon from "@shared/ui/TrashIcon";
+import { useState, useMemo } from "react";
 import { toApiError } from "@core/api/apiError";
-import { route_paths } from "@core/router/route_paths";
+import { useCurrentUserQuery } from "@features/users/hooks/useCurrentUserQuery";
+import DriverSidebar from "@features/home/components/dashboard/DriverSidebar";
+import DriverTopBar from "@features/home/components/dashboard/DriverTopBar";
 import { useRoutesQuery } from "../hooks/useRoutesQuery";
 import { useDeleteRouteMutation } from "../hooks/useDeleteRouteMutation";
+import { useCreateRouteMutation } from "../hooks/useCreateRouteMutation";
 import DeleteRouteModal from "../modals/DeleteRouteModal";
+import RouteHeader from "../components/RouteHeader";
+import RouteFilterTabs, {
+  type RouteFilterType,
+} from "../components/RouteFilterTabs";
+import RouteCard from "../components/RouteCard";
+import WaypointBuilder from "../components/WaypointBuilder";
+import RoutesEmptyState from "../components/RoutesEmptyState";
+import RoutesPagination from "../components/RoutesPagination";
 import type { RouteResponse } from "../types/routes.api.types";
 
 const PAGE_LIMIT = 10;
 
-export default function RoutesPage() {
+const RoutesPage = () => {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [page, setPage] = useState(1);
+  const [activeTab, setActiveTab] = useState<RouteFilterType>("all");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedRouteId, setSelectedRouteId] = useState<string | null>(null);
   const [routeToDelete, setRouteToDelete] = useState<RouteResponse | null>(null);
   const [feedback, setFeedback] = useState<string | null>(null);
-  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
+
+  const { data: currentUser } = useCurrentUserQuery();
+  const driverName = currentUser?.name || "Arun Kumar";
+  const driverInitials =
+    driverName
+      .split(" ")
+      .map((part) => part[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2) || "AK";
 
   const {
     data: routesData,
@@ -29,323 +48,248 @@ export default function RoutesPage() {
   } = useRoutesQuery({ page, limit: PAGE_LIMIT });
 
   const deleteMutation = useDeleteRouteMutation();
+  const createMutation = useCreateRouteMutation();
 
-  const routes = routesData?.items ?? [];
+  const routes = useMemo(() => routesData?.items ?? [], [routesData?.items]);
   const totalRoutes = routesData?.total ?? 0;
   const totalPages = Math.max(1, Math.ceil(totalRoutes / PAGE_LIMIT));
 
-  const totalStopsOnPage = routes.reduce(
-    (sum, r) => sum + (r.route_stops?.length || 0),
-    0,
-  );
+  // Determine active route for WaypointBuilder
+  const selectedRoute = useMemo(() => {
+    if (selectedRouteId) {
+      const found = routes.find((r) => r.id === selectedRouteId);
+      if (found) return found;
+    }
+    return routes.length > 0 ? routes[0] : null;
+  }, [routes, selectedRouteId]);
 
-  function handleDeleteConfirm() {
+  // Filter routes based on active tab and search query
+  const filteredRoutes = useMemo(() => {
+    return routes.filter((route) => {
+      if (activeTab === "inactive") return false;
+      if (searchQuery.trim()) {
+        const q = searchQuery.toLowerCase();
+        const matchName = route.name.toLowerCase().includes(q);
+        const matchStops = (route.route_stops ?? []).some((s) => {
+          const locName = s.location?.name?.toLowerCase() || "";
+          const city = s.location?.city?.toLowerCase() || "";
+          return locName.includes(q) || city.includes(q);
+        });
+        if (!matchName && !matchStops) return false;
+      }
+      return true;
+    });
+  }, [routes, activeTab, searchQuery]);
+
+  const handleDeleteConfirm = () => {
     if (!routeToDelete) return;
+    setActionError(null);
 
-    setDeleteError(null);
     deleteMutation.mutate(routeToDelete.id, {
       onSuccess: () => {
         const deletedName = routeToDelete.name;
+        if (selectedRouteId === routeToDelete.id) {
+          setSelectedRouteId(null);
+        }
         setRouteToDelete(null);
         setFeedback(`"${deletedName}" has been successfully deleted.`);
       },
       onError: (err) => {
         const apiError = toApiError(err);
         setRouteToDelete(null);
-        setDeleteError(apiError.message);
+        setActionError(apiError.message);
       },
     });
-  }
+  };
+
+  const handleDuplicateRoute = (route: RouteResponse) => {
+    const stops = [...(route.route_stops ?? [])].sort(
+      (a, b) => a.sequence - b.sequence,
+    );
+    if (stops.length < 2) {
+      setActionError("Cannot duplicate a route without origin and destination.");
+      return;
+    }
+
+    const sourceId = stops[0].location_id;
+    const destId = stops[stops.length - 1].location_id;
+    const intermediateStops = stops.slice(1, -1).map((s, idx) => ({
+      stop_id: s.location_id,
+      sequence: idx + 1,
+    }));
+
+    createMutation.mutate(
+      {
+        name: `${route.name} (Copy)`,
+        source_id: sourceId,
+        dest_id: destId,
+        stops: intermediateStops.length > 0 ? intermediateStops : null,
+      },
+      {
+        onSuccess: (newRoute) => {
+          setSelectedRouteId(newRoute.id);
+          setFeedback(`"${route.name}" duplicated successfully as "${newRoute.name}".`);
+        },
+        onError: (err) => {
+          const apiError = toApiError(err);
+          setActionError(apiError.message);
+        },
+      },
+    );
+  };
 
   return (
-    <main className="min-h-screen bg-slate-50 p-4 sm:p-6 lg:p-8">
-      <div className="mx-auto grid min-h-[calc(100vh-2rem)] max-w-6xl overflow-hidden rounded-4xl bg-white shadow-2xl shadow-slate-900/10 lg:min-h-[calc(100vh-4rem)] lg:grid-cols-[.85fr_1.15fr]">
-        {/* Left Branding & Highlights Pane */}
-        <aside className="relative hidden overflow-hidden bg-slate-950 p-10 text-white lg:flex lg:flex-col">
-          <div className="absolute -left-24 top-28 h-72 w-72 rounded-full bg-indigo-500/30 blur-3xl" />
-          <div className="absolute -bottom-24 -right-12 h-80 w-80 rounded-full bg-cyan-400/15 blur-3xl" />
-          <div className="relative flex items-center gap-3">
-            <BrandMark />
-            <span className="text-lg font-bold tracking-tight">Carpool</span>
-          </div>
+    <div className="flex min-h-screen bg-surface-canvas font-sans text-on-surface antialiased">
+      {/* Sidebar Navigation */}
+      <DriverSidebar
+        driverName={driverName}
+        driverInitials={driverInitials}
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+      />
 
-          <div className="relative my-auto max-w-sm">
-            <p className="mb-5 inline-flex rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-semibold tracking-wide text-indigo-100 uppercase">
-              MY ROUTES
-            </p>
-            <h1 className="text-4xl font-semibold leading-[1.08] tracking-tight text-white">
-              Manage your daily carpool routes.
-            </h1>
-            <p className="mt-5 max-w-xs text-base leading-7 text-slate-300">
-              Review your routes, pickup locations, and stops to organize smooth
-              rides for your passengers.
-            </p>
-          </div>
+      {/* Main Workspace Container */}
+      <div className="flex min-w-0 flex-1 flex-col lg:pl-64">
+        {/* Top App Bar */}
+        <DriverTopBar
+          driverName={driverName}
+          driverInitials={driverInitials}
+          onSearch={setSearchQuery}
+          onMenuClick={() => setSidebarOpen(true)}
+        />
 
-          <div className="relative grid grid-cols-2 gap-3">
-            <div className="rounded-2xl border border-white/10 bg-white/[.07] p-4">
-              <p className="text-2xl font-semibold">
-                {isLoading ? "–" : totalRoutes}
-              </p>
-              <p className="mt-1 text-xs text-slate-400">Total routes</p>
-            </div>
-            <div className="rounded-2xl border border-white/10 bg-white/[.07] p-4">
-              <p className="text-2xl font-semibold">
-                {isLoading ? "–" : totalStopsOnPage}
-              </p>
-              <p className="mt-1 text-xs text-slate-400">Stops configured</p>
-            </div>
-          </div>
-        </aside>
+        {/* Page Main Content Area */}
+        <main className="mx-auto w-full max-w-[1360px] flex-1 p-4 sm:p-6 lg:p-8 space-y-6">
+          {/* Header & Hero Area */}
+          <RouteHeader
+            onReorderClick={() => {
+              if (routes.length > 0) {
+                setSelectedRouteId(routes[0].id);
+              }
+            }}
+          />
 
-        {/* Right Content Pane */}
-        <section className="flex flex-col p-6 sm:p-10 lg:p-12">
-          <div className="flex items-center justify-between lg:hidden">
-            <div className="flex items-center gap-3">
-              <BrandMark />
-              <span className="text-lg font-bold tracking-tight text-slate-950">
-                Carpool
-              </span>
-            </div>
-            <Link
-              to={route_paths.home}
-              className="text-sm font-semibold text-indigo-600 hover:text-indigo-700"
-            >
-              Dashboard
-            </Link>
-          </div>
-
-          <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between lg:mt-0">
-            <div>
-              <p className="text-sm font-semibold text-indigo-600 uppercase">
-                DRIVER ROUTES
-              </p>
-              <h1 className="mt-1 text-3xl font-bold tracking-tight text-slate-950">
-                My Routes
-              </h1>
-              <p className="mt-1 text-[15px] leading-6 text-slate-500">
-                View, create, and manage your defined carpool routes.
-              </p>
-            </div>
-
-            <Link
-              to={route_paths.routesNew}
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-600/25 transition hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-200"
-            >
-              <PlusIcon className="h-4 w-4" />
-              Create route
-            </Link>
-          </div>
-
+          {/* Feedback & Alert Banners */}
           {feedback && (
             <div
               role="status"
-              className="mt-6 flex items-center justify-between rounded-xl bg-emerald-50 px-4 py-3 text-sm text-emerald-800 border border-emerald-100"
+              className="flex items-center justify-between rounded-xl border border-surface-mint-border bg-surface-mint px-4 py-3 text-xs sm:text-sm font-medium text-primary shadow-xs"
             >
               <span>{feedback}</span>
               <button
                 type="button"
                 onClick={() => setFeedback(null)}
-                className="ml-3 font-semibold text-emerald-700 hover:underline cursor-pointer"
+                className="ml-3 font-semibold text-primary hover:underline cursor-pointer"
               >
                 Dismiss
               </button>
             </div>
           )}
 
-          {deleteError && (
+          {actionError && (
             <div
               role="alert"
-              className="mt-6 rounded-xl bg-rose-50 px-4 py-3 text-sm text-rose-600 border border-rose-100"
+              className="flex items-center justify-between rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-xs sm:text-sm text-rose-700 shadow-xs"
             >
-              {deleteError}
+              <span>{actionError}</span>
+              <button
+                type="button"
+                onClick={() => setActionError(null)}
+                className="ml-3 font-semibold text-rose-700 hover:underline cursor-pointer"
+              >
+                Dismiss
+              </button>
             </div>
           )}
 
-          <div className="mt-8 flex-1">
-            {isLoading && (
-              <div
-                role="status"
-                className="grid place-items-center rounded-2xl border border-slate-200 bg-white p-12 text-center"
+          {/* Loading Indicator */}
+          {isLoading && (
+            <div
+              role="status"
+              className="grid place-items-center rounded-2xl border border-border-subtle bg-surface-card p-12 text-center shadow-xs"
+            >
+              <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+              <p className="mt-4 text-xs sm:text-sm font-medium text-text-muted">
+                Loading routes...
+              </p>
+            </div>
+          )}
+
+          {/* Error State */}
+          {isError && (
+            <div className="rounded-2xl border border-rose-200 bg-rose-50 p-8 text-center shadow-xs">
+              <p className="text-base font-semibold text-rose-700">
+                Could not load your routes
+              </p>
+              <p className="mt-1 text-xs sm:text-sm text-rose-600">
+                {error instanceof Error
+                  ? error.message
+                  : "An unexpected error occurred."}
+              </p>
+              <button
+                type="button"
+                onClick={() => refetch()}
+                className="mt-4 rounded-xl bg-rose-600 px-4 py-2.5 text-xs sm:text-sm font-semibold text-white shadow-xs hover:bg-rose-700 cursor-pointer"
               >
-                <div className="h-8 w-8 animate-spin rounded-full border-4 border-indigo-600 border-t-transparent" />
-                <p className="mt-4 text-sm font-medium text-slate-600">
-                  Loading routes...
-                </p>
-              </div>
-            )}
+                Try again
+              </button>
+            </div>
+          )}
 
-            {isError && (
-              <div className="rounded-2xl border border-rose-200 bg-rose-50 p-8 text-center">
-                <p className="text-base font-semibold text-rose-700">
-                  Could not load your routes
-                </p>
-                <p className="mt-1 text-sm text-rose-600">
-                  {error instanceof Error
-                    ? error.message
-                    : "An unexpected error occurred."}
-                </p>
-                <button
-                  type="button"
-                  onClick={() => refetch()}
-                  className="mt-4 rounded-xl bg-rose-600 px-4 py-2.5 text-sm font-semibold text-white shadow hover:bg-rose-700"
-                >
-                  Try again
-                </button>
-              </div>
-            )}
+          {/* Empty State */}
+          {!isLoading && !isError && routes.length === 0 && (
+            <RoutesEmptyState />
+          )}
 
-            {!isLoading && !isError && routes.length === 0 && (
-              <div className="grid place-items-center rounded-3xl border-2 border-dashed border-slate-200 bg-slate-50/50 p-10 text-center sm:p-14">
-                <div className="grid h-16 w-16 place-items-center rounded-2xl bg-indigo-50 text-indigo-600">
-                  <FieldIcon type="pin" className="h-8 w-8" />
-                </div>
-                <h2 className="mt-5 text-xl font-bold text-slate-950">
-                  No routes created yet
-                </h2>
-                <p className="mt-2 max-w-sm text-sm leading-6 text-slate-500">
-                  You haven&rsquo;t configured any travel routes yet. Create a route
-                  with ordered pickup and dropoff points to start sharing rides.
-                </p>
-                <Link
-                  to={route_paths.routesNew}
-                  className="mt-6 inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-600/25 transition hover:bg-indigo-700"
-                >
-                  <PlusIcon className="h-4 w-4" />
-                  Create your first route
-                </Link>
-              </div>
-            )}
+          {/* Main Two-Column Layout Grid (Stitch Specification) */}
+          {!isLoading && !isError && routes.length > 0 && (
+            <div className="grid grid-cols-12 gap-6 items-start">
+              {/* Left Column: Saved Corridors List (5 cols on lg) */}
+              <div className="col-span-12 lg:col-span-5 space-y-4">
+                <RouteFilterTabs
+                  activeTab={activeTab}
+                  onTabChange={setActiveTab}
+                  allCount={routes.length}
+                  activeCount={routes.length}
+                  inactiveCount={0}
+                />
 
-            {!isLoading && !isError && routes.length > 0 && (
-              <div className="space-y-4">
-                <div className="grid gap-4 sm:grid-cols-2">
-                  {routes.map((route) => {
-                    const sortedStops = [...(route.route_stops ?? [])].sort(
-                      (a, b) => a.sequence - b.sequence,
-                    );
-                    const stopCount = sortedStops.length;
-
-                    return (
-                      <div
-                        key={route.id}
-                        className="flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-slate-300 hover:shadow-md"
-                      >
-                        <div>
-                          <div className="flex items-start justify-between gap-3">
-                            <h2 className="text-lg font-bold text-slate-950">
-                              {route.name}
-                            </h2>
-                            <span className="inline-flex items-center rounded-lg bg-indigo-50 px-2.5 py-1 text-xs font-semibold text-indigo-700">
-                              {stopCount} {stopCount === 1 ? "stop" : "stops"}
-                            </span>
-                          </div>
-
-                          <div className="mt-4">
-                            <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-                              Stop Sequence
-                            </p>
-                            <div className="mt-2 flex flex-wrap items-center gap-1.5">
-                              {sortedStops.map((stop, index) => {
-                                const isStart = index === 0;
-                                const isEnd = index === sortedStops.length - 1;
-                                const label = isStart
-                                  ? "Start"
-                                  : isEnd
-                                    ? "End"
-                                    : `Stop ${index + 1}`;
-                                const locationDisplay = stop.location
-                                  ? `${stop.location.name}${stop.location.city ? `, ${stop.location.city}` : ""}`
-                                  : stop.location_id;
-
-                                return (
-                                  <div key={stop.id} className="flex items-center gap-1.5">
-                                    <span
-                                      className={`inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-xs font-medium ${
-                                        isStart
-                                          ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
-                                          : isEnd
-                                            ? "bg-blue-50 text-blue-700 border border-blue-200"
-                                            : "bg-slate-100 text-slate-700 border border-slate-200"
-                                      }`}
-                                      title={locationDisplay}
-                                    >
-                                      <span className="font-semibold">{label}</span>
-                                      <span className="opacity-90">({locationDisplay})</span>
-                                    </span>
-                                    {index < sortedStops.length - 1 && (
-                                      <span className="text-slate-300">
-                                        →
-                                      </span>
-                                    )}
-                                  </div>
-                                );
-                              })}
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="mt-6 flex items-center justify-end gap-2 border-t border-slate-100 pt-4">
-                          <Link
-                            to={route_paths.getRouteEditPath(route.id)}
-                            state={{ route }}
-                            aria-label={`Edit ${route.name}`}
-                            className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-200"
-                          >
-                            <PencilIcon className="h-3.5 w-3.5" />
-                            Edit
-                          </Link>
-
-                          <button
-                            type="button"
-                            onClick={() => setRouteToDelete(route)}
-                            aria-label={`Delete ${route.name}`}
-                            className="inline-flex items-center gap-1.5 rounded-lg border border-rose-200 px-3 py-1.5 text-xs font-semibold text-rose-600 transition hover:bg-rose-50 focus:outline-none focus:ring-2 focus:ring-rose-200 cursor-pointer"
-                          >
-                            <TrashIcon className="h-3.5 w-3.5" />
-                            Delete
-                          </button>
-                        </div>
-                      </div>
-                    );
-                  })}
+                <div className="space-y-4">
+                  {filteredRoutes.map((route) => (
+                    <RouteCard
+                      key={route.id}
+                      route={route}
+                      isSelected={selectedRoute?.id === route.id}
+                      onSelect={() => setSelectedRouteId(route.id)}
+                      onDuplicate={handleDuplicateRoute}
+                      onDelete={(r) => setRouteToDelete(r)}
+                    />
+                  ))}
                 </div>
 
                 {/* Pagination Controls */}
-                {totalPages > 1 && (
-                  <div className="mt-6 flex items-center justify-between border-t border-slate-200 pt-4">
-                    <p className="text-sm text-slate-600">
-                      Page <span className="font-semibold">{page}</span> of{" "}
-                      <span className="font-semibold">{totalPages}</span>
-                    </p>
-                    <div className="flex items-center gap-2">
-                      <button
-                        type="button"
-                        disabled={page <= 1}
-                        onClick={() => setPage((p) => Math.max(1, p - 1))}
-                        className="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 disabled:opacity-50 disabled:pointer-events-none"
-                      >
-                        Previous
-                      </button>
-                      <button
-                        type="button"
-                        disabled={page >= totalPages}
-                        onClick={() =>
-                          setPage((p) => Math.min(totalPages, p + 1))
-                        }
-                        className="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 disabled:opacity-50 disabled:pointer-events-none"
-                      >
-                        Next
-                      </button>
-                    </div>
-                  </div>
-                )}
+                <RoutesPagination
+                  page={page}
+                  totalPages={totalPages}
+                  onPageChange={setPage}
+                />
               </div>
-            )}
-          </div>
-        </section>
+
+              {/* Right Column: Interactive Waypoint Builder (7 cols on lg) */}
+              <div className="col-span-12 lg:col-span-7">
+                <WaypointBuilder
+                  key={selectedRoute?.id ?? "none"}
+                  selectedRoute={selectedRoute}
+                  onSaveSuccess={(msg) => setFeedback(msg)}
+                  onSaveError={(err) => setActionError(err)}
+                />
+              </div>
+            </div>
+          )}
+        </main>
       </div>
 
+      {/* Delete Route Confirmation Dialog */}
       {routeToDelete && (
         <DeleteRouteModal
           route={routeToDelete}
@@ -354,6 +298,8 @@ export default function RoutesPage() {
           onClose={() => setRouteToDelete(null)}
         />
       )}
-    </main>
+    </div>
   );
-}
+};
+
+export default RoutesPage;
