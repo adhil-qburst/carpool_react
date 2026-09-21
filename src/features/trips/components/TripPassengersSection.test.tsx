@@ -144,6 +144,9 @@ describe("TripPassengersSection", () => {
     // Summary counts in header
     expect(screen.getByText("2 passengers")).toBeInTheDocument();
     expect(screen.getByText("2 seats confirmed")).toBeInTheDocument();
+
+    // Booked date/time labels
+    expect(screen.getAllByText("Booked:").length).toBe(2);
   });
 
   it("filters passengers by status when clicking filter tabs", async () => {

@@ -41,6 +41,23 @@ function getInitials(name: string): string {
   return name.slice(0, 2).toUpperCase() || "PA";
 }
 
+function formatBookedAt(dateStr?: string): string {
+  if (!dateStr) return "—";
+  try {
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return dateStr;
+    return d.toLocaleString(undefined, {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  } catch {
+    return dateStr;
+  }
+}
+
 export default function TripPassengersSection({
   tripId,
   className = "",
@@ -226,6 +243,13 @@ export default function TripPassengersSection({
                     <p className="font-semibold text-slate-900">
                       {passenger.seats_booked}{" "}
                       {passenger.seats_booked === 1 ? "seat" : "seats"}
+                    </p>
+                  </div>
+
+                  <div className="border-l border-slate-200 pl-4">
+                    <span className="text-slate-400">Booked:</span>
+                    <p className="font-semibold text-slate-900">
+                      {formatBookedAt(passenger.created_at)}
                     </p>
                   </div>
                 </div>
