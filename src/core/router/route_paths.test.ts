@@ -15,6 +15,7 @@ describe("route_paths", () => {
     expect(route_paths.vehiclesEdit).toBe("/vehicles/:vehicleId/edit");
     expect(route_paths.tripsBook).toBe("/trips/book");
     expect(route_paths.tripsSearch).toBe("/trips/search");
+    expect(route_paths.tripsDetail).toBe("/trips/:tripId");
     expect(route_paths.bookings).toBe("/bookings");
   });
 
@@ -24,11 +25,17 @@ describe("route_paths", () => {
     expect(route_paths.LOGIN).toBe(route_paths.login);
     expect(route_paths.REGISTER).toBe(route_paths.register);
     expect(route_paths.VEHICLES).toBe(route_paths.vehicles);
+    expect(route_paths.TRIPS_DETAIL).toBe(route_paths.tripsDetail);
     expect(route_paths.BOOKINGS).toBe(route_paths.bookings);
   });
 
   it("generates dynamic vehicle edit path with getVehicleEditPath", () => {
     expect(route_paths.getVehicleEditPath("123")).toBe("/vehicles/123/edit");
     expect(route_paths.getVehicleEditPath(456)).toBe("/vehicles/456/edit");
+  });
+
+  it("generates dynamic trip detail path with getTripDetailPath", () => {
+    expect(route_paths.getTripDetailPath("trip-123")).toBe("/trips/trip-123");
+    expect(route_paths.getTripDetailPath(456)).toBe("/trips/456");
   });
 });

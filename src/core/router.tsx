@@ -13,6 +13,7 @@ import RoutesPage from "@features/routes/pages/RoutesPage";
 import CreateTripPage from "@features/trips/pages/CreateTripPage";
 import EditTripPage from "@features/trips/pages/EditTripPage";
 import TripsPage from "@features/trips/pages/TripsPage";
+import TripDetailPage from "@features/trips/pages/TripDetailPage";
 import BookRidePage from "@features/trips/pages/BookRidePage";
 import BookingsPage from "@features/bookings/pages/BookingsPage";
 import { tokenStorage } from "./auth/tokenStorage";
@@ -87,6 +88,10 @@ const router = createBrowserRouter([
       {
         path: route_paths.tripsEdit,
         element: <EditTripPage />,
+      },
+      {
+        path: route_paths.tripsDetail,
+        element: <TripDetailPage />,
       },
       {
         path: route_paths.tripsBook,

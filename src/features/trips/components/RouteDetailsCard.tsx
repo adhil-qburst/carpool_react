@@ -10,10 +10,11 @@ export default function RouteDetailsCard({
   route,
   className = "",
 }: RouteDetailsCardProps) {
+  const routeStops = route?.route_stops;
   const sortedStops = useMemo(() => {
-    if (!route?.route_stops) return [];
-    return [...route.route_stops].sort((a, b) => a.sequence - b.sequence);
-  }, [route?.route_stops]);
+    if (!routeStops) return [];
+    return [...routeStops].sort((a, b) => a.sequence - b.sequence);
+  }, [routeStops]);
 
   if (!route) {
     return null;

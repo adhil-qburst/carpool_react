@@ -13,7 +13,7 @@ export function useSearchTripsQuery(
       : Boolean(params?.source_location_id && params?.destination_location_id);
 
   return useQuery({
-    queryKey: tripKeys.search(params as Record<string, unknown>),
+    queryKey: tripKeys.search(params as unknown as Record<string, unknown>),
     queryFn: () => {
       if (!params) {
         throw new Error("Search parameters are required");

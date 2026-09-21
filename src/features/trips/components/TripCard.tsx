@@ -71,9 +71,12 @@ export default function TripCard({
               <FieldIcon type="pin" className="h-5 w-5" />
             </div>
             <div className="min-w-0">
-              <h3 className="truncate text-base font-bold text-slate-950">
+              <Link
+                to={route_paths.getTripDetailPath(trip.id)}
+                className="block truncate text-base font-bold text-slate-950 hover:text-indigo-600 transition"
+              >
                 {routeName}
-              </h3>
+              </Link>
               <p className="truncate text-xs text-slate-500">{vehicleLabel}</p>
             </div>
           </div>
@@ -109,6 +112,13 @@ export default function TripCard({
 
       {/* Action Buttons */}
       <div className="mt-5 flex items-center justify-end gap-2 border-t border-slate-100 pt-4">
+        <Link
+          to={route_paths.getTripDetailPath(trip.id)}
+          aria-label={`View details for trip ${routeName}`}
+          className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 hover:text-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        >
+          <span>Details</span>
+        </Link>
         {isScheduled ? (
           <Link
             to={route_paths.getTripEditPath(trip.id)}

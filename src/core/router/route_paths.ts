@@ -13,6 +13,7 @@ export const route_paths = {
   trips: "/trips",
   tripsNew: "/trips/new",
   tripsEdit: "/trips/:tripId/edit",
+  tripsDetail: "/trips/:tripId",
   tripsBook: "/trips/book",
   tripsSearch: "/trips/search",
   bookings: "/bookings",
@@ -28,6 +29,8 @@ export const route_paths = {
   editRoute: "/routes/:routeId/edit",
   newTrip: "/trips/new",
   tripNew: "/trips/new",
+  tripDetail: "/trips/:tripId",
+  tripDetails: "/trips/:tripId",
   bookRide: "/trips/book",
   email_verification_success: "/email-verification-success",
   vehicles_new: "/vehicles/new",
@@ -36,6 +39,7 @@ export const route_paths = {
   routes_edit: "/routes/:routeId/edit",
   trips_new: "/trips/new",
   trips_edit: "/trips/:tripId/edit",
+  trips_detail: "/trips/:tripId",
   trips_book: "/trips/book",
   trips_search: "/trips/search",
   bookingList: "/bookings",
@@ -57,6 +61,7 @@ export const route_paths = {
   TRIPS: "/trips",
   TRIPS_NEW: "/trips/new",
   TRIPS_EDIT: "/trips/:tripId/edit",
+  TRIPS_DETAIL: "/trips/:tripId",
   TRIPS_BOOK: "/trips/book",
   TRIPS_SEARCH: "/trips/search",
   BOOK_RIDE: "/trips/book",
@@ -70,6 +75,8 @@ export const route_paths = {
     `/routes/${routeId}/edit`,
   getTripEditPath: (tripId: string | number) =>
     `/trips/${tripId}/edit`,
+  getTripDetailPath: (tripId: string | number) =>
+    `/trips/${tripId}`,
 } as const;
 
 export type RoutePath = (typeof route_paths)[keyof typeof route_paths];
