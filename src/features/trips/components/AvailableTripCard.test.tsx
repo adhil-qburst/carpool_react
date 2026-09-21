@@ -49,7 +49,9 @@ describe("AvailableTripCard", () => {
     expect(handleBook).toHaveBeenCalledWith(mockTrip);
   });
 
-  it("disables booking button when not enough seats or trip is not scheduled", () => {
+  it("renders Join Waiting List button and responds to click when trip is sold out", async () => {
+    const user = userEvent.setup();
+    const handleBook = vi.fn();
     const soldOutTrip: TripResponse = {
       ...mockTrip,
       available_seats: 0,
@@ -59,11 +61,34 @@ describe("AvailableTripCard", () => {
       <AvailableTripCard
         trip={soldOutTrip}
         seatsNeeded={1}
-        onBook={vi.fn()}
+        onBook={handleBook}
       />,
     );
 
     expect(screen.getByText("Sold out")).toBeInTheDocument();
+    const waitlistButton = screen.getByRole("button", {
+      name: /join waiting list/i,
+    });
+    expect(waitlistButton).not.toBeDisabled();
+    await user.click(waitlistButton);
+
+    expect(handleBook).toHaveBeenCalledWith(soldOutTrip);
+  });
+
+  it("disables booking button when trip is not scheduled", () => {
+    const cancelledTrip: TripResponse = {
+      ...mockTrip,
+      status: "cancelled",
+    };
+
+    render(
+      <AvailableTripCard
+        trip={cancelledTrip}
+        seatsNeeded={1}
+        onBook={vi.fn()}
+      />,
+    );
+
     const bookButton = screen.getByRole("button", { name: /book ride/i });
     expect(bookButton).toBeDisabled();
   });
