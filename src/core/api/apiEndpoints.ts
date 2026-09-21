@@ -33,6 +33,8 @@ export const apiEndpoints = {
     search: `${API_PREFIX}/trips/search`,
     create: `${API_PREFIX}/trips`,
     byId: (tripId: string | number) => `${API_PREFIX}/trips/${tripId}`,
+    passengers: (tripId: string | number) =>
+      `${API_PREFIX}/trips/${tripId}/passengers`,
     update: (tripId: string | number) => `${API_PREFIX}/trips/${tripId}`,
     delete: (tripId: string | number) => `${API_PREFIX}/trips/${tripId}`,
   },

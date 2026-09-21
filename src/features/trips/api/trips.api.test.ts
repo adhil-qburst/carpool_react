@@ -2,7 +2,11 @@ import { describe, expect, it, vi, beforeEach } from "vitest";
 import { httpClient } from "@core/api/httpClient";
 import { apiEndpoints } from "@core/api/apiEndpoints";
 import { tripsApi } from "./trips.api";
-import type { CreateTripRequest, TripResponse } from "../types/trips.api.types";
+import type {
+  CreateTripRequest,
+  TripPassengerResponse,
+  TripResponse,
+} from "../types/trips.api.types";
 
 vi.mock("@core/api/httpClient", () => ({
   httpClient: {
@@ -111,6 +115,49 @@ describe("tripsApi", () => {
     expect(httpClient.get).toHaveBeenCalledWith(apiEndpoints.trips.byId("trip-99"));
     expect(result).toEqual(mockTrip);
   });
+
+  it("getPassengers calls GET on parameterized passengers endpoint and unwraps res.data", async () => {
+    const mockPassengers: TripPassengerResponse[] = [
+      {
+        id: "passenger-1",
+        booking_id: "booking-10",
+        rider_id: "rider-1",
+        rider_name: "Alice Rider",
+        rider_email: "alice@example.com",
+        rider: {
+          id: "rider-1",
+          name: "Alice Rider",
+          email: "alice@example.com",
+        },
+        seats_booked: 2,
+        status: "confirmed",
+        pickup_stop: {
+          id: "stop-1",
+          route_id: "route-1",
+          location_id: "loc-1",
+          sequence: 1,
+        },
+        dropoff_stop: {
+          id: "stop-2",
+          route_id: "route-1",
+          location_id: "loc-2",
+          sequence: 2,
+        },
+        created_at: "2026-09-21T10:00:00Z",
+        updated_at: "2026-09-21T10:00:00Z",
+      },
+    ];
+    vi.mocked(httpClient.get).mockResolvedValueOnce({ data: mockPassengers });
+
+    const result = await tripsApi.getPassengers("trip-99", { status: "confirmed" });
+
+    expect(httpClient.get).toHaveBeenCalledWith(
+      apiEndpoints.trips.passengers("trip-99"),
+      { params: { status: "confirmed" } },
+    );
+    expect(result).toEqual(mockPassengers);
+  });
+
 
   it("getRoutes calls GET on routes.list endpoint", async () => {
     const mockRoutes = {

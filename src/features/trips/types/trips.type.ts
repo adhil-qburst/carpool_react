@@ -17,3 +17,46 @@ export interface SearchTripsForm {
 }
 
 export type SearchTripsFormErrors = Partial<Record<keyof SearchTripsForm, string>>;
+
+export type TripPassengerStatus =
+  | "pending"
+  | "confirmed"
+  | "cancelled"
+  | "expired";
+
+export interface TripPassengerUser {
+  id: string;
+  name: string;
+  email: string;
+}
+
+export interface TripPassengerStopLocation {
+  id: string;
+  name: string;
+  city?: string | null;
+  lat?: string | number | null;
+  lng?: string | number | null;
+}
+
+export interface TripPassengerStop {
+  id: string;
+  routeId: string;
+  locationId: string;
+  sequence: number;
+  location?: TripPassengerStopLocation | null;
+}
+
+export interface TripPassenger {
+  id: string;
+  bookingId: string;
+  riderId: string;
+  riderName: string;
+  riderEmail: string;
+  rider: TripPassengerUser;
+  seatsBooked: number;
+  status: TripPassengerStatus;
+  pickupStop?: TripPassengerStop | null;
+  dropoffStop?: TripPassengerStop | null;
+  createdAt: string;
+  updatedAt: string;
+}

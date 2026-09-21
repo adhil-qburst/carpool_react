@@ -2,10 +2,12 @@ import { apiEndpoints } from "@core/api/apiEndpoints";
 import { httpClient } from "@core/api/httpClient";
 import type {
   CreateTripRequest,
+  ListTripPassengersQueryParams,
   ListTripsQueryParams,
   PaginatedTripsResponse,
   SearchTripsQueryParams,
   SearchTripsResponse,
+  TripPassengerResponse,
   TripResponse,
   TripRouteOption,
   TripVehicleOption,
@@ -31,6 +33,16 @@ export const tripsApi = {
   getById: (tripId: string): Promise<TripResponse> =>
     httpClient
       .get<TripResponse>(apiEndpoints.trips.byId(tripId))
+      .then((res) => res.data),
+
+  getPassengers: (
+    tripId: string,
+    params?: ListTripPassengersQueryParams,
+  ): Promise<TripPassengerResponse[]> =>
+    httpClient
+      .get<TripPassengerResponse[]>(apiEndpoints.trips.passengers(tripId), {
+        params,
+      })
       .then((res) => res.data),
 
   getRoutes: (): Promise<{ items: TripRouteOption[] }> =>

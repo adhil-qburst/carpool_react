@@ -14,6 +14,13 @@ describe("tripKeys", () => {
     ]);
     expect(tripKeys.details()).toEqual(["trips", "detail"]);
     expect(tripKeys.detail("123")).toEqual(["trips", "detail", "123"]);
+    expect(tripKeys.passengers("123", { status: "confirmed" })).toEqual([
+      "trips",
+      "detail",
+      "123",
+      "passengers",
+      { status: "confirmed" },
+    ]);
     expect(tripKeys.driverRoutes()).toEqual(["trips", "driverRoutes"]);
     expect(tripKeys.driverVehicles()).toEqual(["trips", "driverVehicles"]);
   });

@@ -1,4 +1,10 @@
-import type { CreateTripForm } from "./trips.type";
+import type {
+  CreateTripForm,
+  TripPassenger,
+  TripPassengerStatus,
+} from "./trips.type";
+
+export type { TripPassengerStatus };
 
 export type TripStatus = "scheduled" | "cancelled" | "completed" | "deleted";
 
@@ -106,3 +112,85 @@ export function toCreateTripRequest(form: CreateTripForm): CreateTripRequest {
     departure_time: formattedTime,
   };
 }
+
+export interface TripPassengerUserResponse {
+  id: string;
+  name: string;
+  email: string;
+}
+
+export interface TripPassengerResponse {
+  id: string;
+  booking_id: string;
+  rider_id: string;
+  rider_name: string;
+  rider_email: string;
+  rider: TripPassengerUserResponse;
+  seats_booked: number;
+  status: TripPassengerStatus;
+  pickup_stop: TripRouteStop;
+  dropoff_stop: TripRouteStop;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ListTripPassengersQueryParams {
+  status?: TripPassengerStatus | null;
+}
+
+/**
+ * Pure mapper converting backend TripPassengerResponse DTO to domain TripPassenger model.
+ */
+export function toTripPassenger(dto: TripPassengerResponse): TripPassenger {
+  return {
+    id: dto.id,
+    bookingId: dto.booking_id,
+    riderId: dto.rider_id,
+    riderName: dto.rider_name,
+    riderEmail: dto.rider_email,
+    rider: {
+      id: dto.rider.id,
+      name: dto.rider.name,
+      email: dto.rider.email,
+    },
+    seatsBooked: dto.seats_booked,
+    status: dto.status,
+    pickupStop: dto.pickup_stop
+      ? {
+          id: dto.pickup_stop.id,
+          routeId: dto.pickup_stop.route_id,
+          locationId: dto.pickup_stop.location_id,
+          sequence: dto.pickup_stop.sequence,
+          location: dto.pickup_stop.location
+            ? {
+                id: dto.pickup_stop.location.id,
+                name: dto.pickup_stop.location.name,
+                city: dto.pickup_stop.location.city,
+                lat: dto.pickup_stop.location.lat,
+                lng: dto.pickup_stop.location.lng,
+              }
+            : null,
+        }
+      : null,
+    dropoffStop: dto.dropoff_stop
+      ? {
+          id: dto.dropoff_stop.id,
+          routeId: dto.dropoff_stop.route_id,
+          locationId: dto.dropoff_stop.location_id,
+          sequence: dto.dropoff_stop.sequence,
+          location: dto.dropoff_stop.location
+            ? {
+                id: dto.dropoff_stop.location.id,
+                name: dto.dropoff_stop.location.name,
+                city: dto.dropoff_stop.location.city,
+                lat: dto.dropoff_stop.location.lat,
+                lng: dto.dropoff_stop.location.lng,
+              }
+            : null,
+        }
+      : null,
+    createdAt: dto.created_at,
+    updatedAt: dto.updated_at,
+  };
+}
+

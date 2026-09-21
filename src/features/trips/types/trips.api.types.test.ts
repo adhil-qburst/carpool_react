@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { toCreateTripRequest } from "./trips.api.types";
+import {
+  toCreateTripRequest,
+  toTripPassenger,
+} from "./trips.api.types";
+import type { TripPassengerResponse } from "./trips.api.types";
 import type { CreateTripForm } from "./trips.type";
 
 describe("toCreateTripRequest", () => {
@@ -52,3 +56,96 @@ describe("toCreateTripRequest", () => {
     });
   });
 });
+
+describe("toTripPassenger", () => {
+  it("maps TripPassengerResponse DTO to domain TripPassenger model", () => {
+    const dto: TripPassengerResponse = {
+      id: "passenger-1",
+      booking_id: "booking-101",
+      rider_id: "rider-50",
+      rider_name: "Alice Smith",
+      rider_email: "alice@example.com",
+      rider: {
+        id: "rider-50",
+        name: "Alice Smith",
+        email: "alice@example.com",
+      },
+      seats_booked: 2,
+      status: "confirmed",
+      pickup_stop: {
+        id: "stop-1",
+        route_id: "route-1",
+        location_id: "loc-1",
+        sequence: 1,
+        location: {
+          id: "loc-1",
+          name: "Downtown",
+          city: "Metropolis",
+          lat: 12.34,
+          lng: 56.78,
+        },
+      },
+      dropoff_stop: {
+        id: "stop-2",
+        route_id: "route-1",
+        location_id: "loc-2",
+        sequence: 2,
+        location: {
+          id: "loc-2",
+          name: "Uptown",
+          city: "Metropolis",
+          lat: 12.56,
+          lng: 56.9,
+        },
+      },
+      created_at: "2026-09-20T10:00:00Z",
+      updated_at: "2026-09-20T10:30:00Z",
+    };
+
+    const result = toTripPassenger(dto);
+
+    expect(result).toEqual({
+      id: "passenger-1",
+      bookingId: "booking-101",
+      riderId: "rider-50",
+      riderName: "Alice Smith",
+      riderEmail: "alice@example.com",
+      rider: {
+        id: "rider-50",
+        name: "Alice Smith",
+        email: "alice@example.com",
+      },
+      seatsBooked: 2,
+      status: "confirmed",
+      pickupStop: {
+        id: "stop-1",
+        routeId: "route-1",
+        locationId: "loc-1",
+        sequence: 1,
+        location: {
+          id: "loc-1",
+          name: "Downtown",
+          city: "Metropolis",
+          lat: 12.34,
+          lng: 56.78,
+        },
+      },
+      dropoffStop: {
+        id: "stop-2",
+        routeId: "route-1",
+        locationId: "loc-2",
+        sequence: 2,
+        location: {
+          id: "loc-2",
+          name: "Uptown",
+          city: "Metropolis",
+          lat: 12.56,
+          lng: 56.9,
+        },
+      },
+      createdAt: "2026-09-20T10:00:00Z",
+      updatedAt: "2026-09-20T10:30:00Z",
+    });
+  });
+});
+
