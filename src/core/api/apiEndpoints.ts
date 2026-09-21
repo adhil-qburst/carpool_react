@@ -43,6 +43,17 @@ export const apiEndpoints = {
     create: `${API_PREFIX}/bookings`,
     byId: (bookingId: string | number) => `${API_PREFIX}/bookings/${bookingId}`,
   },
+  ridePreferences: {
+    list: `${API_PREFIX}/ride-preferences`,
+    create: `${API_PREFIX}/ride-preferences`,
+    matches: `${API_PREFIX}/ride-preferences/matches`,
+    byId: (preferenceId: string | number) =>
+      `${API_PREFIX}/ride-preferences/${preferenceId}`,
+    update: (preferenceId: string | number) =>
+      `${API_PREFIX}/ride-preferences/${preferenceId}`,
+    delete: (preferenceId: string | number) =>
+      `${API_PREFIX}/ride-preferences/${preferenceId}`,
+  },
 } as const;
 
 export type ApiEndpoints = typeof apiEndpoints;
