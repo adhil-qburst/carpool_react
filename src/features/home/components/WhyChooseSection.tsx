@@ -1,110 +1,76 @@
-import { Link } from "react-router";
 import FieldIcon from "@shared/ui/FieldIcon";
-import LeafIcon from "@shared/ui/LeafIcon";
-import ArrowRightIcon from "@shared/ui/ArrowRightIcon";
-import { route_paths } from "@core/router/route_paths";
-
-interface ValueCard {
-  id: string;
-  imageSrc: string;
-  imageAlt: string;
-  badgeBg: string;
-  badgeIcon: React.ReactNode;
-  title: string;
-  description: string;
-}
 
 export default function WhyChooseSection() {
-  const cards: ValueCard[] = [
+  const steps = [
     {
-      id: "lower-costs",
-      imageSrc: "/homepage/lower-costs.jpg",
-      imageAlt: "Friends laughing together in a carpool ride",
-      badgeBg: "bg-[#00796b]",
-      badgeIcon: <FieldIcon type="car" className="h-5 w-5 text-white" />,
-      title: "Lower your travel costs",
-      description: "Split the cost, save more",
+      step: "01",
+      title: "Search Your Route",
+      description:
+        "Input your daily pickup point and preferred destination along key highway hubs like Edappally, Aluva, or Thrissur.",
+      badge: "Auto-suggests verified highway transit bays",
+      icon: <FieldIcon type="pin" className="h-5 w-5 text-primary" />,
     },
     {
-      id: "carbon-footprint",
-      imageSrc: "/homepage/carbon-footprint.jpg",
-      imageAlt: "Aerial view of scenic highway along mountain lake",
-      badgeBg: "bg-[#2e7d32]",
-      badgeIcon: <LeafIcon className="h-5 w-5 text-white" />,
-      title: "Reduce your carbon footprint",
-      description: "Small rides make a big difference",
+      step: "02",
+      title: "Book Instant or Schedule",
+      description:
+        "Review verified driver ratings, vehicle model (Sedan/SUV), available seat counts, and reserve with one click.",
+      badge: "Digital OTP boarding security for each trip",
+      icon: <FieldIcon type="users" className="h-5 w-5 text-primary" />,
     },
     {
-      id: "meet-people",
-      imageSrc: "/homepage/meet-people.jpg",
-      imageAlt: "Group of cheerful travelers and friends outdoors",
-      badgeBg: "bg-[#00695c]",
-      badgeIcon: <FieldIcon type="users" className="h-5 w-5 text-white" />,
-      title: "Meet amazing people",
-      description: "Turn trips into great connections",
+      step: "03",
+      title: "Ride & Relax",
+      description:
+        "Board at the designated pick-up node, track vehicle arrival with live GPS, and reach your destination fresh without stress.",
+      badge: "Quiet or conversational ride preferences",
+      icon: <FieldIcon type="car" className="h-5 w-5 text-primary" />,
     },
   ];
 
   return (
-    <section id="why-carpool" className="bg-white py-16 lg:py-24">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_2.4fr] lg:items-center">
-          {/* Left Column Text and CTA */}
-          <div className="max-w-md">
-            <p className="text-xs font-bold tracking-widest text-slate-400 uppercase">
-              WHY CHOOSE CARPOOL
-            </p>
-            <h2 className="mt-3 text-3xl sm:text-4xl font-black tracking-tight text-slate-950">
-              More than just a ride
+    <section id="how-it-works" className="py-16 sm:py-24 bg-surface-canvas">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 sm:mb-16 gap-4">
+          <div>
+            <span className="inline-block px-3 py-1 rounded-full bg-surface-mint text-primary text-xs font-semibold border border-surface-mint-border">
+              Simple Daily Workflow
+            </span>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-on-surface tracking-tight mt-2">
+              How CarPool Works in 3 Steps
             </h2>
-            <p className="mt-4 text-sm sm:text-base leading-relaxed text-slate-600">
-              We&apos;re building a community of everyday people who believe in
-              smarter, kinder and more sustainable travel.
-            </p>
-            <Link
-              to={route_paths.register}
-              className="mt-6 inline-flex items-center gap-2 rounded-xl bg-[#0d4f3e] px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#093d30] focus:outline-none focus:ring-4 focus:ring-[#0f5132]/20"
-            >
-              <span>Learn More</span>
-              <ArrowRightIcon className="h-4 w-4" />
-            </Link>
           </div>
+          <p className="text-sm sm:text-base text-text-muted max-w-md">
+            Seamless seat reservation designed around predictable workplace and highway schedules.
+          </p>
+        </div>
 
-          {/* Right Column 3 Photo Cards */}
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
-            {cards.map((card) => (
-              <div
-                key={card.id}
-                className="group flex flex-col rounded-2xl bg-white transition"
-              >
-                {/* Image Container with Floating Overlapping Badge */}
-                <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl bg-slate-100 shadow-sm">
-                  <img
-                    src={card.imageSrc}
-                    alt={card.imageAlt}
-                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                    loading="lazy"
-                  />
-                  {/* Floating Circle Badge */}
-                  <div
-                    className={`absolute bottom-3 left-3 grid h-9 w-9 place-items-center rounded-full ${card.badgeBg} shadow-md ring-2 ring-white`}
-                  >
-                    {card.badgeIcon}
+        {/* 3 Step Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+          {steps.map((item) => (
+            <div
+              key={item.step}
+              className="bg-surface-card rounded-2xl p-6 sm:p-8 border border-border-subtle shadow-sm relative flex flex-col justify-between"
+            >
+              <div>
+                <div className="flex items-center justify-between mb-6">
+                  <span className="w-10 h-10 rounded-xl bg-surface-mint text-primary font-bold flex items-center justify-center border border-surface-mint-border text-sm">
+                    {item.step}
+                  </span>
+                  <div className="p-2 rounded-lg bg-surface-canvas text-text-muted">
+                    {item.icon}
                   </div>
                 </div>
-
-                {/* Card Copy */}
-                <div className="pt-4">
-                  <h3 className="text-base font-bold text-slate-900">
-                    {card.title}
-                  </h3>
-                  <p className="mt-1 text-xs sm:text-sm text-slate-500">
-                    {card.description}
-                  </p>
-                </div>
+                <h3 className="text-lg font-bold text-on-surface mb-2">{item.title}</h3>
+                <p className="text-sm text-text-muted leading-relaxed">{item.description}</p>
               </div>
-            ))}
-          </div>
+
+              <div className="mt-6 p-3 bg-surface-canvas rounded-xl border border-divider-line text-xs flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-primary shrink-0" />
+                <span className="text-on-surface font-medium">{item.badge}</span>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </section>

@@ -15,12 +15,12 @@ export default function HomeNavbar() {
   }
 
   return (
-    <header className="sticky top-0 z-30 w-full bg-white/95 backdrop-blur-md transition-all">
+    <header className="sticky top-0 z-40 w-full bg-surface-card/95 backdrop-blur-md shadow-sm transition-all">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
         {/* Brand Logo */}
         <Link
           to={route_paths.home}
-          className="flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-[#0f5132]/20 rounded-lg"
+          className="flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-primary/20 rounded-lg"
           aria-label="CarPool Home"
         >
           <CarPoolLogo />
@@ -30,33 +30,42 @@ export default function HomeNavbar() {
         <nav className="hidden md:flex items-center gap-8">
           <Link
             to={route_paths.home}
-            className="relative py-1 text-sm font-semibold text-slate-900 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:bg-[#0f5132] after:rounded-full"
+            className="relative py-1 text-sm font-semibold text-primary after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-primary after:rounded-full"
           >
             Home
           </Link>
           <Link
             to={route_paths.trips}
-            className="text-sm font-medium text-slate-600 transition hover:text-[#0f5132]"
+            className="text-sm font-medium text-text-muted transition hover:text-primary"
           >
             Find a Ride
           </Link>
           <Link
             to={route_paths.tripsNew}
-            className="text-sm font-medium text-slate-600 transition hover:text-[#0f5132]"
+            className="text-sm font-medium text-text-muted transition hover:text-primary"
           >
             Offer a Ride
           </Link>
           <a
             href="#how-it-works"
-            className="text-sm font-medium text-slate-600 transition hover:text-[#0f5132]"
+            className="text-sm font-medium text-text-muted transition hover:text-primary"
           >
             How It Works
           </a>
           <a
-            href="#why-carpool"
-            className="text-sm font-medium text-slate-600 transition hover:text-[#0f5132]"
+            href="#safety"
+            className="text-sm font-medium text-text-muted transition hover:text-primary"
           >
-            About
+            Safety &amp; Trust
+          </a>
+          <a
+            href="#drive"
+            className="text-sm font-medium text-text-muted transition hover:text-primary flex items-center gap-1.5"
+          >
+            <span>Drive with Us</span>
+            <span className="px-2 py-0.5 rounded-full bg-surface-mint text-primary text-[11px] font-semibold border border-surface-mint-border">
+              Earn ₹18k/mo
+            </span>
           </a>
         </nav>
 
@@ -66,14 +75,14 @@ export default function HomeNavbar() {
             <>
               <Link
                 to={route_paths.driverDashboard}
-                className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+                className="rounded-xl border border-border-subtle px-4 py-2 text-sm font-semibold text-on-surface transition hover:bg-surface-canvas"
               >
                 Dashboard
               </Link>
               <button
                 type="button"
                 onClick={handleSignOut}
-                className="rounded-xl bg-[#0d4f3e] px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-[#093d30]"
+                className="rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-on-primary shadow-sm transition hover:bg-primary-hover"
               >
                 Sign out
               </button>
@@ -82,13 +91,13 @@ export default function HomeNavbar() {
             <>
               <Link
                 to={route_paths.login}
-                className="rounded-xl border border-slate-300 px-5 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+                className="rounded-xl border border-border-subtle px-5 py-2 text-sm font-semibold text-on-surface transition hover:bg-surface-canvas"
               >
                 Log in
               </Link>
               <Link
                 to={route_paths.register}
-                className="rounded-xl bg-[#0d4f3e] px-5 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-[#093d30]"
+                className="rounded-xl bg-primary px-5 py-2 text-sm font-semibold text-on-primary shadow-sm transition hover:bg-primary-hover"
               >
                 Sign up
               </Link>
@@ -116,44 +125,60 @@ export default function HomeNavbar() {
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="border-t border-slate-100 bg-white px-4 py-5 shadow-lg md:hidden">
+        <div className="border-t border-border-subtle bg-surface-card px-4 py-5 shadow-lg md:hidden">
           <nav className="flex flex-col gap-4">
             <Link
               to={route_paths.home}
               onClick={() => setMobileMenuOpen(false)}
-              className="text-sm font-semibold text-[#0f5132]"
+              className="text-sm font-semibold text-primary"
             >
               Home
             </Link>
             <Link
               to={route_paths.trips}
               onClick={() => setMobileMenuOpen(false)}
-              className="text-sm font-medium text-slate-600"
+              className="text-sm font-medium text-text-muted hover:text-on-surface"
             >
               Find a Ride
             </Link>
-
+            <Link
+              to={route_paths.tripsNew}
+              onClick={() => setMobileMenuOpen(false)}
+              className="text-sm font-medium text-text-muted hover:text-on-surface"
+            >
+              Offer a Ride
+            </Link>
             <a
               href="#how-it-works"
               onClick={() => setMobileMenuOpen(false)}
-              className="text-sm font-medium text-slate-600"
+              className="text-sm font-medium text-text-muted hover:text-on-surface"
             >
               How It Works
             </a>
             <a
-              href="#why-carpool"
+              href="#safety"
               onClick={() => setMobileMenuOpen(false)}
-              className="text-sm font-medium text-slate-600"
+              className="text-sm font-medium text-text-muted hover:text-on-surface"
             >
-              About
+              Safety &amp; Trust
             </a>
-            <div className="mt-2 flex flex-col gap-2 pt-3 border-t border-slate-100">
+            <a
+              href="#drive"
+              onClick={() => setMobileMenuOpen(false)}
+              className="text-sm font-medium text-text-muted hover:text-on-surface flex items-center gap-2"
+            >
+              <span>Drive with Us</span>
+              <span className="px-2 py-0.5 rounded-full bg-surface-mint text-primary text-[11px] font-semibold border border-surface-mint-border">
+                Earn ₹18k/mo
+              </span>
+            </a>
+            <div className="mt-2 flex flex-col gap-2 pt-3 border-t border-divider-line">
               {isAuthenticated ? (
                 <>
                   <Link
                     to={route_paths.driverDashboard}
                     onClick={() => setMobileMenuOpen(false)}
-                    className="w-full text-center rounded-xl border border-slate-300 py-2.5 text-sm font-semibold text-slate-700"
+                    className="w-full text-center rounded-xl border border-border-subtle py-2.5 text-sm font-semibold text-on-surface"
                   >
                     Dashboard
                   </Link>
@@ -163,7 +188,7 @@ export default function HomeNavbar() {
                       setMobileMenuOpen(false);
                       handleSignOut();
                     }}
-                    className="w-full rounded-xl bg-[#0d4f3e] py-2.5 text-sm font-semibold text-white"
+                    className="w-full rounded-xl bg-primary py-2.5 text-sm font-semibold text-on-primary"
                   >
                     Sign out
                   </button>
@@ -173,14 +198,14 @@ export default function HomeNavbar() {
                   <Link
                     to={route_paths.login}
                     onClick={() => setMobileMenuOpen(false)}
-                    className="w-full text-center rounded-xl border border-slate-300 py-2.5 text-sm font-semibold text-slate-700"
+                    className="w-full text-center rounded-xl border border-border-subtle py-2.5 text-sm font-semibold text-on-surface"
                   >
                     Log in
                   </Link>
                   <Link
                     to={route_paths.register}
                     onClick={() => setMobileMenuOpen(false)}
-                    className="w-full text-center rounded-xl bg-[#0d4f3e] py-2.5 text-sm font-semibold text-white"
+                    className="w-full text-center rounded-xl bg-primary py-2.5 text-sm font-semibold text-on-primary"
                   >
                     Sign up
                   </Link>
