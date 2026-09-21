@@ -15,6 +15,8 @@ import { useDeleteTripMutation } from "../hooks/useDeleteTripMutation";
 import RouteDetailsCard from "../components/RouteDetailsCard";
 import TripDetailSidebar from "../components/TripDetailSidebar";
 import TripOverviewGrid from "../components/TripOverviewGrid";
+import TripPassengersSection from "../components/TripPassengersSection";
+import TripAuditCard from "../components/TripAuditCard";
 import DeleteTripModal from "../modals/DeleteTripModal";
 import BookRideConfirmationModal from "../modals/BookRideConfirmationModal";
 
@@ -241,33 +243,14 @@ export default function TripDetailPage() {
             <RouteDetailsCard route={selectedRoute} />
           </div>
 
+          {/* Passenger Bookings Section */}
+          <div className="mt-6">
+            <TripPassengersSection tripId={trip.id} />
+          </div>
+
           {/* Additional Trip Metadata */}
-          <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-            <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">
-              Trip Details & Audit
-            </h3>
-            <div className="grid gap-3 sm:grid-cols-2 text-xs text-slate-600">
-              <div>
-                <span className="text-slate-400">Trip Identifier:</span>{" "}
-                <span className="font-mono text-slate-900">{trip.id}</span>
-              </div>
-              <div>
-                <span className="text-slate-400">Driver ID:</span>{" "}
-                <span className="font-mono text-slate-900">{trip.driver_id}</span>
-              </div>
-              <div>
-                <span className="text-slate-400">Created At:</span>{" "}
-                <span className="text-slate-900">
-                  {new Date(trip.created_at).toLocaleString()}
-                </span>
-              </div>
-              <div>
-                <span className="text-slate-400">Last Updated:</span>{" "}
-                <span className="text-slate-900">
-                  {new Date(trip.updated_at).toLocaleString()}
-                </span>
-              </div>
-            </div>
+          <div className="mt-6">
+            <TripAuditCard trip={trip} />
           </div>
         </section>
       </div>

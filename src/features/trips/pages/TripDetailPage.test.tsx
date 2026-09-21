@@ -17,6 +17,7 @@ vi.mock("../api/trips.api", () => ({
     delete: vi.fn(),
     getRoutes: vi.fn(),
     getVehicles: vi.fn(),
+    getPassengers: vi.fn(),
   },
 }));
 
@@ -107,12 +108,14 @@ describe("TripDetailPage", () => {
     vi.mocked(tripsApi.getById).mockReset();
     vi.mocked(tripsApi.getRoutes).mockReset();
     vi.mocked(tripsApi.getVehicles).mockReset();
+    vi.mocked(tripsApi.getPassengers).mockReset();
     vi.mocked(tripsApi.delete).mockReset();
     vi.mocked(useCurrentUserQuery).mockReset();
 
     vi.mocked(tripsApi.getById).mockResolvedValue(mockTrip);
     vi.mocked(tripsApi.getRoutes).mockResolvedValue(mockRoutes);
     vi.mocked(tripsApi.getVehicles).mockResolvedValue(mockVehicles);
+    vi.mocked(tripsApi.getPassengers).mockResolvedValue([]);
     vi.mocked(useCurrentUserQuery).mockReturnValue({
       data: {
         id: "driver-1",
@@ -266,5 +269,59 @@ describe("TripDetailPage", () => {
 
     const editBtn = screen.getByRole("button", { name: /edit/i });
     expect(editBtn).toBeDisabled();
+  });
+
+  it("renders passenger manifest in the bottom section when passengers are returned", async () => {
+    vi.mocked(tripsApi.getPassengers).mockResolvedValueOnce([
+      {
+        id: "passenger-99",
+        booking_id: "book-99",
+        rider_id: "rider-99",
+        rider_name: "Sarah Connor",
+        rider_email: "sarah@example.com",
+        rider: {
+          id: "rider-99",
+          name: "Sarah Connor",
+          email: "sarah@example.com",
+        },
+        seats_booked: 2,
+        status: "confirmed",
+        pickup_stop: {
+          id: "stop-1",
+          route_id: "route-1",
+          location_id: "loc-1",
+          sequence: 1,
+          location: {
+            id: "loc-1",
+            name: "Grand Central Terminal",
+            city: "Metro City",
+          },
+        },
+        dropoff_stop: {
+          id: "stop-2",
+          route_id: "route-1",
+          location_id: "loc-2",
+          sequence: 2,
+          location: {
+            id: "loc-2",
+            name: "Silicon Boulevard",
+            city: "Tech District",
+          },
+        },
+        created_at: "2026-09-20T10:00:00Z",
+        updated_at: "2026-09-20T10:00:00Z",
+      },
+    ]);
+
+    renderTripDetailPage();
+
+    expect(
+      await screen.findByRole("heading", { name: "Downtown Express", level: 2 }),
+    ).toBeInTheDocument();
+
+    expect(await screen.findByText("Booked Passengers")).toBeInTheDocument();
+    expect(screen.getByText("Sarah Connor")).toBeInTheDocument();
+    expect(screen.getByText("sarah@example.com")).toBeInTheDocument();
+    expect(screen.getByText("2 seats")).toBeInTheDocument();
   });
 });
