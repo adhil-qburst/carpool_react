@@ -2,8 +2,11 @@ import { Link } from "react-router";
 import BrandMark from "@shared/ui/BrandMark";
 import FieldIcon from "@shared/ui/FieldIcon";
 import { route_paths } from "@core/router/route_paths";
+import { useNotificationUnreadCountQuery } from "@features/notifications/hooks/useNotificationUnreadCountQuery";
 
 const HomePage = () => {
+  const { data: unreadData } = useNotificationUnreadCountQuery();
+  const unreadCount = unreadData?.unread_count ?? 0;
   return (
     <main className="min-h-screen bg-slate-50 p-4 sm:p-6 lg:p-8">
       <div className="mx-auto max-w-5xl">
@@ -44,6 +47,17 @@ const HomePage = () => {
               className="text-sm font-semibold text-slate-700 hover:text-indigo-600 transition"
             >
               Ride Preferences
+            </Link>
+            <Link
+              to={route_paths.notifications}
+              className="relative inline-flex items-center gap-1.5 text-sm font-semibold text-slate-700 hover:text-indigo-600 transition"
+            >
+              <span>Notifications</span>
+              {unreadCount > 0 && (
+                <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-indigo-600 px-1.5 text-[11px] font-bold text-white">
+                  {unreadCount > 99 ? "99+" : unreadCount}
+                </span>
+              )}
             </Link>
             <Link
               to={route_paths.tripsBook}
@@ -206,6 +220,35 @@ const HomePage = () => {
                 + Set Preference
               </Link>
             </div>
+          </div>
+
+          <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between">
+                <div className="grid h-12 w-12 place-items-center rounded-2xl bg-indigo-50 text-indigo-600">
+                  <FieldIcon type="bell" className="h-6 w-6" />
+                </div>
+                {unreadCount > 0 && (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-indigo-50 border border-indigo-200 px-2.5 py-0.5 text-xs font-semibold text-indigo-700">
+                    <span className="h-1.5 w-1.5 rounded-full bg-indigo-600" />
+                    {unreadCount} new
+                  </span>
+                )}
+              </div>
+              <h2 className="mt-5 text-xl font-bold text-slate-950">
+                Notifications
+              </h2>
+              <p className="mt-2 text-sm leading-6 text-slate-500">
+                Stay informed on booking updates, trip requests, seat status changes,
+                and carpool community alerts.
+              </p>
+            </div>
+            <Link
+              to={route_paths.notifications}
+              className="mt-6 inline-flex items-center gap-2 rounded-xl bg-slate-100 px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-200"
+            >
+              View notifications →
+            </Link>
           </div>
         </section>
       </div>

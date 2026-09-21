@@ -19,6 +19,8 @@ import BookingsPage from "@features/bookings/pages/BookingsPage";
 import RidePreferencesPage from "@features/ridePreferences/pages/RidePreferencesPage";
 import CreateRidePreferencePage from "@features/ridePreferences/pages/CreateRidePreferencePage";
 import EditRidePreferencePage from "@features/ridePreferences/pages/EditRidePreferencePage";
+import NotificationsPage from "@features/notifications/pages/NotificationsPage";
+import NotificationDetailPage from "@features/notifications/pages/NotificationDetailPage";
 import { tokenStorage } from "./auth/tokenStorage";
 import { route_paths } from "./router/route_paths";
 import { authMiddleware } from "./router/middlewares/auth.middleware";
@@ -119,6 +121,14 @@ const router = createBrowserRouter([
       {
         path: route_paths.ridePreferencesEdit,
         element: <EditRidePreferencePage />,
+      },
+      {
+        path: route_paths.notifications,
+        element: <NotificationsPage />,
+      },
+      {
+        path: route_paths.notificationDetail,
+        element: <NotificationDetailPage />,
       },
     ],
   },

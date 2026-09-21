@@ -20,6 +20,8 @@ export const route_paths = {
   ridePreferences: "/ride-preferences",
   ridePreferencesNew: "/ride-preferences/new",
   ridePreferencesEdit: "/ride-preferences/:preferenceId/edit",
+  notifications: "/notifications",
+  notificationDetail: "/notifications/:notificationId",
 
   // Aliases for convenience and common conventions
   vehicleNew: "/vehicles/new",
@@ -53,6 +55,7 @@ export const route_paths = {
   ride_preferences: "/ride-preferences",
   ride_preferences_new: "/ride-preferences/new",
   ride_preferences_edit: "/ride-preferences/:preferenceId/edit",
+  notification_detail: "/notifications/:notificationId",
 
   // Uppercase constants
   ROOT: "/",
@@ -78,6 +81,8 @@ export const route_paths = {
   RIDE_PREFERENCES: "/ride-preferences",
   RIDE_PREFERENCES_NEW: "/ride-preferences/new",
   RIDE_PREFERENCES_EDIT: "/ride-preferences/:preferenceId/edit",
+  NOTIFICATIONS: "/notifications",
+  NOTIFICATIONS_DETAIL: "/notifications/:notificationId",
 
   // Helper for parameterized routes
   getVehicleEditPath: (vehicleId: string | number) =>
@@ -90,6 +95,8 @@ export const route_paths = {
     `/trips/${tripId}`,
   getRidePreferenceEditPath: (preferenceId: string | number) =>
     `/ride-preferences/${preferenceId}/edit`,
+  getNotificationDetailPath: (notificationId: string | number) =>
+    `/notifications/${notificationId}`,
 } as const;
 
 export type RoutePath = (typeof route_paths)[keyof typeof route_paths];

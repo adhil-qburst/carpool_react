@@ -1,16 +1,27 @@
 import { describe, expect, it } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import HomePage from "./HomePage";
 import { route_paths } from "@core/router/route_paths";
 
-describe("HomePage", () => {
-  it("renders navigation header with My Bookings menu link", () => {
-    render(
+function renderHomePage() {
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  });
+
+  return render(
+    <QueryClientProvider client={queryClient}>
       <MemoryRouter>
         <HomePage />
-      </MemoryRouter>,
-    );
+      </MemoryRouter>
+    </QueryClientProvider>,
+  );
+}
+
+describe("HomePage", () => {
+  it("renders navigation header with My Bookings menu link", () => {
+    renderHomePage();
 
     const bookingNavLinks = screen.getAllByRole("link", {
       name: /my bookings/i,
@@ -22,11 +33,7 @@ describe("HomePage", () => {
   });
 
   it("renders the My Bookings menu card in the home dashboard", () => {
-    render(
-      <MemoryRouter>
-        <HomePage />
-      </MemoryRouter>,
-    );
+    renderHomePage();
 
     expect(
       screen.getByRole("heading", { name: "My Bookings" }),
@@ -40,11 +47,7 @@ describe("HomePage", () => {
   });
 
   it("renders all dashboard feature menu cards", () => {
-    render(
-      <MemoryRouter>
-        <HomePage />
-      </MemoryRouter>,
-    );
+    renderHomePage();
 
     expect(
       screen.getByRole("heading", { name: "Route Builder" }),
@@ -64,14 +67,13 @@ describe("HomePage", () => {
     expect(
       screen.getByRole("heading", { name: "Ride Preferences" }),
     ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Notifications" }),
+    ).toBeInTheDocument();
   });
 
   it("renders navigation header with Ride Preferences menu link", () => {
-    render(
-      <MemoryRouter>
-        <HomePage />
-      </MemoryRouter>,
-    );
+    renderHomePage();
 
     const preferenceNavLinks = screen.getAllByRole("link", {
       name: /ride preferences/i,
@@ -86,11 +88,7 @@ describe("HomePage", () => {
   });
 
   it("renders the Ride Preferences menu card with links to view and set preferences", () => {
-    render(
-      <MemoryRouter>
-        <HomePage />
-      </MemoryRouter>,
-    );
+    renderHomePage();
 
     expect(
       screen.getByRole("heading", { name: "Ride Preferences" }),
@@ -108,4 +106,37 @@ describe("HomePage", () => {
     expect(setPrefLink).toBeInTheDocument();
     expect(setPrefLink).toHaveAttribute("href", route_paths.ridePreferencesNew);
   });
+
+  it("renders navigation header with Notifications menu link", () => {
+    renderHomePage();
+
+    const notificationNavLinks = screen.getAllByRole("link", {
+      name: /notifications/i,
+    });
+    expect(notificationNavLinks.length).toBeGreaterThanOrEqual(1);
+
+    const headerNotificationLink = notificationNavLinks[0];
+    expect(headerNotificationLink).toHaveAttribute(
+      "href",
+      route_paths.notifications,
+    );
+  });
+
+  it("renders the Notifications menu card with link to view notifications", () => {
+    renderHomePage();
+
+    expect(
+      screen.getByRole("heading", { name: "Notifications" }),
+    ).toBeInTheDocument();
+
+    const viewNotificationsLink = screen.getByRole("link", {
+      name: /view notifications/i,
+    });
+    expect(viewNotificationsLink).toBeInTheDocument();
+    expect(viewNotificationsLink).toHaveAttribute(
+      "href",
+      route_paths.notifications,
+    );
+  });
 });
+
