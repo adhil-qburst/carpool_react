@@ -15,6 +15,36 @@ vi.mock("@core/api/httpClient", () => ({
   },
 }));
 
+const mockPickupStop = {
+  id: "stop-pickup-1",
+  route_id: "route-1",
+  location_id: "loc-1",
+  sequence: 1,
+  location: {
+    id: "loc-1",
+    name: "Downtown Terminal",
+    city: "San Francisco",
+    status: "active",
+    created_at: "2026-09-20T10:00:00Z",
+    updated_at: "2026-09-20T10:00:00Z",
+  },
+};
+
+const mockDropoffStop = {
+  id: "stop-dropoff-2",
+  route_id: "route-1",
+  location_id: "loc-2",
+  sequence: 3,
+  location: {
+    id: "loc-2",
+    name: "Uptown Plaza",
+    city: "San Francisco",
+    status: "active",
+    created_at: "2026-09-20T10:00:00Z",
+    updated_at: "2026-09-20T10:00:00Z",
+  },
+};
+
 const mockBookingResponse: BookingResponse = {
   id: "b-123",
   rider_id: "rider-456",
@@ -23,6 +53,8 @@ const mockBookingResponse: BookingResponse = {
   dropoff_stop_id: "stop-dropoff-2",
   seats_booked: 2,
   status: "pending",
+  pickup_stop: mockPickupStop,
+  dropoff_stop: mockDropoffStop,
   created_at: "2026-09-20T10:00:00Z",
   updated_at: "2026-09-20T10:00:00Z",
 };

@@ -14,6 +14,38 @@ vi.mock("../api/bookings.api", () => ({
   },
 }));
 
+const mockStop1 = {
+  id: "stop-pickup-1",
+  route_id: "route-1",
+  location_id: "loc-1",
+  sequence: 1,
+  location: null,
+};
+
+const mockStop2 = {
+  id: "stop-dropoff-1",
+  route_id: "route-1",
+  location_id: "loc-2",
+  sequence: 2,
+  location: null,
+};
+
+const mockStop3 = {
+  id: "stop-pickup-2",
+  route_id: "route-2",
+  location_id: "loc-3",
+  sequence: 1,
+  location: null,
+};
+
+const mockStop4 = {
+  id: "stop-dropoff-2",
+  route_id: "route-2",
+  location_id: "loc-4",
+  sequence: 2,
+  location: null,
+};
+
 const mockBookingsData: PaginatedBookingsResponse = {
   items: [
     {
@@ -24,6 +56,8 @@ const mockBookingsData: PaginatedBookingsResponse = {
       dropoff_stop_id: "stop-dropoff-1",
       seats_booked: 2,
       status: "confirmed",
+      pickup_stop: mockStop1,
+      dropoff_stop: mockStop2,
       created_at: "2026-09-20T10:00:00Z",
       updated_at: "2026-09-20T10:00:00Z",
     },
@@ -35,6 +69,8 @@ const mockBookingsData: PaginatedBookingsResponse = {
       dropoff_stop_id: "stop-dropoff-2",
       seats_booked: 1,
       status: "pending",
+      pickup_stop: mockStop3,
+      dropoff_stop: mockStop4,
       created_at: "2026-09-21T08:30:00Z",
       updated_at: "2026-09-21T08:30:00Z",
     },

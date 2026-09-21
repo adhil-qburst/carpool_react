@@ -12,6 +12,22 @@ vi.mock("../api/bookings.api", () => ({
   },
 }));
 
+const mockPickupStop = {
+  id: "stop-1",
+  route_id: "route-1",
+  location_id: "loc-1",
+  sequence: 1,
+  location: null,
+};
+
+const mockDropoffStop = {
+  id: "stop-2",
+  route_id: "route-1",
+  location_id: "loc-2",
+  sequence: 2,
+  location: null,
+};
+
 const mockPaginatedBookings: PaginatedBookingsResponse = {
   items: [
     {
@@ -22,6 +38,8 @@ const mockPaginatedBookings: PaginatedBookingsResponse = {
       dropoff_stop_id: "stop-2",
       seats_booked: 1,
       status: "pending",
+      pickup_stop: mockPickupStop,
+      dropoff_stop: mockDropoffStop,
       created_at: "2026-09-20T10:00:00Z",
       updated_at: "2026-09-20T10:00:00Z",
     },
