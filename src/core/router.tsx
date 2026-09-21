@@ -16,6 +16,9 @@ import TripsPage from "@features/trips/pages/TripsPage";
 import TripDetailPage from "@features/trips/pages/TripDetailPage";
 import BookRidePage from "@features/trips/pages/BookRidePage";
 import BookingsPage from "@features/bookings/pages/BookingsPage";
+import RidePreferencesPage from "@features/ridePreferences/pages/RidePreferencesPage";
+import CreateRidePreferencePage from "@features/ridePreferences/pages/CreateRidePreferencePage";
+import EditRidePreferencePage from "@features/ridePreferences/pages/EditRidePreferencePage";
 import { tokenStorage } from "./auth/tokenStorage";
 import { route_paths } from "./router/route_paths";
 import { authMiddleware } from "./router/middlewares/auth.middleware";
@@ -104,6 +107,18 @@ const router = createBrowserRouter([
       {
         path: route_paths.bookings,
         element: <BookingsPage />,
+      },
+      {
+        path: route_paths.ridePreferences,
+        element: <RidePreferencesPage />,
+      },
+      {
+        path: route_paths.ridePreferencesNew,
+        element: <CreateRidePreferencePage />,
+      },
+      {
+        path: route_paths.ridePreferencesEdit,
+        element: <EditRidePreferencePage />,
       },
     ],
   },

@@ -13,7 +13,7 @@ export default function AvailableTripCard({
   trip,
   sourceName,
   destinationName,
-  seatsNeeded = 1,
+  seatsNeeded: _seatsNeeded = 1,
   onBook,
 }: AvailableTripCardProps) {
   const routeName =

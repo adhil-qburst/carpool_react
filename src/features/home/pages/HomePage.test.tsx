@@ -46,10 +46,66 @@ describe("HomePage", () => {
       </MemoryRouter>,
     );
 
-    expect(screen.getByText("Route Builder")).toBeInTheDocument();
-    expect(screen.getByText("Driver Garage")).toBeInTheDocument();
-    expect(screen.getByText("Schedule Trip")).toBeInTheDocument();
-    expect(screen.getByText("Find a Ride")).toBeInTheDocument();
-    expect(screen.getByText("My Bookings")).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Route Builder" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Driver Garage" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Schedule Trip" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Find a Ride" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "My Bookings" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Ride Preferences" }),
+    ).toBeInTheDocument();
+  });
+
+  it("renders navigation header with Ride Preferences menu link", () => {
+    render(
+      <MemoryRouter>
+        <HomePage />
+      </MemoryRouter>,
+    );
+
+    const preferenceNavLinks = screen.getAllByRole("link", {
+      name: /ride preferences/i,
+    });
+    expect(preferenceNavLinks.length).toBeGreaterThanOrEqual(1);
+
+    const headerPreferenceLink = preferenceNavLinks[0];
+    expect(headerPreferenceLink).toHaveAttribute(
+      "href",
+      route_paths.ridePreferences,
+    );
+  });
+
+  it("renders the Ride Preferences menu card with links to view and set preferences", () => {
+    render(
+      <MemoryRouter>
+        <HomePage />
+      </MemoryRouter>,
+    );
+
+    expect(
+      screen.getByRole("heading", { name: "Ride Preferences" }),
+    ).toBeInTheDocument();
+
+    const viewPrefsLink = screen.getByRole("link", {
+      name: /view preferences/i,
+    });
+    expect(viewPrefsLink).toBeInTheDocument();
+    expect(viewPrefsLink).toHaveAttribute("href", route_paths.ridePreferences);
+
+    const setPrefLink = screen.getByRole("link", {
+      name: /\+ set preference/i,
+    });
+    expect(setPrefLink).toBeInTheDocument();
+    expect(setPrefLink).toHaveAttribute("href", route_paths.ridePreferencesNew);
   });
 });

@@ -17,6 +17,9 @@ export const route_paths = {
   tripsBook: "/trips/book",
   tripsSearch: "/trips/search",
   bookings: "/bookings",
+  ridePreferences: "/ride-preferences",
+  ridePreferencesNew: "/ride-preferences/new",
+  ridePreferencesEdit: "/ride-preferences/:preferenceId/edit",
 
   // Aliases for convenience and common conventions
   vehicleNew: "/vehicles/new",
@@ -45,6 +48,11 @@ export const route_paths = {
   bookingList: "/bookings",
   bookingsList: "/bookings",
   bookings_list: "/bookings",
+  ridePreferenceNew: "/ride-preferences/new",
+  ridePreferenceEdit: "/ride-preferences/:preferenceId/edit",
+  ride_preferences: "/ride-preferences",
+  ride_preferences_new: "/ride-preferences/new",
+  ride_preferences_edit: "/ride-preferences/:preferenceId/edit",
 
   // Uppercase constants
   ROOT: "/",
@@ -67,6 +75,9 @@ export const route_paths = {
   BOOK_RIDE: "/trips/book",
   BOOKINGS: "/bookings",
   BOOKINGS_LIST: "/bookings",
+  RIDE_PREFERENCES: "/ride-preferences",
+  RIDE_PREFERENCES_NEW: "/ride-preferences/new",
+  RIDE_PREFERENCES_EDIT: "/ride-preferences/:preferenceId/edit",
 
   // Helper for parameterized routes
   getVehicleEditPath: (vehicleId: string | number) =>
@@ -77,6 +88,8 @@ export const route_paths = {
     `/trips/${tripId}/edit`,
   getTripDetailPath: (tripId: string | number) =>
     `/trips/${tripId}`,
+  getRidePreferenceEditPath: (preferenceId: string | number) =>
+    `/ride-preferences/${preferenceId}/edit`,
 } as const;
 
 export type RoutePath = (typeof route_paths)[keyof typeof route_paths];
