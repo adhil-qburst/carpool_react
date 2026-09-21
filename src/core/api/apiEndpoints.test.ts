@@ -55,6 +55,12 @@ describe("apiEndpoints", () => {
     expect(apiEndpoints.trips.delete("t-123")).toBe("/api/v1/trips/t-123");
   });
 
+  it("defines bookings endpoints correctly", () => {
+    expect(apiEndpoints.bookings.list).toBe("/api/v1/bookings");
+    expect(apiEndpoints.bookings.create).toBe("/api/v1/bookings");
+    expect(apiEndpoints.bookings.byId("b-123")).toBe("/api/v1/bookings/b-123");
+  });
+
   it("exports matching aliases", () => {
     expect(API_ENDPOINTS).toBe(apiEndpoints);
     expect(api_endpoints).toBe(apiEndpoints);

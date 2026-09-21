@@ -36,6 +36,11 @@ export const apiEndpoints = {
     update: (tripId: string | number) => `${API_PREFIX}/trips/${tripId}`,
     delete: (tripId: string | number) => `${API_PREFIX}/trips/${tripId}`,
   },
+  bookings: {
+    list: `${API_PREFIX}/bookings`,
+    create: `${API_PREFIX}/bookings`,
+    byId: (bookingId: string | number) => `${API_PREFIX}/bookings/${bookingId}`,
+  },
 } as const;
 
 export type ApiEndpoints = typeof apiEndpoints;
