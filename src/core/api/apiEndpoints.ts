@@ -54,6 +54,12 @@ export const apiEndpoints = {
     delete: (preferenceId: string | number) =>
       `${API_PREFIX}/ride-preferences/${preferenceId}`,
   },
+  notifications: {
+    list: `${API_PREFIX}/notifications`,
+    unreadCount: `${API_PREFIX}/notifications/unread-count`,
+    byId: (notificationId: string | number) =>
+      `${API_PREFIX}/notifications/${notificationId}`,
+  },
 } as const;
 
 export type ApiEndpoints = typeof apiEndpoints;
