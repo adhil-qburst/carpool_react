@@ -15,6 +15,7 @@ describe("route_paths", () => {
     expect(route_paths.vehiclesEdit).toBe("/vehicles/:vehicleId/edit");
     expect(route_paths.tripsBook).toBe("/trips/book");
     expect(route_paths.tripsSearch).toBe("/trips/search");
+    expect(route_paths.bookings).toBe("/bookings");
   });
 
   it("exports uppercase and camelCase aliases consistently", () => {
@@ -23,6 +24,7 @@ describe("route_paths", () => {
     expect(route_paths.LOGIN).toBe(route_paths.login);
     expect(route_paths.REGISTER).toBe(route_paths.register);
     expect(route_paths.VEHICLES).toBe(route_paths.vehicles);
+    expect(route_paths.BOOKINGS).toBe(route_paths.bookings);
   });
 
   it("generates dynamic vehicle edit path with getVehicleEditPath", () => {

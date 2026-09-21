@@ -7,14 +7,14 @@ const HomePage = () => {
   return (
     <main className="min-h-screen bg-slate-50 p-4 sm:p-6 lg:p-8">
       <div className="mx-auto max-w-5xl">
-        <header className="flex items-center justify-between rounded-3xl bg-white p-6 shadow-sm border border-slate-200">
+        <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between rounded-3xl bg-white p-6 shadow-sm border border-slate-200">
           <div className="flex items-center gap-3">
             <BrandMark />
             <span className="text-xl font-bold tracking-tight text-slate-950">
               Carpool
             </span>
           </div>
-          <nav className="flex items-center gap-4">
+          <nav className="flex flex-wrap items-center gap-3 sm:gap-4">
             <Link
               to={route_paths.routes}
               className="text-sm font-semibold text-slate-700 hover:text-indigo-600 transition"
@@ -32,6 +32,12 @@ const HomePage = () => {
               className="text-sm font-semibold text-slate-700 hover:text-indigo-600 transition"
             >
               My Trips
+            </Link>
+            <Link
+              to={route_paths.bookings}
+              className="text-sm font-semibold text-slate-700 hover:text-indigo-600 transition"
+            >
+              My Bookings
             </Link>
             <Link
               to={route_paths.tripsBook}
@@ -54,7 +60,7 @@ const HomePage = () => {
           </nav>
         </header>
 
-        <section className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <section className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm flex flex-col justify-between">
             <div>
               <div className="grid h-12 w-12 place-items-center rounded-2xl bg-indigo-50 text-indigo-600">
@@ -143,6 +149,27 @@ const HomePage = () => {
               className="mt-6 inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-emerald-600/20 transition hover:bg-emerald-700"
             >
               Search rides →
+            </Link>
+          </div>
+
+          <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm flex flex-col justify-between">
+            <div>
+              <div className="grid h-12 w-12 place-items-center rounded-2xl bg-indigo-50 text-indigo-600">
+                <FieldIcon type="tag" className="h-6 w-6" />
+              </div>
+              <h2 className="mt-5 text-xl font-bold text-slate-950">
+                My Bookings
+              </h2>
+              <p className="mt-2 text-sm leading-6 text-slate-500">
+                Track your reserved carpool rides, check pickup stops, and manage
+                seat confirmations with ease.
+              </p>
+            </div>
+            <Link
+              to={route_paths.bookings}
+              className="mt-6 inline-flex items-center gap-2 rounded-xl bg-slate-100 px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-200"
+            >
+              View bookings →
             </Link>
           </div>
         </section>

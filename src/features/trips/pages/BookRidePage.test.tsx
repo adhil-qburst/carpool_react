@@ -6,7 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import BookRidePage from "./BookRidePage";
 import { tripsApi } from "../api/trips.api";
 import { locationsApi } from "@features/locations/api/locations.api";
-import type { TripResponse, SearchTripsResponse } from "../types/trips.api.types";
+import type { SearchTripsResponse } from "../types/trips.api.types";
 import type { PaginatedLocationsResponse } from "@features/locations/types/locations.api.types";
 
 vi.mock("../api/trips.api", () => ({
