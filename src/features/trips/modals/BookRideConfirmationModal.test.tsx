@@ -1,8 +1,19 @@
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import BookRideConfirmationModal from "./BookRideConfirmationModal";
 import type { TripResponse } from "../types/trips.api.types";
+
+const mockMutate = vi.fn();
+
+vi.mock("@features/bookings/hooks/useCreateBookingMutation", () => ({
+  useCreateBookingMutation: () => ({
+    mutate: mockMutate,
+    isPending: false,
+    isError: false,
+    error: null,
+  }),
+}));
 
 const mockTrip: TripResponse = {
   id: "trip-12345678",
@@ -23,6 +34,10 @@ const mockTrip: TripResponse = {
 };
 
 describe("BookRideConfirmationModal", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   it("renders trip details and calls onClose when cancelled", async () => {
     const user = userEvent.setup();
     const handleClose = vi.fn();
@@ -47,11 +62,16 @@ describe("BookRideConfirmationModal", () => {
     await user.click(cancelButton);
 
     expect(handleClose).toHaveBeenCalledTimes(1);
+    expect(mockMutate).not.toHaveBeenCalled();
   });
 
-  it("shows confirmation success screen when user clicks confirm", async () => {
+  it("calls createBookingMutation and shows confirmation success screen on success", async () => {
     const user = userEvent.setup();
     const handleClose = vi.fn();
+
+    mockMutate.mockImplementationOnce((_payload, options) => {
+      options?.onSuccess?.();
+    });
 
     render(
       <BookRideConfirmationModal
@@ -63,11 +83,27 @@ describe("BookRideConfirmationModal", () => {
       />,
     );
 
-    const confirmButton = screen.getByRole("button", { name: /confirm booking/i });
+    const confirmButton = screen.getByRole("button", {
+      name: /confirm booking/i,
+    });
     await user.click(confirmButton);
 
+    expect(mockMutate).toHaveBeenCalledWith(
+      {
+        trip_id: "trip-12345678",
+        pickup_stop_id: "route-1",
+        dropoff_stop_id: "route-1",
+        seats_booked: 1,
+      },
+      expect.any(Object),
+    );
+
     expect(screen.getByText("Ride Booked!")).toBeInTheDocument();
-    expect(screen.getByText("Your ride reservation has been placed successfully. You will be notified once your driver confirms the pickup.")).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "Your ride reservation has been placed successfully. You will be notified once your driver confirms the pickup.",
+      ),
+    ).toBeInTheDocument();
 
     const doneButton = screen.getByRole("button", { name: /done/i });
     await user.click(doneButton);

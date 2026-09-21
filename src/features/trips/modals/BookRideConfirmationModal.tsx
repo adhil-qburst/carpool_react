@@ -1,9 +1,13 @@
 import { useState } from "react";
 import FieldIcon from "@shared/ui/FieldIcon";
+import { toApiError } from "@core/api/apiError";
+import { useCreateBookingMutation } from "@features/bookings/hooks/useCreateBookingMutation";
 import type { TripResponse } from "../types/trips.api.types";
 
 export interface BookRideConfirmationModalProps {
   trip: TripResponse;
+  pickupStopId?: string;
+  dropoffStopId?: string;
   sourceName?: string;
   destinationName?: string;
   seatsRequested?: number;
@@ -12,12 +16,17 @@ export interface BookRideConfirmationModalProps {
 
 export default function BookRideConfirmationModal({
   trip,
+  pickupStopId,
+  dropoffStopId,
   sourceName,
   destinationName,
   seatsRequested = 1,
   onClose,
 }: BookRideConfirmationModalProps) {
   const [isConfirmed, setIsConfirmed] = useState(false);
+  const [bookingError, setBookingError] = useState<string | null>(null);
+
+  const createBookingMutation = useCreateBookingMutation();
 
   const routeLabel =
     trip.route?.name ??
@@ -31,7 +40,37 @@ export default function BookRideConfirmationModal({
       : trip.departure_time;
 
   function handleConfirm() {
-    setIsConfirmed(true);
+    setBookingError(null);
+
+    const stops = trip.route?.route_stops ?? [];
+    const resolvedPickupStopId =
+      pickupStopId ||
+      stops[0]?.id ||
+      stops[0]?.location_id ||
+      trip.route_id;
+    const resolvedDropoffStopId =
+      dropoffStopId ||
+      stops[stops.length - 1]?.id ||
+      stops[stops.length - 1]?.location_id ||
+      trip.route_id;
+
+    createBookingMutation.mutate(
+      {
+        trip_id: trip.id,
+        pickup_stop_id: resolvedPickupStopId,
+        dropoff_stop_id: resolvedDropoffStopId,
+        seats_booked: seatsRequested,
+      },
+      {
+        onSuccess: () => {
+          setIsConfirmed(true);
+        },
+        onError: (err) => {
+          const apiErr = toApiError(err);
+          setBookingError(apiErr.message);
+        },
+      },
+    );
   }
 
   return (
@@ -62,6 +101,15 @@ export default function BookRideConfirmationModal({
               Please review the trip schedule and seat details before confirming
               your booking.
             </p>
+
+            {bookingError && (
+              <div
+                role="alert"
+                className="mt-4 rounded-lg bg-rose-50 px-3.5 py-2.5 text-sm text-rose-600 text-left"
+              >
+                {bookingError}
+              </div>
+            )}
 
             <div className="mt-5 rounded-2xl border border-slate-100 bg-slate-50 p-4 text-left text-sm space-y-2.5">
               <div className="flex justify-between py-1 border-b border-slate-200/60">
@@ -94,14 +142,18 @@ export default function BookRideConfirmationModal({
               <button
                 type="button"
                 onClick={handleConfirm}
-                className="w-full rounded-xl bg-indigo-600 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-600/25 transition hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-200"
+                disabled={createBookingMutation.isPending}
+                className="w-full rounded-xl bg-indigo-600 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-600/25 transition hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-200 disabled:cursor-not-allowed disabled:opacity-60"
               >
-                Confirm Booking
+                {createBookingMutation.isPending
+                  ? "Booking Ride..."
+                  : "Confirm Booking"}
               </button>
               <button
                 type="button"
                 onClick={onClose}
-                className="w-full rounded-xl bg-slate-100 px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-200 focus:outline-none focus:ring-4 focus:ring-slate-200"
+                disabled={createBookingMutation.isPending}
+                className="w-full rounded-xl bg-slate-100 px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-200 focus:outline-none focus:ring-4 focus:ring-slate-200 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 Cancel
               </button>

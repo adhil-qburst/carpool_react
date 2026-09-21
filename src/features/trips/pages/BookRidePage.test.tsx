@@ -166,13 +166,6 @@ describe("BookRidePage", () => {
     expect(screen.getByText("Book this Ride?")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /confirm booking/i })).toBeInTheDocument();
 
-    // Confirm booking
-    await user.click(screen.getByRole("button", { name: /confirm booking/i }));
-    expect(screen.getByText("Ride Booked!")).toBeInTheDocument();
-
-    // Close modal
-    await user.click(screen.getByRole("button", { name: /done/i }));
-    expect(screen.queryByText("Ride Booked!")).not.toBeInTheDocument();
   });
 
   it("displays empty state when no rides are available", async () => {
