@@ -1,0 +1,38 @@
+name: Node.js Build
+
+# Trigger the workflow on every push to the specified branches
+on:
+  push:
+    branches: [ release ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. Checkout the repository code
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    # 2. Setup Node.js environment
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20' # Specify your Node version
+        cache: 'npm'       # Caches dependencies for faster subsequent builds
+
+    # 3. Install dependencies
+    - name: Install dependencies
+      run: npm ci
+
+    # 4. Run the build script
+    - name: Run Build
+      run: npm run build
+
+    # 5. Save the dist folder as an artifact
+    - name: Upload Build Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: production-files    # The name of your downloadable zip file
+        path: dist/               # The path to the folder your build command creates
+        retention-days: 5         # Optional: Automatically delete it after 5 days to save space

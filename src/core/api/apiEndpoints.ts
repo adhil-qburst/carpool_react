@@ -1,0 +1,70 @@
+export const API_PREFIX = "/api/v1";
+
+export const apiEndpoints = {
+  auth: {
+    register: `${API_PREFIX}/auth/register`,
+    login: `${API_PREFIX}/auth/login`,
+    refresh: `${API_PREFIX}/auth/refresh`,
+  },
+  users: {
+    currentUser: `${API_PREFIX}/current_user`,
+  },
+  vehicles: {
+    list: `${API_PREFIX}/vehicles`,
+    create: `${API_PREFIX}/vehicles`,
+    byId: (vehicleId: string | number) => `${API_PREFIX}/vehicles/${vehicleId}`,
+    update: (vehicleId: string | number) => `${API_PREFIX}/vehicles/${vehicleId}`,
+    delete: (vehicleId: string | number) => `${API_PREFIX}/vehicles/${vehicleId}`,
+  },
+  locations: {
+    list: `${API_PREFIX}/locations`,
+    create: `${API_PREFIX}/locations`,
+  },
+  routes: {
+    list: `${API_PREFIX}/routes`,
+    create: `${API_PREFIX}/routes`,
+    byId: (routeId: string | number) => `${API_PREFIX}/routes/${routeId}`,
+    update: (routeId: string | number) => `${API_PREFIX}/routes/${routeId}`,
+    patch: (routeId: string | number) => `${API_PREFIX}/routes/${routeId}`,
+    delete: (routeId: string | number) => `${API_PREFIX}/routes/${routeId}`,
+  },
+  trips: {
+    list: `${API_PREFIX}/trips`,
+    search: `${API_PREFIX}/trips/search`,
+    create: `${API_PREFIX}/trips`,
+    byId: (tripId: string | number) => `${API_PREFIX}/trips/${tripId}`,
+    passengers: (tripId: string | number) =>
+      `${API_PREFIX}/trips/${tripId}/passengers`,
+    update: (tripId: string | number) => `${API_PREFIX}/trips/${tripId}`,
+    delete: (tripId: string | number) => `${API_PREFIX}/trips/${tripId}`,
+  },
+  bookings: {
+    list: `${API_PREFIX}/bookings`,
+    create: `${API_PREFIX}/bookings`,
+    byId: (bookingId: string | number) => `${API_PREFIX}/bookings/${bookingId}`,
+  },
+  ridePreferences: {
+    list: `${API_PREFIX}/ride-preferences`,
+    create: `${API_PREFIX}/ride-preferences`,
+    matches: `${API_PREFIX}/ride-preferences/matches`,
+    byId: (preferenceId: string | number) =>
+      `${API_PREFIX}/ride-preferences/${preferenceId}`,
+    update: (preferenceId: string | number) =>
+      `${API_PREFIX}/ride-preferences/${preferenceId}`,
+    delete: (preferenceId: string | number) =>
+      `${API_PREFIX}/ride-preferences/${preferenceId}`,
+  },
+  notifications: {
+    list: `${API_PREFIX}/notifications`,
+    unreadCount: `${API_PREFIX}/notifications/unread-count`,
+    byId: (notificationId: string | number) =>
+      `${API_PREFIX}/notifications/${notificationId}`,
+  },
+} as const;
+
+export type ApiEndpoints = typeof apiEndpoints;
+
+export const API_ENDPOINTS = apiEndpoints;
+export const api_endpoints = apiEndpoints;
+export default apiEndpoints;
+

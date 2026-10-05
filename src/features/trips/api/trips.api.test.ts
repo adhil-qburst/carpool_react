@@ -1,0 +1,226 @@
+import { describe, expect, it, vi, beforeEach } from "vitest";
+import { httpClient } from "@core/api/httpClient";
+import { apiEndpoints } from "@core/api/apiEndpoints";
+import { tripsApi } from "./trips.api";
+import type {
+  CreateTripRequest,
+  TripPassengerResponse,
+  TripResponse,
+} from "../types/trips.api.types";
+
+vi.mock("@core/api/httpClient", () => ({
+  httpClient: {
+    get: vi.fn(),
+    post: vi.fn(),
+    patch: vi.fn(),
+    delete: vi.fn(),
+  },
+}));
+
+describe("tripsApi", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("create calls POST on trips endpoint and unwraps res.data", async () => {
+    const payload: CreateTripRequest = {
+      route_id: "route-1",
+      vehicle_id: "veh-1",
+      departure_date: "2026-09-20",
+      departure_time: "08:00:00",
+    };
+    const mockResponse: TripResponse = {
+      id: "trip-1",
+      route_id: "route-1",
+      driver_id: "driver-1",
+      vehicle_id: "veh-1",
+      departure_date: "2026-09-20",
+      departure_time: "08:00:00",
+      available_seats: 3,
+      status: "scheduled",
+      created_at: "2026-09-14T10:00:00Z",
+      updated_at: "2026-09-14T10:00:00Z",
+    };
+
+    vi.mocked(httpClient.post).mockResolvedValueOnce({ data: mockResponse });
+
+    const result = await tripsApi.create(payload);
+
+    expect(httpClient.post).toHaveBeenCalledWith(
+      apiEndpoints.trips.create,
+      payload,
+    );
+    expect(result).toEqual(mockResponse);
+  });
+
+  it("list calls GET with query parameters and unwraps res.data", async () => {
+    const mockResponse = {
+      items: [],
+      page: 1,
+      limit: 10,
+      total: 0,
+    };
+    vi.mocked(httpClient.get).mockResolvedValueOnce({ data: mockResponse });
+
+    const result = await tripsApi.list({ page: 1, limit: 10 });
+
+    expect(httpClient.get).toHaveBeenCalledWith(apiEndpoints.trips.list, {
+      params: { page: 1, limit: 10 },
+    });
+    expect(result).toEqual(mockResponse);
+  });
+
+  it("search calls GET on trips/search endpoint with query parameters and unwraps res.data", async () => {
+    const mockParams = {
+      source_location_id: "loc-src-1",
+      destination_location_id: "loc-dst-2",
+      departure_date: "2026-09-20",
+      seats_needed: 2,
+      page: 1,
+      limit: 10,
+    };
+    const mockResponse = {
+      items: [],
+      page: 1,
+      limit: 10,
+      total: 0,
+    };
+    vi.mocked(httpClient.get).mockResolvedValueOnce({ data: mockResponse });
+
+    const result = await tripsApi.search(mockParams);
+
+    expect(httpClient.get).toHaveBeenCalledWith(apiEndpoints.trips.search, {
+      params: mockParams,
+    });
+    expect(result).toEqual(mockResponse);
+  });
+
+  it("getById calls GET on parameterized trip endpoint", async () => {
+    const mockTrip: TripResponse = {
+      id: "trip-99",
+      route_id: "route-1",
+      driver_id: "driver-1",
+      vehicle_id: "veh-1",
+      departure_date: "2026-09-21",
+      departure_time: "09:00:00",
+      available_seats: 4,
+      status: "scheduled",
+      created_at: "2026-09-14T10:00:00Z",
+      updated_at: "2026-09-14T10:00:00Z",
+    };
+    vi.mocked(httpClient.get).mockResolvedValueOnce({ data: mockTrip });
+
+    const result = await tripsApi.getById("trip-99");
+
+    expect(httpClient.get).toHaveBeenCalledWith(apiEndpoints.trips.byId("trip-99"));
+    expect(result).toEqual(mockTrip);
+  });
+
+  it("getPassengers calls GET on parameterized passengers endpoint and unwraps res.data", async () => {
+    const mockPassengers: TripPassengerResponse[] = [
+      {
+        id: "passenger-1",
+        booking_id: "booking-10",
+        rider_id: "rider-1",
+        rider_name: "Alice Rider",
+        rider_email: "alice@example.com",
+        rider: {
+          id: "rider-1",
+          name: "Alice Rider",
+          email: "alice@example.com",
+        },
+        seats_booked: 2,
+        status: "confirmed",
+        pickup_stop: {
+          id: "stop-1",
+          route_id: "route-1",
+          location_id: "loc-1",
+          sequence: 1,
+        },
+        dropoff_stop: {
+          id: "stop-2",
+          route_id: "route-1",
+          location_id: "loc-2",
+          sequence: 2,
+        },
+        created_at: "2026-09-21T10:00:00Z",
+        updated_at: "2026-09-21T10:00:00Z",
+      },
+    ];
+    vi.mocked(httpClient.get).mockResolvedValueOnce({ data: mockPassengers });
+
+    const result = await tripsApi.getPassengers("trip-99", { status: "confirmed" });
+
+    expect(httpClient.get).toHaveBeenCalledWith(
+      apiEndpoints.trips.passengers("trip-99"),
+      { params: { status: "confirmed" } },
+    );
+    expect(result).toEqual(mockPassengers);
+  });
+
+
+  it("getRoutes calls GET on routes.list endpoint", async () => {
+    const mockRoutes = {
+      items: [{ id: "r1", name: "Home to Work", status: "active" }],
+    };
+    vi.mocked(httpClient.get).mockResolvedValueOnce({ data: mockRoutes });
+
+    const result = await tripsApi.getRoutes();
+
+    expect(httpClient.get).toHaveBeenCalledWith(apiEndpoints.routes.list);
+    expect(result).toEqual(mockRoutes);
+  });
+
+  it("getVehicles calls GET on vehicles.list endpoint", async () => {
+    const mockVehicles = [
+      {
+        id: "v1",
+        make: "Toyota",
+        model: "Prius",
+        license_plate: "KA01AB1234",
+        total_seats: 4,
+      },
+    ];
+    vi.mocked(httpClient.get).mockResolvedValueOnce({ data: mockVehicles });
+
+    const result = await tripsApi.getVehicles();
+
+    expect(httpClient.get).toHaveBeenCalledWith(apiEndpoints.vehicles.list);
+    expect(result).toEqual(mockVehicles);
+  });
+
+  it("update calls PATCH on parameterized trip endpoint and unwraps res.data", async () => {
+    const updatePayload = { departure_date: "2026-09-25" };
+    const mockTrip: TripResponse = {
+      id: "trip-1",
+      route_id: "route-1",
+      driver_id: "driver-1",
+      vehicle_id: "veh-1",
+      departure_date: "2026-09-25",
+      departure_time: "08:00:00",
+      available_seats: 3,
+      status: "scheduled",
+      created_at: "2026-09-14T10:00:00Z",
+      updated_at: "2026-09-14T11:00:00Z",
+    };
+    vi.mocked(httpClient.patch).mockResolvedValueOnce({ data: mockTrip });
+
+    const result = await tripsApi.update("trip-1", updatePayload);
+
+    expect(httpClient.patch).toHaveBeenCalledWith(
+      apiEndpoints.trips.update("trip-1"),
+      updatePayload,
+    );
+    expect(result).toEqual(mockTrip);
+  });
+
+  it("delete calls DELETE on parameterized trip endpoint", async () => {
+    vi.mocked(httpClient.delete).mockResolvedValueOnce({ data: undefined });
+
+    await tripsApi.delete("trip-1");
+
+    expect(httpClient.delete).toHaveBeenCalledWith(
+      apiEndpoints.trips.delete("trip-1"),
+    );
+  });
+});
