@@ -2,7 +2,7 @@ import FieldIcon from "@shared/ui/FieldIcon";
 import type {
   RecentTripSearch,
   TripRouteStopLocation,
-} from "../types/trips.api.types";
+} from "@features/trips/types/trips.api.types";
 
 interface RecentSearchesCardProps {
   searches: RecentTripSearch[];
@@ -18,6 +18,14 @@ function getStopLocation(
   search: RecentTripSearch,
   locationId: string,
 ): TripRouteStopLocation | undefined {
+  const location =
+    locationId === search.source_location_id
+      ? search.source_location
+      : locationId === search.destination_location_id
+        ? search.dest_location
+        : undefined;
+  if (location) return location;
+
   for (const trip of search.items) {
     const stop = trip.route?.route_stops?.find(
       (routeStop) => routeStop.location_id === locationId,

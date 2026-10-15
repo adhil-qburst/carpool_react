@@ -55,6 +55,8 @@ export interface SearchTripsResponse {
 export interface RecentTripSearch {
   source_location_id: string;
   destination_location_id: string;
+  source_location?: TripRouteStopLocation | null;
+  dest_location?: TripRouteStopLocation | null;
   items: TripResponse[];
   total: number;
 }
