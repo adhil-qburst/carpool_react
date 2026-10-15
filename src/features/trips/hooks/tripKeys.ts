@@ -6,6 +6,7 @@ export const tripKeys = {
   searches: () => [...tripKeys.all, "search"] as const,
   search: (filters?: Record<string, unknown>) =>
     [...tripKeys.searches(), filters] as const,
+  recentSearches: () => [...tripKeys.all, "recentSearches"] as const,
   details: () => [...tripKeys.all, "detail"] as const,
   detail: (id: string) => [...tripKeys.details(), id] as const,
   passengers: (tripId: string, filters?: Record<string, unknown>) =>

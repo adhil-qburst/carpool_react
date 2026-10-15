@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { Link } from "react-router";
 import BrandMark from "@shared/ui/BrandMark";
 import FieldIcon from "@shared/ui/FieldIcon";
@@ -10,8 +10,11 @@ import { toApiError } from "@core/api/apiError";
 import { useSearchTripsQuery } from "../hooks/useSearchTripsQuery";
 import BookRideSidebar from "../components/BookRideSidebar";
 import AvailableTripCard from "../components/AvailableTripCard";
+import RecentSearchesCard from "../components/RecentSearchesCard";
 import BookRideConfirmationModal from "../modals/BookRideConfirmationModal";
+import { useRecentTripSearchesQuery } from "../hooks/useRecentTripSearchesQuery";
 import type {
+  RecentTripSearch,
   SearchTripsQueryParams,
   TripResponse,
 } from "../types/trips.api.types";
@@ -46,10 +49,19 @@ export default function BookRidePage() {
     isError,
     error,
   } = useSearchTripsQuery(activeParams);
+  const {
+    data: recentSearchesData,
+    isLoading: isLoadingRecentSearches,
+    refetch: refetchRecentSearches,
+  } = useRecentTripSearchesQuery();
 
   const trips = searchData?.items ?? [];
   const totalResults = searchData?.total ?? trips.length;
   const hasSearched = activeParams !== null;
+
+  useEffect(() => {
+    if (searchData) void refetchRecentSearches();
+  }, [searchData, refetchRecentSearches]);
 
   function validate(): boolean {
     const nextErrors: FormErrors = {};
@@ -93,6 +105,28 @@ export default function BookRidePage() {
         limit: 20,
       });
     }
+  }
+
+  function handleSelectRecentSearch(
+    search: RecentTripSearch,
+    sourceName: string,
+    destinationName: string,
+  ) {
+    setSourceLocation({ id: search.source_location_id, name: sourceName, city: "" });
+    setDestLocation({
+      id: search.destination_location_id,
+      name: destinationName,
+      city: "",
+    });
+    setErrors({});
+    setActiveParams({
+      source_location_id: search.source_location_id,
+      destination_location_id: search.destination_location_id,
+      departure_date: departureDate.trim() || undefined,
+      seats_needed: seatsNeeded,
+      page: 1,
+      limit: 20,
+    });
   }
 
   function handleBookTrip(trip: TripResponse) {
@@ -268,6 +302,14 @@ export default function BookRidePage() {
               </button>
             </div>
           </form>
+
+          <div className="mt-4">
+            <RecentSearchesCard
+              searches={recentSearchesData?.items ?? []}
+              isLoading={isLoadingRecentSearches}
+              onSelect={handleSelectRecentSearch}
+            />
+          </div>
 
           {/* Results Section */}
           <div className="mt-8 flex-1 flex flex-col">

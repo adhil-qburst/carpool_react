@@ -31,6 +31,7 @@ export const apiEndpoints = {
   trips: {
     list: `${API_PREFIX}/trips`,
     search: `${API_PREFIX}/trips/search`,
+    recentSearches: `${API_PREFIX}/trips/recent-searches`,
     create: `${API_PREFIX}/trips`,
     byId: (tripId: string | number) => `${API_PREFIX}/trips/${tripId}`,
     passengers: (tripId: string | number) =>

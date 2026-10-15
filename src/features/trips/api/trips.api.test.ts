@@ -95,6 +95,19 @@ describe("tripsApi", () => {
     expect(result).toEqual(mockResponse);
   });
 
+  it("recentSearches calls the recent-searches endpoint with limit", async () => {
+    const mockResponse = { items: [] };
+    vi.mocked(httpClient.get).mockResolvedValueOnce({ data: mockResponse });
+
+    const result = await tripsApi.recentSearches(5);
+
+    expect(httpClient.get).toHaveBeenCalledWith(
+      apiEndpoints.trips.recentSearches,
+      { params: { limit: 5 } },
+    );
+    expect(result).toEqual(mockResponse);
+  });
+
   it("getById calls GET on parameterized trip endpoint", async () => {
     const mockTrip: TripResponse = {
       id: "trip-99",

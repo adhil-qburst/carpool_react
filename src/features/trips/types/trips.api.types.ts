@@ -52,6 +52,17 @@ export interface SearchTripsResponse {
   total?: number;
 }
 
+export interface RecentTripSearch {
+  source_location_id: string;
+  destination_location_id: string;
+  items: TripResponse[];
+  total: number;
+}
+
+export interface RecentTripSearchesResponse {
+  items: RecentTripSearch[];
+}
+
 export interface ListTripsQueryParams {
   page?: number;
   limit?: number;

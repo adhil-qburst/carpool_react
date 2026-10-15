@@ -12,6 +12,7 @@ import type { PaginatedLocationsResponse } from "@features/locations/types/locat
 vi.mock("../api/trips.api", () => ({
   tripsApi: {
     search: vi.fn(),
+    recentSearches: vi.fn(),
   },
 }));
 
@@ -95,6 +96,8 @@ function renderBookRidePage() {
 describe("BookRidePage", () => {
   beforeEach(() => {
     vi.mocked(tripsApi.search).mockReset();
+    vi.mocked(tripsApi.recentSearches).mockReset();
+    vi.mocked(tripsApi.recentSearches).mockResolvedValue({ items: [] });
     vi.mocked(locationsApi.list).mockReset();
     vi.mocked(locationsApi.list).mockResolvedValue(mockLocations);
   });
@@ -105,6 +108,37 @@ describe("BookRidePage", () => {
     expect(screen.getByRole("heading", { name: "Find and Book a Ride" })).toBeInTheDocument();
     expect(screen.getByText("Ready to Search")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /search rides/i })).toBeInTheDocument();
+  });
+
+  it("shows recent searches and searches again when one is selected", async () => {
+    const user = userEvent.setup();
+    vi.mocked(tripsApi.recentSearches).mockResolvedValueOnce({
+      items: [
+        {
+          source_location_id: "loc-1",
+          destination_location_id: "loc-2",
+          items: [],
+          total: 0,
+        },
+      ],
+    });
+    vi.mocked(tripsApi.search).mockResolvedValue(mockSearchResults);
+
+    renderBookRidePage();
+
+    const recentSearch = await screen.findByRole("button", {
+      name: "Search Location loc-1 to Location loc-2",
+    });
+    await user.click(recentSearch);
+
+    await waitFor(() => {
+      expect(tripsApi.search).toHaveBeenCalledWith(
+        expect.objectContaining({
+          source_location_id: "loc-1",
+          destination_location_id: "loc-2",
+        }),
+      );
+    });
   });
 
   it("validates required source and destination before searching", async () => {

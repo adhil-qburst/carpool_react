@@ -5,6 +5,7 @@ import type {
   ListTripPassengersQueryParams,
   ListTripsQueryParams,
   PaginatedTripsResponse,
+  RecentTripSearchesResponse,
   SearchTripsQueryParams,
   SearchTripsResponse,
   TripPassengerResponse,
@@ -28,6 +29,13 @@ export const tripsApi = {
   search: (params: SearchTripsQueryParams): Promise<SearchTripsResponse> =>
     httpClient
       .get<SearchTripsResponse>(apiEndpoints.trips.search, { params })
+      .then((res) => res.data),
+
+  recentSearches: (limit = 10): Promise<RecentTripSearchesResponse> =>
+    httpClient
+      .get<RecentTripSearchesResponse>(apiEndpoints.trips.recentSearches, {
+        params: { limit },
+      })
       .then((res) => res.data),
 
   getById: (tripId: string): Promise<TripResponse> =>
