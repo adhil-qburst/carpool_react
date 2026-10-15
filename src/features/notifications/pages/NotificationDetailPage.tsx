@@ -19,7 +19,7 @@ export default function NotificationDetailPage() {
   if (isLoading) {
     return (
       <main className="min-h-screen bg-slate-50 p-4 sm:p-6 lg:p-8">
-        <div className="mx-auto grid min-h-[calc(100vh-2rem)] max-w-5xl animate-pulse rounded-4xl bg-white p-10 shadow-2xl">
+        <div className="mx-auto grid min-h-[calc(100vh-2rem)] w-full max-w-none animate-pulse rounded-4xl bg-white p-10 shadow-2xl">
           <div className="h-8 w-48 rounded-xl bg-slate-200" />
           <div className="mt-6 h-64 rounded-3xl bg-slate-100" />
         </div>
@@ -81,7 +81,7 @@ export default function NotificationDetailPage() {
 
   return (
     <main className="min-h-screen bg-slate-50 p-4 sm:p-6 lg:p-8">
-      <div className="mx-auto max-w-4xl rounded-4xl border border-slate-200 bg-white p-6 shadow-xl sm:p-10 lg:p-12">
+      <div className="mx-auto w-full max-w-none rounded-4xl border border-slate-200 bg-white p-6 shadow-xl sm:p-10 lg:p-12">
         {/* Header navigation */}
         <div className="flex items-center justify-between border-b border-slate-100 pb-6">
           <div className="flex items-center gap-3">

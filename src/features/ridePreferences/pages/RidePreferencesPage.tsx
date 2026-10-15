@@ -59,7 +59,7 @@ export default function RidePreferencesPage() {
 
   return (
     <main className="min-h-screen bg-slate-50 p-4 sm:p-6 lg:p-8">
-      <div className="mx-auto grid min-h-[calc(100vh-2rem)] max-w-6xl overflow-hidden rounded-4xl bg-white shadow-2xl shadow-slate-900/10 lg:min-h-[calc(100vh-4rem)] lg:grid-cols-[.85fr_1.15fr]">
+      <div className="mx-auto grid min-h-[calc(100vh-2rem)] w-full max-w-none overflow-hidden rounded-4xl bg-white shadow-2xl shadow-slate-900/10 lg:min-h-[calc(100vh-4rem)] lg:grid-cols-[3fr_9fr]">
         {/* Left pane: Branding & metrics */}
         <aside className="relative hidden overflow-hidden bg-slate-950 p-10 text-white lg:flex lg:flex-col">
           <div className="relative flex items-center justify-between">

@@ -165,7 +165,7 @@ export default function EditTripPage() {
 
   return (
     <main className="min-h-screen bg-slate-100">
-      <div className="grid min-h-screen lg:grid-cols-[420px_1fr]">
+      <div className="grid min-h-screen lg:grid-cols-[3fr_9fr]">
         <TripPreviewSidebar
           title="Update Trip"
           subtitle="Modify your departure timing, assign a different vehicle, or change trip status."

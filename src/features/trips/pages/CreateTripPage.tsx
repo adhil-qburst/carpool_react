@@ -115,7 +115,7 @@ export default function CreateTripPage() {
 
   return (
     <main className="min-h-screen bg-slate-100">
-      <div className="grid min-h-screen lg:grid-cols-[420px_1fr]">
+      <div className="grid min-h-screen lg:grid-cols-[3fr_9fr]">
         {/* Left Pane - Sidebar with live preview */}
         <TripPreviewSidebar
           selectedRoute={selectedRoute}

@@ -236,7 +236,7 @@ export default function EditRoutePage() {
   if (isRoutesLoading && !route) {
     return (
       <main className="min-h-screen bg-slate-50 p-4 sm:p-6 lg:p-8">
-        <div className="mx-auto flex min-h-[50vh] max-w-6xl items-center justify-center rounded-4xl bg-white p-12 shadow-2xl shadow-slate-900/10">
+        <div className="mx-auto flex min-h-[50vh] w-full max-w-none items-center justify-center rounded-4xl bg-white p-12 shadow-2xl shadow-slate-900/10">
           <p className="text-slate-500 font-medium">Loading route details...</p>
         </div>
       </main>
@@ -246,7 +246,7 @@ export default function EditRoutePage() {
   if (!route && !isRoutesLoading) {
     return (
       <main className="min-h-screen bg-slate-50 p-4 sm:p-6 lg:p-8">
-        <div className="mx-auto flex min-h-[50vh] max-w-6xl flex-col items-center justify-center rounded-4xl bg-white p-12 shadow-2xl shadow-slate-900/10">
+        <div className="mx-auto flex min-h-[50vh] w-full max-w-none flex-col items-center justify-center rounded-4xl bg-white p-12 shadow-2xl shadow-slate-900/10">
           <h2 className="text-2xl font-bold text-slate-950">Route not found</h2>
           <p className="mt-2 text-slate-500">
             The route you are trying to edit could not be found.
@@ -264,7 +264,7 @@ export default function EditRoutePage() {
 
   return (
     <main className="min-h-screen bg-slate-50 p-4 sm:p-6 lg:p-8">
-      <div className="mx-auto grid min-h-[calc(100vh-2rem)] max-w-6xl overflow-hidden rounded-4xl bg-white shadow-2xl shadow-slate-900/10 lg:min-h-[calc(100vh-4rem)] lg:grid-cols-[.85fr_1.15fr]">
+      <div className="mx-auto grid min-h-[calc(100vh-2rem)] w-full max-w-none overflow-hidden rounded-4xl bg-white shadow-2xl shadow-slate-900/10 lg:min-h-[calc(100vh-4rem)] lg:grid-cols-[3fr_9fr]">
         {/* Left Branding & Highlights Pane */}
         <aside className="relative hidden overflow-hidden bg-slate-950 p-10 text-white lg:flex lg:flex-col">
           <div className="absolute -left-24 top-28 h-72 w-72 rounded-full bg-indigo-500/30 blur-3xl" />

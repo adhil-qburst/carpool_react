@@ -9,7 +9,7 @@ const HomePage = () => {
   const unreadCount = unreadData?.unread_count ?? 0;
   return (
     <main className="min-h-screen bg-slate-50 p-4 sm:p-6 lg:p-8">
-      <div className="mx-auto max-w-5xl">
+      <div className="mx-auto w-full max-w-none">
         <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between rounded-3xl bg-white p-6 shadow-sm border border-slate-200">
           <div className="flex items-center gap-3">
             <BrandMark />
